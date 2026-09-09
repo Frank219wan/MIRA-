@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+
+# Personal images, generated results, and downloaded model assets
+data/input/*
+!data/input/.gitkeep
+data/output/*
+!data/output/.gitkeep
+models/*
+!models/.gitkeep
+models/*.task

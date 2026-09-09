@@ -1,0 +1,5 @@
+# MediaPipe 1.0.x has a known macOS CPU FaceLandmarker crash as of 2026-09.
+mediapipe==0.10.21; sys_platform == "darwin"
+mediapipe==1.0.1; sys_platform != "darwin"
+numpy==1.26.4
+opencv-contrib-python==4.11.0.86
