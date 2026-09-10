@@ -1,0 +1,36 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Layout } from "./components/layout/Layout";
+import Home from "./pages/Home";
+import TutorialInput from "./pages/TutorialInput";
+import Parsing from "./pages/Parsing";
+import Recipe from "./pages/Recipe";
+import BeautyKit from "./pages/BeautyKit";
+import Matching from "./pages/Matching";
+import FaceScan from "./pages/FaceScan";
+import BeautyProfile from "./pages/BeautyProfile";
+import MyTutorial from "./pages/MyTutorial";
+import LiveCoach from "./pages/LiveCoach";
+import Finish from "./pages/Finish";
+import NotFound from "./pages/NotFound";
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/tutorial" element={<TutorialInput />} />
+          <Route path="/tutorial/parsing" element={<Parsing />} />
+          <Route path="/tutorial/recipe" element={<Recipe />} />
+          <Route path="/beauty-kit" element={<BeautyKit />} />
+          <Route path="/matching" element={<Matching />} />
+          <Route path="/face-scan" element={<FaceScan />} />
+          <Route path="/beauty-profile" element={<BeautyProfile />} />
+          <Route path="/my-tutorial" element={<MyTutorial />} />
+          <Route path="/live-coach" element={<LiveCoach />} />
+          <Route path="/finish" element={<Finish />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}

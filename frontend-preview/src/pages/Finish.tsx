@@ -1,0 +1,75 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Check } from "lucide-react";
+import { Page } from "../components/layout/Page";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/primitives";
+import { getFinishSummary } from "../services/finish";
+import { savePersonalizedTutorial } from "../services/personalizedTutorial";
+import { useService } from "../hooks/useService";
+export default function Finish() {
+  const { data, error } = useService(getFinishSummary);
+  const [saved, setSaved] = useState(false);
+  const [saveError, setSaveError] = useState("");
+  async function save() {
+    try {
+      await savePersonalizedTutorial();
+      setSaved(true);
+    } catch {
+      setSaveError("浏览器未能保存，请检查本地存储权限后重试。");
+    }
+  }
+  return (
+    <Page
+      eyebrow="THE ART OF BEING YOU"
+      title="妆容完成"
+      description="灵感有了你的表达。记住这次的手法，下次更从容。"
+    >
+      <div className="finish-mark">
+        <Check size={30} />
+      </div>
+      {error && <p>{error}</p>}
+      {data && (
+        <>
+          <div className="stats">
+            {[
+              ["完成教程步骤", `${data.completed} / 5`],
+              ["现有产品复用", `${data.reused} 件`],
+              ["产品能力缺口", `${data.missing.length} 项`],
+              ["AI 个性化调整数量", `${data.adjustmentCount} 项`],
+            ].map(([k, v]) => (
+              <Card key={k}>
+                <span>{k}</span>
+                <strong>{v}</strong>
+              </Card>
+            ))}
+          </div>
+          <Card>
+            <h2>属于你的操作笔记</h2>
+            {data.adapted ? (
+              data.changes.map((x) => <p key={x}>{x}</p>)
+            ) : (
+              <p>未启用面部个性化</p>
+            )}
+            <p>{data.productChange}</p>
+            <p>
+              产品能力缺口：{data.missing.join(" / ")}
+              。本次使用哑光层次替代珠光效果。
+            </p>
+          </Card>
+        </>
+      )}
+      <div className="action-row">
+        <Button variant="outline" onClick={save} disabled={saved}>
+          {saved ? "已保存至此浏览器" : "保存本次教程"}
+        </Button>
+        <Button asChild>
+          <Link to="/">完成</Link>
+        </Button>
+      </div>
+      <p role="status">
+        {saved ? "教程已保存在此浏览器的本地存储中。" : saveError}
+      </p>
+    </Page>
+  );
+}

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">MIRA 映己图形标</title>
+  <desc id="desc">由镜像 M 轮廓与金色镜面中轴构成的品牌图形标。</desc>
+  <rect width="512" height="512" rx="112" fill="#0A0A0A"/>
+  <path d="M106 352V150h42l108 125 108-125h42v202h-43V216L256 338 149 216v136z" fill="#F7F5F2"/>
+  <rect x="246" y="118" width="20" height="276" rx="2" fill="#B89A61"/>
+  <line x1="256" y1="96" x2="256" y2="416" stroke="#C7AD78" stroke-width="2" opacity="0.62"/>
+</svg>
