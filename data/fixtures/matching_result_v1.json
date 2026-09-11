@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "matching_id": "match-demo-v1",
+  "recipe_id": "recipe-main-eye-demo-v1",
+  "beauty_kit_id": "kit-demo-v1",
+  "items": [{"step_index": 2, "status": "matched", "product_id": "product-neutral-palette", "capability_id": "capability-neutral-shadow", "note": "Fixture only; no matching algorithm has run."}]
+}

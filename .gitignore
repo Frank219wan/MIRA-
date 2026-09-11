@@ -11,3 +11,6 @@ data/output/*
 models/*
 !models/.gitkeep
 models/*.task
+
+# Local Week 1 SQLite database
+data/*.db

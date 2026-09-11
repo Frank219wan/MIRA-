@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "capability_id": "capability-neutral-shadow",
+  "product_category": "eye shadow palette",
+  "supported_areas": ["crease", "outer corner", "center lid"],
+  "supported_goals": ["add depth", "define", "brighten"]
+}

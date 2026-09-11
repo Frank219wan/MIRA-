@@ -1,0 +1,6 @@
+{
+  "schema_version": "1.0",
+  "kit_id": "kit-demo-v1",
+  "name": "Demo eye kit",
+  "products": [{"product_id": "product-neutral-palette", "name": "Neutral palette", "capability_ids": ["capability-neutral-shadow"]}]
+}
