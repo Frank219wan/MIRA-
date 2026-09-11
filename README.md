@@ -165,107 +165,13 @@ python -m unittest discover -s tests -v
 
 当前版本只输出连续几何量，不包含眼型/眼距/眼尾分类、Face Profile 标签、AR、美妆推荐、个性化规则或 LLM。
 
-## Week 1 Multimodal Contracts and Tutorial Parser
+## Week 1 后端更新
 
-The CV `Face Profile v0.1` contract remains owned by `src/face_profile.py`.
-The multimodal/backend layer consumes that JSON unchanged through its CV
-adaptation envelope; it does not add face labels, thresholds, or beauty
-judgements.
-
-`src/contracts/` contains versioned Pydantic v2 contracts for reusable
-`StandardRecipe` objects, Beauty Kit/catalog data, matching-result placeholders,
-and the CV/LLM handoff envelopes. `src/services/tutorial_parser.py` is the Week
-1 PoC boundary and specifically enforces its five-step demo requirement:
-
-```text
-tutorial video or frame-directory path
-  -> provider adapter receives the multimodal prompt
-  -> five validated MakeupActionUnits
-  -> StandardRecipe
-```
-
-`MockTutorialVisionProvider` supports offline tests and local contract demos.
-It is not a substitute for video understanding. A future real provider should
-implement `TutorialVisionProvider.extract_action_units()` and return the same
-JSON-shaped `{"action_units": [...]}` payload. The prompt is deliberately
-kept in `src/services/tutorial_prompt.py`, separate from application logic.
-
-No tutorial asset is committed yet. The documented main-demo placeholder is
-`data/input/main_eye_tutorial.mp4`; personal or licensed video assets remain
-ignored by Git. Synthetic fixtures for contract integration live in
-`data/fixtures/`.
-
-## Week 1 Backend API and SQLite Demo
-
-Install the backend dependencies into a Python 3.9–3.12 virtual environment:
-
-```bash
-python -m pip install -r requirements.txt
-```
-
-The local SQLite database defaults to `data/mira_week1.db` (ignored by Git).
-Tables are initialized with `create_all` when the app starts, and the checked-in
-Beauty Kit/Product Capability fixtures are seeded automatically. To select a
-different database, set `MIRA_DATABASE_URL`, for example
-`sqlite:////absolute/path/mira_week1.db`.
-
-Run the API:
-
-```bash
-uvicorn src.api.app:app --reload
-```
-
-The Week 1 parser uses the offline `MockTutorialVisionProvider`, so the app
-does not require an API key, OpenCV, or MediaPipe. The referenced tutorial path
-is metadata for this PoC; no video asset is required in mock mode.
-
-```bash
-curl http://127.0.0.1:8000/health
-
-curl -X POST http://127.0.0.1:8000/tutorials/parse \
-  -H 'content-type: application/json' \
-  -d '{"media_path":"data/input/main_eye_tutorial.mp4","media_kind":"video","recipe_id":"recipe-main-eye-demo-v1","title":"Main eye tutorial demo"}'
-
-curl http://127.0.0.1:8000/recipes/recipe-main-eye-demo-v1
-curl http://127.0.0.1:8000/beauty-kit
-```
-
-Real Week 1 behavior: health check, mock tutorial parsing to a validated
-five-step recipe, recipe persistence/retrieval, sample Beauty Kit retrieval,
-and CV Face Profile compatibility validation. Structural placeholders:
-`POST /matching` emits unmatched entries without ranking; `POST /cv-adaptation`
-does not personalize; `POST /explanations` does not call an LLM.
-
-### Debugging
-
-The API writes lightweight structured JSON events to the `mira` application
-logger (normally the Uvicorn console). Every response includes an
-`X-Request-ID` header; clients may provide a safe `X-Request-ID` value, and
-error bodies also include `request_id`. Search the logs by this value to follow
-one request across parser, persistence, matching, CV validation, and explanation
-boundaries.
-
-For developer-only parser diagnostics, enable debug-run persistence before
-starting the app:
-
-```bash
-MIRA_DEBUG_RUNS=1 uvicorn src.api.app:app --reload
-```
-
-This stores a `parser_runs` record in the local SQLite DB with the provider,
-optional model name, prompt/schema versions, media *reference*, raw provider
-output, validation result/error, and duration. It never stores video/frame
-bytes, uploaded media, API keys, or secrets. Keep this mode off outside local
-development because raw provider output can still contain user-derived text.
-
-Revalidate a stored run without calling a model:
-
-```bash
-python -m src.tools.replay_parser_run <run_id>
-```
-
-Pass `--database-url` when replaying a non-default SQLite database. Replay uses
-only the stored raw model output and the current Pydantic recipe validation.
+- 后端以 FastAPI + SQLite 提供教程解析、Recipe 查询、Beauty Kit、Matching、CV Adaptation 与 Explanation 的稳定接口。
+- 教程解析器当前使用离线 `MockTutorialVisionProvider`，将视频/帧目录引用转换为经校验的五步骤 `StandardRecipe`；真实视频理解 Provider 尚未接入。
+- CV 的 `Face Profile v0.1` 仍由 `src/face_profile.py` 维护；后端只校验并原样消费，不增加脸型或美学判断。
+- Matching、CV Adaptation 与 Explanation 当前均为结构性占位，不包含匹配算法、个性化或外部 LLM 调用。
+- 详细的本地运行、接口、调试、Replay 与限制说明见 [Week 1 后端文档](docs/week1_backend.md)。
 
 ## Pipeline Architecture
 
