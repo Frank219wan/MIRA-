@@ -14,6 +14,16 @@ def fake_geometry_payload(seed: float = 0.0) -> dict:
     return {
         "face_detected": True,
         "geometry": {"eye_spacing_ratio": 1.3 + seed},
+        "relative_eye_length": {
+            "relative_eye_length_left": 0.23 + seed,
+            "relative_eye_length_right": 0.24 + seed,
+            "relative_eye_length_mean": 0.235 + seed,
+        },
+        "eye_width_height_ratio": {
+            "eye_width_height_ratio_left": 3.1 + seed,
+            "eye_width_height_ratio_right": 3.2 + seed,
+            "eye_width_height_ratio_mean": 3.15 + seed,
+        },
         "eye_tail_angle": {
             "left_eye_tail_angle_deg": 5.0 + seed,
             "right_eye_tail_angle_deg": 6.0 + seed,
@@ -22,6 +32,19 @@ def fake_geometry_payload(seed: float = 0.0) -> dict:
         "brow_eye": {
             "left_brow_eye_ratio": 0.6 + seed,
             "right_brow_eye_ratio": 0.7 + seed,
+        },
+        "lower_lid_space": {
+            "lower_lid_space_px_left": 10.0 + seed,
+            "lower_lid_space_px_right": 11.0 + seed,
+            "lower_lid_space_px_mean": 10.5 + seed,
+            "lower_lid_space_ratio_left": 0.18 + seed,
+            "lower_lid_space_ratio_right": 0.19 + seed,
+            "lower_lid_space_ratio_mean": 0.185 + seed,
+        },
+        "inner_corner_angle": {
+            "inner_corner_angle_left_deg": 50.0 + seed,
+            "inner_corner_angle_right_deg": 52.0 + seed,
+            "inner_corner_angle_mean_deg": 51.0 + seed,
         },
         "asymmetry": {
             "eye_width_asymmetry": 0.01 + seed,
@@ -76,6 +99,7 @@ class BatchAnalyzeTests(unittest.TestCase):
             self.assertEqual(tuple(csv_rows[0].keys()), SUMMARY_FIELDS)
             self.assertEqual(len(csv_rows), 3)
             self.assertEqual(csv_rows[1]["eye_spacing_ratio"], "")
+            self.assertEqual(csv_rows[1]["relative_eye_length_mean"], "")
             self.assertIn("未检测到人脸", csv_rows[1]["error"])
 
             error_payload = json.loads(
