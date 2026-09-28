@@ -1,0 +1,20 @@
+{
+  "recipe_id": "cat_eye_standard_v0",
+  "target_effect": "cat_eye",
+  "actions": [
+    {
+      "action_id": "A04",
+      "parameters": {
+        "direction_angle_deg": 10.0,
+        "extension_factor": 1.0
+      }
+    },
+    {
+      "action_id": "A02",
+      "parameters": {
+        "range_factor": 1.0,
+        "intensity_factor": 1.0
+      }
+    }
+  ]
+}

@@ -14,7 +14,7 @@ from typing import Any
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_GEOMETRY_PATH = PROJECT_ROOT / "data" / "output" / "face_geometry.json"
 DEFAULT_PROFILE_PATH = PROJECT_ROOT / "data" / "output" / "face_profile.json"
-FACE_PROFILE_VERSION = "0.1"
+FACE_PROFILE_VERSION = "0.3"
 
 
 class FaceProfileError(ValueError):
@@ -54,7 +54,7 @@ def build_face_profile(
     geometry: Mapping[str, Any],
     raw_geometry_source: str = "face_geometry.json",
 ) -> dict:
-    """Map validated continuous geometry values to Face Profile v0.1.
+    """Map validated continuous geometry values to Face Profile v0.3.
 
     This is deliberately an output-contract layer: it performs no landmark
     inference, geometry calculation, classification, or aesthetic judgement.
@@ -65,6 +65,11 @@ def build_face_profile(
         raise FaceProfileError("Face geometry 未包含成功的人脸检测结果。")
 
     number = lambda *path: _required_finite_number(geometry, tuple(path))
+    pose_normalization = geometry.get("pose_normalization")
+    pose_normalized = (
+        isinstance(pose_normalization, Mapping)
+        and pose_normalization.get("applied") is True
+    )
     profile = {
         "version": FACE_PROFILE_VERSION,
         "eye_geometry": {
@@ -80,10 +85,57 @@ def build_face_profile(
                 ),
             },
             "eye_spacing_ratio": number("geometry", "eye_spacing_ratio"),
+            "relative_eye_length": {
+                "left": number(
+                    "relative_eye_length", "relative_eye_length_left"
+                ),
+                "right": number(
+                    "relative_eye_length", "relative_eye_length_right"
+                ),
+                "mean": number(
+                    "relative_eye_length", "relative_eye_length_mean"
+                ),
+            },
+            "eye_width_height_ratio": {
+                "left": number(
+                    "eye_width_height_ratio",
+                    "eye_width_height_ratio_left",
+                ),
+                "right": number(
+                    "eye_width_height_ratio",
+                    "eye_width_height_ratio_right",
+                ),
+                "mean": number(
+                    "eye_width_height_ratio",
+                    "eye_width_height_ratio_mean",
+                ),
+            },
             "brow_eye_ratio": {
                 "left": number("brow_eye", "left_brow_eye_ratio"),
                 "right": number("brow_eye", "right_brow_eye_ratio"),
                 "mean": number("brow_eye", "mean_brow_eye_ratio"),
+            },
+            "lower_lid_space_ratio": {
+                "left": number(
+                    "lower_lid_space", "lower_lid_space_ratio_left"
+                ),
+                "right": number(
+                    "lower_lid_space", "lower_lid_space_ratio_right"
+                ),
+                "mean": number(
+                    "lower_lid_space", "lower_lid_space_ratio_mean"
+                ),
+            },
+            "inner_corner_angle": {
+                "left_deg": number(
+                    "inner_corner_angle", "inner_corner_angle_left_deg"
+                ),
+                "right_deg": number(
+                    "inner_corner_angle", "inner_corner_angle_right_deg"
+                ),
+                "mean_deg": number(
+                    "inner_corner_angle", "inner_corner_angle_mean_deg"
+                ),
             },
         },
         "symmetry": {
@@ -98,7 +150,7 @@ def build_face_profile(
         },
         "raw_geometry_reference": {"source": raw_geometry_source},
         "confidence": {
-            "pose_normalized": False,
+            "pose_normalized": pose_normalized,
             "expression_controlled": False,
         },
     }
@@ -158,7 +210,7 @@ def build_face_profile_file(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="从 face_geometry.json 构建 Face Profile v0.1。"
+        description="从 face_geometry.json 构建 Face Profile v0.3。"
     )
     parser.add_argument("--input", type=Path, default=DEFAULT_GEOMETRY_PATH)
     parser.add_argument("--output", type=Path, default=DEFAULT_PROFILE_PATH)

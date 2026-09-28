@@ -21,9 +21,8 @@ export default function Finish() {
   }
   return (
     <Page
-      eyebrow="THE ART OF BEING YOU"
+      eyebrow="05 / 完成"
       title="妆容完成"
-      description="灵感有了你的表达。记住这次的手法，下次更从容。"
     >
       <div className="finish-mark">
         <Check size={30} />
@@ -48,9 +47,7 @@ export default function Finish() {
             <h2>属于你的操作笔记</h2>
             {data.adapted ? (
               data.changes.map((x) => <p key={x}>{x}</p>)
-            ) : (
-              <p>未启用面部个性化</p>
-            )}
+            ) : null}
             <p>{data.productChange}</p>
             <p>
               产品能力缺口：{data.missing.join(" / ")}
@@ -67,9 +64,7 @@ export default function Finish() {
           <Link to="/">完成</Link>
         </Button>
       </div>
-      <p role="status">
-        {saved ? "教程已保存在此浏览器的本地存储中。" : saveError}
-      </p>
+      {saveError && <p role="alert">{saveError}</p>}
     </Page>
   );
 }

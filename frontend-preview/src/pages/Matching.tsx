@@ -7,21 +7,26 @@ import { getMatchResult } from "../services/matching";
 import { getTutorial } from "../services/tutorial";
 import { useService } from "../hooks/useService";
 export default function Matching() {
-  const { data, error } = useService(getMatchResult);
+  const { data, error, notice } = useService(getMatchResult);
   const { data: actions } = useService(getTutorial);
   const n = data?.filter((x) => x.status !== "missing").length || 0;
   return (
     <Page
-      eyebrow="02 / MATCH"
-      title={`你的产品可以完成 ${n} / ${data?.length || 5} 个步骤`}
-      description="不只匹配颜色，也理解质地和每一步真正需要的能力。"
+      eyebrow="02 / 产品匹配"
+      title="匹配结果"
     >
       <div className="coverage">
-        <span>教程覆盖率 / Tutorial Coverage</span>
-        <strong>{(n / 5) * 100}%</strong>
+        <span>教程覆盖率</span>
+        <strong>{Math.round((n / (data?.length || 1)) * 100)}%</strong>
       </div>
-      <Progress value={(n / 5) * 100} />
+      <Progress value={Math.round((n / (data?.length || 1)) * 100)} />
       {error && <p>{error}</p>}
+      {data?.some((m) => m.difference.includes("接口占位结果")) && (
+        <p role="status">
+          当前匹配结果为接口占位，尚未评估真实产品能力。
+        </p>
+      )}
+      {notice && <p role="status">{notice}</p>}
       <div className="matching-list">
         {data?.map((m, i) => (
           <details
@@ -32,7 +37,7 @@ export default function Matching() {
           >
             <summary>
               <span className="step-number">0{i + 1}</span>
-              <h2>{actions?.[i].name}</h2>
+              <h2>{actions?.find((a) => a.id === m.actionId)?.name}</h2>
               <Tag tone={m.status === "matched" ? "success" : "warning"}>
                 {m.status === "matched"
                   ? "已匹配"
@@ -45,7 +50,12 @@ export default function Matching() {
             <div className="match-detail">
               <div>
                 <h3>教程需要什么</h3>
-                <p>{actions?.[i].productRequirement}</p>
+                <p>
+                  {
+                    actions?.find((a) => a.id === m.actionId)
+                      ?.productRequirement
+                  }
+                </p>
                 <h3>最佳匹配产品</h3>
                 <p>{m.bestMatch?.productName || "暂无匹配产品"}</p>
                 <div className="checks">
@@ -58,10 +68,14 @@ export default function Matching() {
                 </div>
               </div>
               <div>
-                <span className="eyebrow">匹配分数 / MATCH SCORE</span>
+                <span className="eyebrow">匹配分数</span>
                 <strong className="score">
-                  {m.score}
-                  <small>/ 100</small>
+                  {m.provenance.score === "frontend-fallback"
+                    ? "未提供"
+                    : m.score}
+                  {m.provenance.score !== "frontend-fallback" && (
+                    <small>/ 100 · 演示</small>
+                  )}
                 </strong>
                 <h3>差异</h3>
                 <p>{m.difference}</p>
@@ -81,7 +95,6 @@ export default function Matching() {
         ))}
       </div>
       <div className="action-row">
-        <span>保留你的产品，调整实现方式。</span>
         <Button asChild>
           <Link to="/face-scan">生成我的教程 →</Link>
         </Button>

@@ -16,11 +16,7 @@ export default function MyTutorial() {
   const adapted = hasFaceProfile();
   const a = data?.[index];
   return (
-    <Page
-      eyebrow="03 / ADAPT"
-      title="你的专属教程"
-      description="同一份灵感，以适合你的方式完成。"
-    >
+    <Page eyebrow="03 / 专属教程" title="你的专属教程">
       <div className="included">
         <Tag>✓ 原教程</Tag>
         <Tag>✓ 我的产品</Tag>
@@ -29,11 +25,16 @@ export default function MyTutorial() {
         ) : (
           <>
             <span>尚未使用面部适配</span>
-            <Link to="/face-scan">扫描面部，进一步个性化 ↗</Link>
+            <Link className="text-link" to="/face-scan">
+              扫描面部，进一步个性化 ↗
+            </Link>
           </>
         )}
       </div>
       {error && <p>{error}</p>}
+      <p className="demo-footnote">
+        个性化动作为演示数据，面部数据不会自动生成适配。
+      </p>
       {a && (
         <>
           <StepNavigator
@@ -44,26 +45,20 @@ export default function MyTutorial() {
           <div className="tutorial-viewport">
             <div className="tutorial-heading">
               <span className="step-number">0{index + 1}</span>
-              <h2>{actions?.[index].name}</h2>
-              <span>
-                {index + 1} / {data!.length}
-              </span>
+              <h2>{actions?.find((x) => x.id === a.actionId)?.name}</h2>
             </div>
             <div className="comparison">
               <section>
-                <span className="eyebrow">REFERENCE</span>
                 <h3>参考教程</h3>
                 <p>{a.reference.where}</p>
                 <strong>{a.reference.direction}</strong>
                 <p>{a.reference.product}</p>
               </section>
               <section>
-                <span className="eyebrow">MADE FOR YOU</span>
                 <h3>为你调整</h3>
                 <p>{a.personalized.where}</p>
                 <strong>{a.personalized.direction}</strong>
                 <p>{a.product}</p>
-                {!adapted && <small>位置与方向沿用标准教程</small>}
               </section>
             </div>
             <dl className="instruction-fields">

@@ -13,7 +13,6 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7 }}
         >
-          <div className="eyebrow">MIRA BEAUTY STUDIO / 映己美妆</div>
           <h1>
             <span className="hero-opening">把喜欢的美妆教程，</span>
             <br />
@@ -22,9 +21,8 @@ export default function Home() {
             教程。
           </h1>
           <p>
-            AI 理解妆容、你的产品，
-            <br className="mobile-break" />
-            以及你的面部特征。
+            MIRA 拆解你喜欢的美妆教程，匹配已有产品，根据面部结构调整，
+            再生成可以逐步跟随的教程。
           </p>
           <Button asChild>
             <Link to="/tutorial">
@@ -32,37 +30,41 @@ export default function Home() {
               <ArrowRight size={18} />
             </Link>
           </Button>
-          <div className="hero-note">
-            <span className="tiny-line" />
-            让灵感落在你的脸上。
-          </div>
         </motion.div>
         <div className="hero-visual">
-          <span className="hero-image-index">01 — 灵感，映见自己</span>
           <div className="hero-image">
             <img src="/assets/hero/hero-makeup.jpg" alt="精致眼妆灵感" />
-            <div className="image-caption">
-              <span>THE ART OF BEING YOU</span>
-              <span>你的美，自有章法。</span>
-            </div>
           </div>
-          <span className="hero-side-note" aria-hidden="true">
-            MIRA / A BEAUTY OF YOUR OWN
-          </span>
         </div>
       </section>
-      <div className="journey">
-        {["Decode", "Match", "Adapt", "Coach"].map((x, i) => (
-          <div key={x}>
-            <span className="journey-number">0{i + 1}</span>
-            <span>
-              {["拆解灵感", "匹配已有", "为你调整", "陪你完成"][i]}
-              <small>{x}</small>
-            </span>
-            {i < 3 && <ArrowRight size={20} />}
-          </div>
-        ))}
-      </div>
+      <section className="home-process" aria-label="MIRA 使用流程">
+        <div className="journey">
+          {[
+            ["Decode", "拆解教程"],
+            ["Match", "匹配已有"],
+            ["Adapt", "为你调整"],
+            ["Coach", "陪你完成"],
+          ].map(([label, description], i) => (
+            <div key={label}>
+              <span className="journey-number">0{i + 1}</span>
+              <span>
+                <strong>{label}</strong>
+                <small>{description}</small>
+              </span>
+              {i < 3 && <ArrowRight size={20} />}
+            </div>
+          ))}
+        </div>
+        <p className="home-difference">
+          不是推荐相似妆容，而是把你喜欢的教程改写成你能真正完成的版本。
+        </p>
+        <aside className="home-support">
+          <span>MIRA 支持服务 · 演示</span>
+          <p>
+            若在教程上传、产品匹配或步骤理解中遇到问题，支持服务可协助说明。
+          </p>
+        </aside>
+      </section>
     </div>
   );
 }

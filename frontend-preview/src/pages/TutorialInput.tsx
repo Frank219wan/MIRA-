@@ -11,7 +11,6 @@ import {
 import { Page } from "../components/layout/Page";
 import { Button } from "../components/ui/button";
 import { ReferenceImage } from "../components/ui/ReferenceImage";
-import { Placeholder } from "../components/ui/primitives";
 import { saveTutorialInput } from "../services/tutorial";
 export default function TutorialInput() {
   const [mode, setMode] = useState("example");
@@ -36,9 +35,8 @@ export default function TutorialInput() {
   }
   return (
     <Page
-      eyebrow="01 / DECODE"
+      eyebrow="01 / 拆解教程"
       title="添加参考教程"
-      description="收藏的灵感，从这里变成可以跟着做的步骤。"
     >
       <div className="input-grid">
         <section>
@@ -73,17 +71,8 @@ export default function TutorialInput() {
                   caption="已有参考素材"
                 />
                 <div>
-                  <span className="eyebrow">精选示例 / 5 个步骤</span>
+                  <span className="eyebrow">5 个步骤</span>
                   <h2>柔棕日常眼妆</h2>
-                  <p>
-                    从哑光打底到中央提亮，
-                    <br />
-                    找到适合自己的层次。
-                  </p>
-                  <span className="example-selected">
-                    <Check size={13} />
-                    已选示例教程
-                  </span>
                 </div>
               </div>
             ) : mode === "link" ? (
@@ -95,7 +84,7 @@ export default function TutorialInput() {
                   placeholder="https://…"
                   type="url"
                 />
-                <small>当前仅保存链接，演示流程使用示例教程数据。</small>
+                <small>链接仅作记录，解析使用示例数据。</small>
               </label>
             ) : (
               <label
@@ -152,7 +141,6 @@ export default function TutorialInput() {
             </p>
           )}
           <div className="action-row">
-            <span>先理解教程，再为你调整。</span>
             <Button onClick={go}>
               开始拆解
               <ArrowRight size={17} />
@@ -160,9 +148,7 @@ export default function TutorialInput() {
           </div>
         </section>
         <aside className="guidelines">
-          <span className="eyebrow">A GOOD START</span>
-          <h2>让灵感更清晰</h2>
-          <h3>推荐输入规范</h3>
+          <h2>输入建议</h2>
           <ul>
             {[
               "单人教程",
@@ -177,10 +163,6 @@ export default function TutorialInput() {
               </li>
             ))}
           </ul>
-          <div className="example-placeholders">
-            <Placeholder label="清晰示例" />
-            <Placeholder label="不推荐示例" />
-          </div>
         </aside>
       </div>
     </Page>

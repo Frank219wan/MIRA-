@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "recipe_id": "recipe-main-eye-demo-v1",
+  "title": "Main eye tutorial demo",
+  "source_media_path": "data/input/main_eye_tutorial.mp4",
+  "action_units": [
+    {"step_index": 1, "area": "upper eyelid", "goal": "prime", "product_requirement": "eye primer", "tool": "fingertip", "motion": "pat", "intensity": "light", "target_result": "even base"},
+    {"step_index": 2, "area": "crease", "goal": "add depth", "product_requirement": "matte transition shadow", "tool": "blending brush", "motion": "blend", "intensity": "sheer", "target_result": "soft transition"},
+    {"step_index": 3, "area": "outer corner", "goal": "define", "product_requirement": "matte deep shadow", "tool": "detail brush", "motion": "press and blend", "intensity": "medium", "target_result": "defined outer corner"},
+    {"step_index": 4, "area": "center lid", "goal": "brighten", "product_requirement": "shimmer shadow", "tool": "flat shader brush", "motion": "pat", "intensity": "medium", "target_result": "reflective lid"},
+    {"step_index": 5, "area": "upper lash line", "goal": "define", "product_requirement": "eyeliner", "tool": "liner brush", "motion": "short stroke", "intensity": "light", "target_result": "clean lash-line definition"}
+  ]
+}

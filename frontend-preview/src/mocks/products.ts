@@ -3,7 +3,7 @@ export const products: Product[] = [
   {
     id: "palette-a",
     brand: "我的收藏",
-    productName: "Palette A · 日常大地色盘",
+    productName: "日常眼影盘 · 日常大地色盘",
     category: "眼部",
     productImage: null,
     shades: [

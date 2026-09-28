@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { ArrowUpRight, ShoppingBag } from "lucide-react";
+import { ArrowUpRight, House, ShoppingBag } from "lucide-react";
 export function Layout() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -16,20 +16,26 @@ export function Layout() {
             alt="MIRA 映己"
           />
         </Link>
-        <span className="header-note">你的美，自有章法。</span>
-        <Link className="kit-link" to="/beauty-kit">
-          <ShoppingBag size={16} />
-          我的美妆工具库
-          <ArrowUpRight size={15} />
-        </Link>
+        <nav className="header-actions" aria-label="页面导航">
+          {pathname !== "/" && (
+            <Link className="home-link" to="/">
+              <House size={16} />
+              返回首页
+            </Link>
+          )}
+          <Link className="kit-link" to="/beauty-kit">
+            <ShoppingBag size={16} />
+            我的美妆工具库
+            <ArrowUpRight size={15} />
+          </Link>
+        </nav>
       </header>
       <main key={pathname}>
         <Outlet />
       </main>
       <footer>
         <span>MIRA 映己</span>
-        <span>理解妆容，更理解你。</span>
-        <span>交互演示版 · 结果为示例</span>
+        <span>部分结果为演示数据</span>
       </footer>
     </>
   );

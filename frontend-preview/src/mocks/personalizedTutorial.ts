@@ -13,11 +13,11 @@ export function personalizedTutorial(adapted: boolean): PersonalizedAction[] {
       direction: adapted && i === 1 ? "向外上方 ↗15°" : a.motion,
     },
     product: [
-      "Palette A #01",
-      "Palette A #04",
-      "Palette A #03",
-      "Palette A #02 · 哑光替代",
-      "Palette A #04",
+      "日常眼影盘 #01",
+      "日常眼影盘 #04",
+      "日常眼影盘 #03",
+      "日常眼影盘 #02 · 哑光替代",
+      "日常眼影盘 #04",
     ][i],
     goal: a.goal,
     whyChanged:

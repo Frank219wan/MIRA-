@@ -7,19 +7,21 @@ import { AddProduct } from "../components/beauty-kit/AddProduct";
 import { getBeautyKit, getProductCategories } from "../services/products";
 import { useService } from "../hooks/useService";
 export default function BeautyKit() {
-  const { data, error } = useService(getBeautyKit);
+  const { data, error, notice } = useService(getBeautyKit);
   const { data: categories } = useService(getProductCategories);
   return (
     <Page
-      eyebrow="02 / MATCH"
+      eyebrow="02 / 产品匹配"
       title="我的美妆工具库"
-      description="从你已经拥有的开始，发现每一种产品的更多可能。"
     >
       <div className="action-row">
-        <span>示例工具库 / 按产品类别整理</span>
         <AddProduct />
       </div>
       {error && <p>{error}</p>}
+      {notice && <p role="status">{notice}</p>}
+      <p className="demo-footnote">
+        品牌、色号和质地由本地资料补充。
+      </p>
       {categories?.map((c) => (
         <details className="category" key={c} open={c === "眼部"}>
           <summary>
@@ -63,7 +65,6 @@ export default function BeautyKit() {
         </details>
       ))}
       <div className="action-row">
-        <span>先用现有产品，完成喜欢的妆容。</span>
         <Button asChild>
           <Link to="/matching">匹配当前教程 →</Link>
         </Button>

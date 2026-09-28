@@ -37,8 +37,23 @@ SUMMARY_FIELDS = (
     "eye_tail_angle_right",
     "mean_eye_tail_angle",
     "eye_spacing_ratio",
+    "relative_eye_length_left",
+    "relative_eye_length_right",
+    "relative_eye_length_mean",
+    "eye_width_height_ratio_left",
+    "eye_width_height_ratio_right",
+    "eye_width_height_ratio_mean",
     "left_brow_eye_ratio",
     "right_brow_eye_ratio",
+    "lower_lid_space_px_left",
+    "lower_lid_space_px_right",
+    "lower_lid_space_px_mean",
+    "lower_lid_space_ratio_left",
+    "lower_lid_space_ratio_right",
+    "lower_lid_space_ratio_mean",
+    "inner_corner_angle_left_deg",
+    "inner_corner_angle_right_deg",
+    "inner_corner_angle_mean_deg",
     "eye_width_asymmetry",
     "eye_height_asymmetry",
     "eye_aspect_ratio_asymmetry",
@@ -60,7 +75,11 @@ def discover_jpg_images(input_dir: Path) -> list[Path]:
 def _success_row(filename: str, payload: Mapping) -> dict:
     tail = payload["eye_tail_angle"]
     geometry = payload["geometry"]
+    relative_eye_length = payload["relative_eye_length"]
+    eye_width_height_ratio = payload["eye_width_height_ratio"]
     brow_eye = payload["brow_eye"]
+    lower_lid_space = payload["lower_lid_space"]
+    inner_corner_angle = payload["inner_corner_angle"]
     asymmetry = payload["asymmetry"]
     return {
         "filename": filename,
@@ -68,8 +87,53 @@ def _success_row(filename: str, payload: Mapping) -> dict:
         "eye_tail_angle_right": tail["right_eye_tail_angle_deg"],
         "mean_eye_tail_angle": tail["mean_eye_tail_angle_deg"],
         "eye_spacing_ratio": geometry["eye_spacing_ratio"],
+        "relative_eye_length_left": relative_eye_length[
+            "relative_eye_length_left"
+        ],
+        "relative_eye_length_right": relative_eye_length[
+            "relative_eye_length_right"
+        ],
+        "relative_eye_length_mean": relative_eye_length[
+            "relative_eye_length_mean"
+        ],
+        "eye_width_height_ratio_left": eye_width_height_ratio[
+            "eye_width_height_ratio_left"
+        ],
+        "eye_width_height_ratio_right": eye_width_height_ratio[
+            "eye_width_height_ratio_right"
+        ],
+        "eye_width_height_ratio_mean": eye_width_height_ratio[
+            "eye_width_height_ratio_mean"
+        ],
         "left_brow_eye_ratio": brow_eye["left_brow_eye_ratio"],
         "right_brow_eye_ratio": brow_eye["right_brow_eye_ratio"],
+        "lower_lid_space_px_left": lower_lid_space[
+            "lower_lid_space_px_left"
+        ],
+        "lower_lid_space_px_right": lower_lid_space[
+            "lower_lid_space_px_right"
+        ],
+        "lower_lid_space_px_mean": lower_lid_space[
+            "lower_lid_space_px_mean"
+        ],
+        "lower_lid_space_ratio_left": lower_lid_space[
+            "lower_lid_space_ratio_left"
+        ],
+        "lower_lid_space_ratio_right": lower_lid_space[
+            "lower_lid_space_ratio_right"
+        ],
+        "lower_lid_space_ratio_mean": lower_lid_space[
+            "lower_lid_space_ratio_mean"
+        ],
+        "inner_corner_angle_left_deg": inner_corner_angle[
+            "inner_corner_angle_left_deg"
+        ],
+        "inner_corner_angle_right_deg": inner_corner_angle[
+            "inner_corner_angle_right_deg"
+        ],
+        "inner_corner_angle_mean_deg": inner_corner_angle[
+            "inner_corner_angle_mean_deg"
+        ],
         "eye_width_asymmetry": asymmetry["eye_width_asymmetry"],
         "eye_height_asymmetry": asymmetry["eye_height_asymmetry"],
         "eye_aspect_ratio_asymmetry": asymmetry[

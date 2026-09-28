@@ -50,8 +50,7 @@ export default function LiveCoach() {
       {a && (
         <>
           <div className="coach-top">
-            <span className="eyebrow">04 / COACH</span>
-            <span>跟着节奏，慢慢来。</span>
+            <span className="eyebrow">04 / 实时指导</span>
             <Tag>
               {adapted ? "已启用面部适配" : "标准教程区域 · 未使用面部适配"}
             </Tag>
@@ -66,8 +65,8 @@ export default function LiveCoach() {
               </span>
             </FaceViewport>
             <aside className="coach-instructions">
-              <span className="eyebrow">STEP 0{index + 1} / 05</span>
-              <h1>{actions?.[index].name}</h1>
+              <span className="eyebrow">步骤 0{index + 1} / 05</span>
+              <h1>{actions?.[index]?.name}</h1>
               <Progress value={((index + 1) / data!.length) * 100} />
               <h3>当前产品</h3>
               <p>{a.product}</p>

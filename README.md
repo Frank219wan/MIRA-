@@ -1,6 +1,8 @@
-# Beauty Face Engine — Week 1 CV
+# MIRA Vision Engine — Face Profile v0.3 + Personalization Engine v0
 
-一个基于 Python、OpenCV 和 **MediaPipe Tasks API Face Landmarker** 的人脸关键点与连续眼部几何原型。当前版本处理单张正脸自拍，检测最多一张人脸，并输出眼部/眉眼测量验证图和结构化几何 JSON。
+一个基于 Python、OpenCV 和 **MediaPipe Tasks API Face Landmarker** 的人脸关键点与连续眼部几何原型。当前 CV 版本处理单张正脸自拍，检测最多一张人脸，并输出眼部/眉眼测量验证图、结构化几何 JSON 和 Face Profile v0.3。v0.3 保留 v0.2 的 R01–R10 连续几何输入契约，并增加二维 face-roll normalization。
+
+Personalization Engine v0 在 Face Profile v0.3 之后独立运行。第一阶段以确定性数值规则为同一份 Cat Eye Standard Makeup Action 调整 A04 eyeliner 与 A02 lower eyelid 参数，只启用 R01–R06。CV pipeline 不依赖个性化模块；个性化模块也不运行 landmark inference。两个模块都不生成眼型分类或美学标签。
 
 ## 项目结构
 
@@ -11,14 +13,26 @@ beauty-face-engine/
 │   ├── face_landmarker.py        # MediaPipe 推理与通用图片 I/O
 │   ├── eye_landmarks.py          # 眼部点提取、debug 图和 JSON pipeline
 │   ├── face_geometry.py          # 与 MediaPipe 解耦的纯二维几何
+│   ├── pose_normalization.py     # 二维 face-roll 估计与坐标旋转
 │   ├── face_profile.py           # 面向个性化引擎的稳定输出契约
-│   └── batch_analyze.py          # 多图片分析与 CSV 汇总
+│   ├── batch_analyze.py          # 多图片分析与 CSV 汇总
+│   ├── repeatability_analysis.py # 同一人物多照片的重复性统计
+│   ├── makeup_rules.py           # R01–R10 registry 与连续规则映射
+│   ├── personalization_engine.py # 输入校验、规则执行与输出组装
+│   └── new_input_validation.py   # 新真人输入的连续个体差异验证
 ├── tests/
 │   ├── test_face_landmarker.py
 │   ├── test_eye_landmarks.py
 │   ├── test_face_geometry.py
+│   ├── test_pose_normalization.py
 │   ├── test_face_profile.py
-│   └── test_batch_analyze.py
+│   ├── test_batch_analyze.py
+│   ├── test_repeatability_analysis.py
+│   ├── test_makeup_rules.py
+│   ├── test_personalization_engine.py
+│   └── test_new_input_validation.py
+├── examples/
+│   └── cat_eye_standard_recipe.json # A04 + A02 demo baseline
 ├── data/
 │   ├── input/
 │   │   └── selfie.jpg            # 需要提供
@@ -28,7 +42,11 @@ beauty-face-engine/
 │       ├── face_geometry.json        # 单图片连续眼部几何输出
 │       ├── face_profile.json         # 个性化算法输入契约
 │       ├── face_summary.csv          # 多图片关键指标汇总
-│       └── batch/                    # 每张图片的 JSON/debug 输出
+│       ├── repeatability_report.json      # 保留的 v0.2 baseline
+│       ├── repeatability_report_v0.3.json # v0.3 重复性与 before/after
+│       ├── repeatability_report_v0.3.csv  # v0.3 汇总与逐图原始值
+│       ├── batch/                    # 每张图片的 JSON/debug 输出
+│       └── repeatability_v0.3/       # v0.3 逐图 JSON/profile/debug
 ├── models/
 │   └── face_landmarker.task      # MediaPipe 模型（本工作区已下载）
 ├── requirements.txt
@@ -101,7 +119,7 @@ python src/eye_landmarks.py
 - 模型：`models/face_landmarker.task`
 - debug 图：`data/output/eye_landmarks_result.jpg`
 - JSON：`data/output/face_geometry.json`、`data/output/face_profile.json`
-- 终端打印眼宽、眼高、眼距、眼尾角、眉眼距离和左右差异
+- 终端打印眼宽、眼高、眼距、眼尾角、相对眼长、眼宽高比、下眼睑空间、内眼角角度、眉眼距离和左右差异
 - 未检测到人脸、模型缺失或图片不可读时，会打印明确错误并以非零状态退出
 
 批量分析 `data/input/*.jpg`：
@@ -114,6 +132,33 @@ python src/batch_analyze.py
 和对应 debug 图，汇总指标写入 `data/output/face_summary.csv`。单张图片检测失败时，
 该 JSON 会记录 `face_detected: false` 和错误信息，CSV 对应行的指标留空并填写
 `error`；其余图片仍会继续处理。
+
+同一人物多照片重复性分析会优先发现 `data/input/repeat_*.jpg`，扩展名匹配不区分
+大小写：
+
+```bash
+python src/repeatability_analysis.py
+```
+
+也可以手动指定至少两张图片：
+
+```bash
+python src/repeatability_analysis.py --images data/input/a.jpg data/input/b.jpg
+```
+
+工具逐张调用现有 Face Landmarker → Face Geometry → Face Profile v0.3 pipeline，
+不会重新实现或修改几何公式。它分析 `eye_tail_angle.mean`、
+`relative_eye_length.mean`、`brow_eye_ratio.mean`、
+`lower_lid_space_ratio.mean` 和 `inner_corner_angle.mean_deg`，输出每个指标的
+`n/mean/std/min/max/range/cv`。`std` 使用样本标准差（`n-1`），
+`cv = std / abs(mean)`；当绝对 mean 不大于 `1e-9` 时，CV 写为 JSON `null` 和
+CSV 空值。每张照片的原始值、检测状态和 debug 路径都会保留，超过 2 个样本标准差
+的值只标记为人工检查，不会自动删除。
+
+默认读取 `data/output/repeatability_report.json` 作为 v0.2 baseline，并将
+`before_std/after_std`、`before_cv/after_cv` 写入
+`data/output/repeatability_report_v0.3.json`。如果 baseline 不存在，v0.3 测量仍会
+完成，并在报告中将 comparison 标记为 unavailable。
 
 如果保存下来的自拍已经被水平镜像，必须显式传入：
 
@@ -141,15 +186,273 @@ python src/eye_landmarks.py --mirrored-input
 
 Eye Height 会受到眨眼影响；当前阶段只计算，不做补偿或分类。
 
+### Face Profile v0.2 引入、v0.3 保留的连续特征
+
+MediaPipe landmark 语义以官方 Tasks API 的
+[FaceLandmarksConnections](https://github.com/google-ai-edge/mediapipe/blob/master/mediapipe/tasks/web/vision/face_landmarker/face_landmarks_connections.ts)
+和同文件中的官方 face tessellation 为准。
+
+#### Relative Eye Length
+
+face width 使用官方 `FACE_LANDMARKS_FACE_OVAL` 中的两个侧向轮廓点 `234` 和
+`454`。官方连接分别包含 `93–234–127` 与 `356–454–323`，因此这里仅将两点解释为
+左右侧向 face-oval reference，不赋予颧骨或其他解剖标签。
+
+- `face_width_px = distance(landmark_234, landmark_454)`
+- `relative_eye_length_left = left_eye_width_px / face_width_px`
+- `relative_eye_length_right = right_eye_width_px / face_width_px`
+- `relative_eye_length_mean = mean(left, right)`
+- `eye_width_height_ratio = eye_width_px / eye_height_px`
+
+`relative_eye_length` 是 R03/R04 的主指标。它消除整体等比例缩放的直接影响，但仍会
+受 yaw、透视、镜头畸变和侧向轮廓定位影响。`eye_width_height_ratio` 是辅助指标，且会
+随眨眼、眯眼和表情变化。
+
+#### Lower Lid Space Ratio
+
+每只眼使用三个官方 tessellation 直连边。人物左眼为
+`373–254, 374–253, 380–252`；人物右眼为
+`144–24, 145–23, 153–22`。每组第一点属于官方 lower-eye contour，第二点是与其
+直接相连的下方网格 reference。
+
+- `lower_lid_space_px = mean(distance(lower_lid_i, infraorbital_i))`
+- `lower_lid_space_ratio = lower_lid_space_px / same_side_eye_width_px`
+
+JSON 同时保留三个 segment pixel distance、平均 pixel measurement 和 normalized
+ratio。该指标是二维 lower-lid-to-infraorbital mesh gap，会受 pitch、yaw、眯眼、笑容、
+下眼睑张力、遮挡和 landmark 抖动影响；它不是解剖深度或真实面积。
+
+#### Inner Corner Angle
+
+角度以 inner corner 为顶点，使用官方眼轮廓中与顶点直接相邻的 upper-inner 和
+lower-inner 点：
+
+- 人物左眼：vertex `362`，upper-inner `398`，lower-inner `382`
+- 人物右眼：vertex `133`，upper-inner `173`，lower-inner `155`
+- `angle = acos(dot(v_upper, v_lower) / (|v_upper| * |v_lower|))`
+
+输出范围为有限的 `(0, 180]` 度连续值。它会受分辨率、眼睑开合、内眼角遮挡、妆容、
+表情和 head pose 影响，不生成 round、sharp 或其他标签。
+
 眉毛参考使用 MediaPipe Tasks 官方连接定义中靠眼睛一侧的五点轮廓：人物左眉
 `276, 283, 282, 295, 285`，人物右眉 `46, 53, 52, 65, 55`。眉眼距离定义为
 这五点质心到 inner–outer 眼轴所在直线的垂直距离，因此比单点和原始 y 差更能抵抗
 单点抖动及轻微画面内旋转；对应 ratio 再除以同侧眼宽。
 
+在 Face Profile v0.2/v0.3 中，`brow_eye_ratio` 的规则语义是 **Upper Blending Space
+Proxy**：它表示眉眼之间的相对空间，不是 visible upper eyelid area，也不能直接用于
+判断 hooded eye。v0.3 不修改该指标的既有公式。
+
 - eye tail angle = `degrees(atan2(inner_y - outer_y, abs(outer_x - inner_x)))`
 - positive angle = 人物眼尾高于内眼角（图像坐标 y 轴向下，故对 y 差取反）
 - size asymmetry = `abs(left - right) / mean(left, right)`
 - angle difference = `abs(left_angle - right_angle)`
+
+## Pose normalization
+
+Face Profile v0.3 在 pixel coordinate 中进行轻量级二维 roll normalization。每只眼的
+center 使用既有 inner/outer corner 的中点：人物左眼 `362, 263`，人物右眼
+`133, 33`。为了同时兼容镜像和非镜像输入，两个 eye center 按图像 x 坐标排序为
+screen-left 与 screen-right：
+
+```text
+roll_angle = atan2(y_screen_right - y_screen_left,
+                   x_screen_right - x_screen_left)
+face_center = mean(left_eye_center, right_eye_center)
+normalized_point = rotate(original_point, face_center, -roll_angle)
+```
+
+所有已选 geometry landmarks 使用同一旋转矩阵。既有 `normalized` 和 `pixel` 坐标保持
+原样，每个 landmark 另外保存 `pose_normalized` 与 `pose_normalized_pixel`。既有
+feature 字段改为消费 roll-normalized 坐标，但 landmark index、公式目标与 R01–R10
+字段路径不变。`face_geometry.json` 保存 `pose_normalization.roll_angle_deg`、旋转中心、
+参考 index 和 `applied`；Face Profile 的 `confidence.pose_normalized` 与 `applied`
+保持一致。旧 geometry JSON 缺少 normalization metadata 时仍可构建 v0.3 profile，
+此时该 confidence 为 `false`。
+
+当前 normalization 只补偿图像平面内的 roll。yaw、pitch、镜头透视、表情和 landmark
+定位变化仍可能造成 feature 波动。左右眼 center 的真实垂直不对称也可能被 roll 估计
+吸收，因此 roll angle 是二维技术校正量，不是三维 head-pose measurement。
+
+## Personalization Engine v0
+
+### 架构与输入契约
+
+`makeup_rules.py` 保存规则 registry、校准参数和不依赖 I/O 的纯数值函数；
+`personalization_engine.py` 负责 Face Profile/action schema 校验、选择规则、深拷贝原始参数、
+组装结果和严格 JSON 输出。规则不调用 CV，也不让 LLM 生成数值。
+
+单 action 输入为：
+
+```json
+{
+  "face_profile": {
+    "version": "0.3",
+    "eye_geometry": {
+      "eye_tail_angle": {"mean": 10.386},
+      "relative_eye_length": {"mean": 0.2145},
+      "lower_lid_space_ratio": {"mean": 0.1379}
+    }
+  },
+  "standard_makeup_action": {
+    "action_id": "A04",
+    "parameters": {
+      "direction_angle_deg": 10.0,
+      "extension_factor": 1.0
+    }
+  },
+  "target_effect": "cat_eye"
+}
+```
+
+运行：
+
+```bash
+python src/personalization_engine.py \
+  --input data/input/personalization_request.json \
+  --output data/output/personalized_action.json
+```
+
+输出保留输入 action 的完整参数副本，并附带规则审计信息：
+
+```json
+{
+  "action_id": "A04",
+  "original_parameters": {
+    "direction_angle_deg": 10.0,
+    "extension_factor": 1.0
+  },
+  "personalized_parameters": {
+    "direction_angle_deg": 11.8456,
+    "extension_factor": 0.972333
+  },
+  "applied_rules": ["R01", "R02", "R03", "R04"],
+  "adjustments": [
+    {
+      "rule_ids": ["R01", "R02"],
+      "feature_path": "eye_geometry.eye_tail_angle.mean",
+      "feature_value": 10.386,
+      "parameter": "direction_angle_deg",
+      "operation": "add",
+      "adjustment_value": 1.8456,
+      "original_value": 10.0,
+      "personalized_value": 11.8456
+    },
+    {
+      "rule_ids": ["R03", "R04"],
+      "feature_path": "eye_geometry.relative_eye_length.mean",
+      "feature_value": 0.2145,
+      "parameter": "extension_factor",
+      "operation": "multiply",
+      "adjustment_value": 0.972333,
+      "original_value": 1.0,
+      "personalized_value": 0.972333
+    }
+  ]
+}
+```
+
+`personalize_recipe()` 复用同一个单 action executor，可一次处理
+`examples/cat_eye_standard_recipe.json` 中的 A04 和 A02；每个 action 仍使用上面的输出 schema。
+
+### R01–R06 连续规则
+
+所有规则采用同一个 clamped linear mapping：
+
+```text
+t = clamp((feature - feature_low) / (feature_high - feature_low), 0, 1)
+mapped = output_at_low + t * (output_at_high - output_at_low)
+```
+
+| Rules | Face Profile 输入 | Action 参数 | v0 provisional calibration |
+|---|---|---|---|
+| R01/R02 | `eye_tail_angle.mean` | A04 `direction_angle_deg` | 0°→+6° correction，15°→+0° correction；加到 standard action |
+| R03/R04 | `relative_eye_length.mean` | A04 `extension_factor` | 0.17→×1.18，0.23→×0.90 |
+| R05 | `lower_lid_space_ratio.mean` | A02 `range_factor` | 0.12→×0.80，0.18→×1.10 |
+| R06 | `lower_lid_space_ratio.mean` | A02 `intensity_factor` | 0.12→×0.85，0.18→×1.05 |
+
+区间外只钳制到端点，不外推。anchor 是待产品验证的工程校准参数，不是分类 threshold，
+也不表示“标准脸”。R03/R04 只消费 normalized ratio，不使用 pixel length。
+
+### Rule registry 范围
+
+| Rules | Status | 当前执行 |
+|---|---|---|
+| R01–R06 | `active` | 是 |
+| R07/R08 | `validation_only` | 否 |
+| R09/R10 | `candidate` | 否 |
+
+R07–R10 只在 registry 中登记，Personalization Engine v0 不会把它们加入
+`applied_rules`，也不会修改其目标参数。
+
+### 三人 Demo Validation
+
+使用现有真人输入 `face_01.jpg`、`face_03.jpg`、`face_06.jpg`，分别通过原有 v0.3
+pipeline 生成 Person A/B/C profile，再应用同一份
+`cat_eye_standard_recipe.json`（A04 direction `10.0°`、extension `1.0`；A02 range
+`1.0`、intensity `1.0`）。三张图片都成功检测到一张脸。
+
+| Person | tail angle mean | relative eye length | lower-lid ratio | direction | extension | lower-lid range | lower-lid intensity | Applied rules |
+|---|---:|---:|---:|---:|---:|---:|---:|---|
+| A | 10.386° | 0.2145 | 0.1379 | 11.8456° | 0.972333 | 0.8895 | 0.909667 | R01–R06 |
+| B | 2.331° | 0.2156 | 0.1371 | 15.0676° | 0.9672 | 0.8855 | 0.907 | R01–R06 |
+| C | 11.635° | 0.1898 | 0.1697 | 11.346° | 1.0876 | 1.0485 | 1.015667 | R01–R06 |
+
+完整审计输出写入 `data/output/personalization_demo/personalization_demo.json`，扁平对比
+写入同目录的 `personalization_comparison.csv`。输出目录默认被 `.gitignore` 忽略，避免
+提交真人衍生数据。
+
+## 新真人输入连续差异验证
+
+`new_input_validation.py` 优先发现文件名大小写不敏感的 `new_*.jpg/JPG/png`。没有按此
+命名时，可以显式传入图片；两种方式都会逐张复用原有 Face Landmarker → Geometry →
+Face Profile v0.3 pipeline，再把成功 profile 送入现有 Personalization Engine v0：
+
+```bash
+python src/new_input_validation.py
+
+python src/new_input_validation.py --images \
+  data/input/person_a.jpg data/input/person_b.png
+```
+
+固定输出根目录为 `data/output/new_input_validation/`：
+
+- `individual_profiles/`：逐图 geometry、Face Profile 和 debug 图；
+- `individual_personalization/`：逐人的完整 recipe 个性化结果；
+- `new_input_face_comparison.csv`：每行一个输入，包含五个连续 Face Profile 指标；
+- `new_input_personalization_comparison.csv`：每行一个输入，包含 A04/A02 参数、rule group
+  和每个参数相对 standard recipe 的 `increase/decrease/unchanged`；
+- `new_input_validation.json`：检测计数、逐人结果、feature min/max/range，以及逐对绝对差。
+
+检测失败的图片仍保留一行和明确错误，指标保持空值；不会从局部眼图补算、删除样本或
+人为放大差异。该报告只验证 continuous personalization sensitivity，不创建 eye type
+label，也不把临时 calibration 解释为美妆科学结论。
+
+## Rule Calibration Dataset（Demo 样本）
+
+`rule_calibration_dataset.py` 精确检查 `data/input/face_01`–`face_11`，按实际文件扩展名
+匹配 JPG/JPEG/PNG；逐张复用既有 Face Profile v0.3 pipeline，仅整理成功样本的连续
+指标和当前 RuleCalibration anchor 覆盖，不修改 CV 或规则公式：
+
+```bash
+python src/rule_calibration_dataset.py
+```
+
+输出到 `data/output/rule_calibration_dataset/`：
+
+- `01_face_profile_for_rules.csv`：每个编号一行，包含检测/pose 状态、五项连续特征及
+  R01–R06 输入别名；失败行不补值。R07–R10 指标仅作 reference。
+- `02_rule_feature_statistics.csv`：成功样本三项核心特征的 n、mean、median、样本
+  standard deviation、min/max/range、P25/P75。分位数采用排序后 `(n-1)×p` 位置的
+  线性插值。
+- `03_current_calibration_coverage.csv`：读取当前 `RuleCalibration` 的 input/output
+  anchors，分开记录端点附近计数与严格越界 clamp 计数。端点附近定义为在区间内、距
+  low 或 high 不超过 input span 的 10%；等于端点不算越界。`output_semantics` 区分
+  角度加法修正和参数乘数。
+- `rule_calibration_dataset.json`：以上内容的严格 JSON，并记录统计方法与适用范围。
+- `individual_profiles/`：逐张重新生成的 geometry、Face Profile、debug 图。
+
+这些统计仅描述当前 Demo 样本分布，不代表人口分布、科学阈值或标准眼型边界。
 
 ## 测试
 
@@ -162,8 +465,21 @@ python -m unittest discover -s tests -v
 - `FaceLandmarkerDetector`：负责配置和调用 MediaPipe Tasks Face Landmarker。
 - `eye_landmarks.py`：复制 8 个眼部点和两个五点眉毛轮廓，不修改原始 MediaPipe 结果。
 - `face_geometry.py`：只接收二维点，使用 Euclidean distance，不依赖 MediaPipe/OpenCV。
+- `makeup_rules.py`：保存显式、可测试的 R01–R06 连续映射和 R07–R10 状态。
+- `personalization_engine.py`：只消费 Face Profile v0.3 和 Standard Makeup Action，保留
+  `original_parameters` 并输出有限 JSON 数值。
 
-当前版本只输出连续几何量，不包含眼型/眼距/眼尾分类、Face Profile 标签、AR、美妆推荐、个性化规则或 LLM。
+当前版本不包含眼型/眼距/眼尾分类、Face Profile 标签、美妆分类 threshold、AR，
+也不使用 LLM 决定个性化数值。Personalization Engine v0 仅支持 `cat_eye` 下的 A04/A02
+和 R01–R06。
+
+## Week 1 后端更新
+
+- 后端以 FastAPI + SQLite 提供教程解析、Recipe 查询、Beauty Kit、Matching、CV Adaptation 与 Explanation 的稳定接口。
+- 教程解析器当前使用离线 `MockTutorialVisionProvider`，将视频/帧目录引用转换为经校验的五步骤 `StandardRecipe`；真实视频理解 Provider 尚未接入。
+- CV 的 `Face Profile v0.1` 仍由 `src/face_profile.py` 维护；后端只校验并原样消费，不增加脸型或美学判断。
+- Matching、CV Adaptation 与 Explanation 当前均为结构性占位，不包含匹配算法、个性化或外部 LLM 调用。
+- 详细的本地运行、接口、调试、Replay 与限制说明见 [Week 1 后端文档](docs/week1_backend.md)。
 
 ## Pipeline Architecture
 
@@ -178,18 +494,32 @@ Face Geometry
   ↓
 Face Profile
   ↓
-Personalization Engine (Next Stage)
+Personalization Engine v0 (R01–R06)
 ```
 
-`Face Profile` 是几何层与下一阶段之间的稳定数据契约，只重新组织已计算的连续参数，
-不重复几何计算，也不生成眼型、眼距或美学分类。
+`Face Profile` 是几何层与个性化阶段之间的稳定数据契约，只重新组织已计算的连续参数。
+Personalization Engine 消费该契约，不重复几何计算，也不生成眼型、眼距或美学分类。
+
+## R01–R10 Rule Mapping
+
+- R01/R02：`eye_tail_angle` → eyeliner direction
+- R03/R04：`relative_eye_length` → eyeliner extension
+- R05/R06：`lower_lid_space_ratio` → lower lashline range
+- R07/R08：`inner_corner_angle` → inner-corner makeup action（`validation_only`）
+- R09/R10：`brow_eye_ratio` → upper blending height（`candidate`）
+
+以上 mapping 只声明规则所消费的连续输入，不在 Vision Engine 中定义分类阈值或生成
+美学结论。
 
 ## Current Limitations
 
-- 尚未进行 head pose normalization。
-- Eye tail angle 可能受到 yaw、pitch 和 roll 影响。
+- 当前只进行二维 roll normalization，尚未补偿 yaw/pitch 三维透视。
+- Eye tail angle 仍可能受到 yaw、pitch、眼睑开合和眼角 landmark 抖动影响。
 - Eye height 可能受到眨眼和其他面部表情影响。
 - Brow landmarks 可能受到头发、妆容或其他遮挡影响。
+- Relative eye length 仍会受到 yaw、透视和侧向 face-oval landmark 位置影响。
+- Lower lid space ratio 会受到 pitch、眯眼、笑容和下眼睑表情影响。
+- Inner corner angle 会受到眼睑开合、内眼角遮挡、分辨率和 head pose 影响。
 
 ## Output Files
 
@@ -197,3 +527,10 @@ Personalization Engine (Next Stage)
 - `eye_landmarks_result.jpg`：眼部关键点、眼轴和眉眼测量 debug 图。
 - `face_geometry.json`：包含 landmarks 坐标与测量过程的底层几何数据。
 - `face_profile.json`：供后续 Personalization Engine 使用的连续参数契约。
+- `repeatability_report.json`：保留的 Face Profile v0.2 重复性 baseline。
+- `repeatability_report_v0.3.json`：v0.3 统计、逐图原始值及 v0.2 对比。
+- `repeatability_report_v0.3.csv`：每个核心指标一行，附带全部输入照片的原始值列。
+- `repeatability_v0.3/`：每张样本的 geometry、Face Profile v0.3 和 debug 图。
+- `personalization_demo/personalization_demo.json`：三位真人 profile 使用同一 recipe 的完整结果。
+- `personalization_demo/personalization_comparison.csv`：三人核心输入、输出参数和 applied rules 对比。
+- `new_input_validation/`：新真人输入的逐人 profile、个性化输出和横向比较报告。

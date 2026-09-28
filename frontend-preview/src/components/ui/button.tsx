@@ -7,6 +7,7 @@ const variants = cva("button", {
     variant: {
       default: "button-dark",
       outline: "button-outline",
+      tertiary: "button-tertiary",
       ghost: "button-ghost",
     },
   },
