@@ -26,7 +26,7 @@ class WeekOneAPITests(unittest.TestCase):
         self.client = TestClient(create_app(database_url=database_url, debug_runs=True))
         self.recipe = fixture("standard_recipe_v1.json")
         self.beauty_kit = fixture("beauty_kit_v1.json")
-        self.face_profile = fixture("face_profile_v0_1.json")
+        self.face_profile = fixture("face_profile_v0_3.json")
 
     def tearDown(self):
         self.client.close()

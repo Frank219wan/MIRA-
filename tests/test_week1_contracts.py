@@ -47,13 +47,18 @@ class WeekOneContractTests(unittest.TestCase):
             StandardRecipe.model_validate(payload)
 
     def test_cv_adaptation_accepts_actual_cv_face_profile_shape(self):
-        face_profile = json.loads((FIXTURES / "face_profile_v0_1.json").read_text())
+        face_profile = json.loads((FIXTURES / "face_profile_v0_3.json").read_text())
         envelope = CVAdaptation(recipe_id="recipe-main-eye-demo-v1", face_profile=face_profile)
         self.assertEqual(envelope.face_profile, face_profile)
 
     def test_cv_adaptation_rejects_unsupported_face_profile_version(self):
-        face_profile = json.loads((FIXTURES / "face_profile_v0_1.json").read_text())
+        face_profile = json.loads((FIXTURES / "face_profile_v0_3.json").read_text())
         face_profile["version"] = "99.0"
+        with self.assertRaisesRegex(ValidationError, "Unsupported Face Profile version"):
+            CVAdaptation(recipe_id="recipe-main-eye-demo-v1", face_profile=face_profile)
+
+    def test_cv_adaptation_rejects_legacy_face_profile_version(self):
+        face_profile = json.loads((FIXTURES / "face_profile_v0_1.json").read_text())
         with self.assertRaisesRegex(ValidationError, "Unsupported Face Profile version"):
             CVAdaptation(recipe_id="recipe-main-eye-demo-v1", face_profile=face_profile)
 

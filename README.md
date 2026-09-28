@@ -19,7 +19,13 @@ beauty-face-engine/
 │   ├── repeatability_analysis.py # 同一人物多照片的重复性统计
 │   ├── makeup_rules.py           # R01–R10 registry 与连续规则映射
 │   ├── personalization_engine.py # 输入校验、规则执行与输出组装
-│   └── new_input_validation.py   # 新真人输入的连续个体差异验证
+│   ├── new_input_validation.py   # 新真人输入的连续个体差异验证
+│   ├── reference_action_geometry.py  # 局部教程标注点的纯几何
+│   ├── reference_action_annotator.py # 局部教程人工点击及 debug overlay
+│   ├── reference_action_adapter.py   # 参考几何转换为 A04 baseline
+│   ├── reference_relative_personalization.py # Absolute/Reference-Relative wrapper
+│   ├── eye_local_profile.py      # 教程/用户共用的单眼局部几何契约
+│   └── eye_local_profile_dataset.py # reference 与 face_05–11 验证产物
 ├── tests/
 │   ├── test_face_landmarker.py
 │   ├── test_eye_landmarks.py
@@ -30,9 +36,15 @@ beauty-face-engine/
 │   ├── test_repeatability_analysis.py
 │   ├── test_makeup_rules.py
 │   ├── test_personalization_engine.py
-│   └── test_new_input_validation.py
+│   ├── test_new_input_validation.py
+│   ├── test_reference_action_geometry.py
+│   ├── test_reference_action_annotator.py
+│   ├── test_reference_action_adapter.py
+│   ├── test_reference_relative_personalization.py
+│   └── test_eye_local_profile.py
 ├── examples/
-│   └── cat_eye_standard_recipe.json # A04 + A02 demo baseline
+│   ├── cat_eye_standard_recipe.json # A04 + A02 人工 baseline/fallback
+│   └── reference/             # 放置局部教程图，不提交真人素材
 ├── data/
 │   ├── input/
 │   │   └── selfie.jpg            # 需要提供
@@ -55,7 +67,7 @@ beauty-face-engine/
 
 ## 环境准备
 
-建议使用 Python 3.9–3.12。在项目目录中创建并激活虚拟环境：
+建议使用 Python 3.10–3.12（当前 API/contract 模块使用运行时 `str | None` 类型注解）。在项目目录中创建并激活虚拟环境：
 
 ```bash
 cd beauty-face-engine
@@ -389,7 +401,8 @@ R07–R10 只在 registry 中登记，Personalization Engine v0 不会把它们�
 
 使用现有真人输入 `face_01.jpg`、`face_03.jpg`、`face_06.jpg`，分别通过原有 v0.3
 pipeline 生成 Person A/B/C profile，再应用同一份
-`cat_eye_standard_recipe.json`（A04 direction `10.0°`、extension `1.0`；A02 range
+`cat_eye_standard_recipe.json`（A04 direction `10.0°`、extension `1.0`、
+`target_region="outer_third"`；A02 range
 `1.0`、intensity `1.0`）。三张图片都成功检测到一张脸。
 
 | Person | tail angle mean | relative eye length | lower-lid ratio | direction | extension | lower-lid range | lower-lid intensity | Applied rules |
@@ -453,6 +466,329 @@ python src/rule_calibration_dataset.py
 - `individual_profiles/`：逐张重新生成的 geometry、Face Profile、debug 图。
 
 这些统计仅描述当前 Demo 样本分布，不代表人口分布、科学阈值或标准眼型边界。
+
+## Reference Tutorial → Reference Action Geometry
+
+教程侧和用户侧是两条独立数据链：
+
+```text
+Blogger local-eye tutorial → manual annotation → Reference Action Geometry
+                                               → Standard Makeup Action
+User full face → Face Profile v0.3 ────────────┘
+                                               → Personalization Engine v0
+                                               → Personalized Action
+```
+
+**Reference Action Geometry 描述教程动作，不是 Blogger Face Profile。** 局部眼图可以只有
+单眼，也可以是上下 before/after 拼接图；不需要 face oval、双眼或完整眉毛。当前只标注
+A04 Cat Eye Eyeliner 的 `eye_inner`、`eye_outer`、`eyeliner_tip` 三个必选点；
+`eyeliner_start` 和 `upper_lash_outer_reference` 可选。拼接素材优先在 after 区域标注
+自然眼轴和眼线终点；before 点不是必需输入。
+
+### 数学定义与符号
+
+使用截取后单眼图上的 pixel 点位，仅把 pixel 距离留作 debug：
+
+```text
+eye_axis = eye_outer - eye_inner
+eyeliner_vector = eyeliner_tip - eye_outer
+eye_width_px = ||eye_axis||
+eyeliner_extension_ratio = ||eyeliner_vector|| / eye_width_px
+screen_cross = eye_axis.x * eyeliner_vector.y - eye_axis.y * eyeliner_vector.x
+dot = eye_axis · eyeliner_vector
+direction_relative_to_eye_axis_deg =
+    degrees(atan2(-sign(eye_axis.x) * screen_cross, dot))
+start_position_ratio =
+    dot(eyeliner_start - eye_inner, eye_axis) / dot(eye_axis, eye_axis)
+```
+
+图像 y 轴向下。对向屏幕左或右的自然眼轴，眼线相对眼轴向**视觉上方**抬升均为正角，
+向下为负角。这个符号定义假设教程图大体正立；共同的小幅旋转不会改变相对角度。
+`start_position_ratio` 是起点沿自然眼轴 inner→outer 的投影比例；垂直于眼轴的偏移不改变该值。
+`eyeliner_start` 缺失时 `start_position_ratio` 为 JSON `null`，不会伪造数值。
+局部图的分辨率不会直接进入最终产品参数。
+
+### 人工标注与可视化
+
+将素材放在 `examples/reference/cat_eye_reference.jpg` 后运行：
+
+```bash
+python src/reference_action_annotator.py --image examples/reference/cat_eye_reference.jpg
+```
+
+如果上半是 before、下半是 after，指定 after 裁剪；`--split` 是分界高度占原图高度的
+比例，默认 0.5，但应按素材实际分界设置：
+
+```bash
+python src/reference_action_annotator.py \
+  --image examples/reference/cat_eye_reference.jpg \
+  --crop bottom --split 0.52
+```
+
+也可使用 `--roi X Y W H` 手工给原图框，或 `--select-roi` 在界面拖选。点击顺序为
+`eye_inner`、`eye_outer`、`eyeliner_tip`，随后可选 `eyeliner_start`、
+`upper_lash_outer_reference`。按 Enter 完成，`s` 跳过可选点，`u` 撤销上一点，Esc
+取消。点击坐标属于**裁剪后的图像**；JSON 会记录原图 ROI，便于回溯。若已由人工确认
+点位，可用 `--points-json points.json` 跳过 GUI，格式如下（仅示意，并非真实教程标注）：
+
+```json
+{
+  "eye_inner": {"x": 20, "y": 80},
+  "eye_outer": {"x": 120, "y": 80},
+  "eyeliner_tip": {"x": 140, "y": 60},
+  "eyeliner_start": {"x": 92, "y": 76}
+}
+```
+
+输出 `data/output/reference_action/cat_eye_reference_annotation.json` 和
+`cat_eye_reference_debug.jpg`。overlay 绘制标注点、自然眼轴、眼线向量及 extension
+距离，并显示相对角度和 extension ratio，不绘制眼型标签。
+
+ReferenceActionGeometry v0.1 的核心输出示例：
+
+```json
+{
+  "version": "0.1",
+  "reference_id": "cat_eye_main_demo",
+  "action_id": "A04",
+  "source_type": "local_eye_tutorial",
+  "annotation": {
+    "eye_inner": {"x": 0, "y": 0},
+    "eye_outer": {"x": 100, "y": 0},
+    "eyeliner_tip": {"x": 120, "y": -20}
+  },
+  "geometry": {
+    "eye_width_px": 100.0,
+    "eyeliner_extension_px": 28.284271,
+    "eyeliner_extension_ratio": 0.282843,
+    "direction_relative_to_eye_axis_deg": 45.0,
+    "start_position_ratio": null
+  },
+  "quality": {
+    "annotation_complete": true,
+    "source_is_full_face": false,
+    "manual_annotation": true
+  }
+}
+```
+
+### Standard Action adapter 与 fallback
+
+`reference_action_adapter.py` 读取标注 JSON，将 A04 的参考角度与 extension ratio 写成
+现有引擎可读的 baseline；A02 和其他手工 recipe 设置原样保留：
+
+```bash
+python src/reference_action_adapter.py \
+  --reference data/output/reference_action/cat_eye_reference_annotation.json \
+  --output-recipe data/output/reference_action/cat_eye_reference_recipe.json
+```
+
+新的 A04 同时保存语义明确的 `reference_parameters` 和 `source`：
+
+```json
+{
+  "action_id": "A04",
+  "parameters": {
+    "direction_angle_deg": 45.0,
+    "extension_factor": 1.0,
+    "reference_extension_ratio": 0.282843,
+    "target_region": "outer_third"
+  },
+  "reference_parameters": {
+    "direction_relative_to_eye_axis_deg": 45.0,
+    "reference_extension_ratio": 0.282843,
+    "start_position_ratio": null
+  },
+  "source": {
+    "type": "reference_tutorial_annotation",
+    "reference_id": "cat_eye_main_demo"
+  }
+}
+```
+
+其中 `parameters.direction_angle_deg` 是现有 Personalization Engine 所需的字段别名，
+对参考来源的 A04 表示**相对自然眼轴角度**。`reference_extension_ratio` 是参考眼线长度
+除以参考眼宽的无量纲几何长度；`extension_factor=1.0` 是给现有 R03/R04 的中性乘数初值，
+**不是**参考长度。adapter 对用户执行 R03/R04 后明确输出：
+
+```text
+extension_adaptation_factor = R03/R04 adjustment_value
+personalized_extension_ratio = reference_extension_ratio * extension_adaptation_factor
+```
+
+三项均保存在 A04 的 `personalized_parameters` 中；原有 `extension_factor` 字段继续作为
+乘数兼容现有规则引擎。没有参考几何时，旧人工 recipe 的 `extension_factor` 及其执行结果
+保持不变。`start_position_ratio` 若有标注则进入 `parameters`
+并被现有引擎原样保留；若没有，adapter 保留手工 recipe 中的
+`target_region="outer_third"` 或已有的 `start_position_ratio`，不补造数值。
+完整 provenance 保留在
+生成的 Standard Recipe 中。
+
+可直接接上用户正脸 profile，使用**未修改的** Personalization Engine：
+
+```bash
+python src/reference_action_adapter.py \
+  --reference data/output/reference_action/cat_eye_reference_annotation.json \
+  --user-profile data/output/rule_calibration_dataset/individual_profiles/face_01_face_profile.json
+```
+
+省略 `--reference` 时，adapter 深拷贝并使用原来的
+`examples/cat_eye_standard_recipe.json` 人工 baseline，保持既有 fallback 行为。
+当前 `examples/reference/cat_eye_reference.jpg` 的 finished-look 实际标注保存在
+`data/output/reference_action/cat_eye_reference_annotation.json`；上面的 JSON 仍只是公式示例。
+
+## Reference-Relative Personalization
+
+Reference personalization 现在保留两种模式。`absolute` 仍是默认模式，返回值与既有
+`personalize_reference_recipe` 完全一致：
+
+```text
+Absolute = Reference Action + User Profile correction
+```
+
+新增的 `reference_relative` 只升级 A04 direction 和 extension：
+
+```text
+direction_delta = correction(user eye tail) - correction(blogger eye tail)
+personalized_direction = reference_direction + direction_delta
+
+relative_extension_factor = factor(user relative eye length)
+                            / factor(blogger relative eye length)
+personalized_extension_ratio = reference_extension_ratio
+                               * relative_extension_factor
+```
+
+两侧 correction/factor 都直接调用现有 R01–R04 mapping 和同一组 calibration anchors。
+`start_position_ratio` 原样继承 Reference Action。A02 的 range/intensity 在 v0.1 中继续使用
+现有 absolute personalization，因为当前 Reference Action Geometry 没有完整 A02 baseline。
+
+Python API：
+
+```python
+from src.reference_relative_personalization import personalize_reference_with_mode
+
+result = personalize_reference_with_mode(
+    blogger_profile,
+    stable_user_profile,
+    reference_action_geometry,
+    manual_recipe,
+    mode="reference_relative",
+)
+```
+
+省略 `mode` 时使用 `absolute`，保持向后兼容。也可以直接调用
+`personalize_reference_relative(...)`。当 Blogger Face Profile 与 User Face Profile 完全
+相同时，`identity_consistency` 保证 direction delta 严格为 `0`、extension factor 严格为
+`1`，因此输出保持原教程 Reference Action 不变。
+
+使用当前 Main Demo JSON 生成 absolute/relative 对照：
+
+```bash
+python -m src.reference_relative_personalization
+```
+
+输出写入 `data/output/reference_relative_personalization/`，包括两个 mode 的完整 JSON、
+`absolute_vs_relative.csv`、连续数值解释 JSON 和 identity consistency 验证 JSON。
+
+## Stable Face Scan v0.1
+
+`Face Profile v0.3` 是**单帧测量**；`Stable Face Scan` 是多个单帧 Profile 的稳健聚合。
+最终产品路径为多帧 → 每帧现有 Face Landmarker / roll normalization / Face Profile →
+`FaceScanAggregator` → `aggregated_face_profile` → 未修改的 Personalization Engine。
+聚合逻辑位于 `src/face_scan_aggregator.py`，不写入 `face_profile.py`。
+
+相机侧可以逐帧调用 `aggregator.add_profile(profile, frame_id=...)`，采集结束后调用
+`aggregator.finalize()`；检测失败可用 `add_failure(frame_id=..., reason=...)` 记录。
+默认至少需要 **3 个有效 Profile**。有效性只检查 v0.3 完整字段、有限数值、非退化
+几何以及 `pose_normalized=true`；失败帧保留原因但不补值。不会依据某项特征的偏离幅度
+删除帧，也没有“好脸 / 坏脸”或美妆阈值。
+
+核心 R01–R06 输入以及 R07–R10 的 reference/candidate 输入均逐帧计算 `n`、median、
+mean、sample std、min/max/range、Q1/Q3/IQR、MAD。Q1/Q3 使用 inclusive linear
+quartile；`MAD = median(|x - median(x)|)`。最终核心输入取各帧该字段的 **median**，
+而不是单帧值或简单 mean。完整输出仍是 Face Profile v0.3 路径；每组 `mean` 保持
+逐帧 mean 的 median，左右值用该组**有符号半差的 median** 重建，使聚合后左右平均
+仍等于 `mean`。其他单值字段取 median。逐帧原始 Profile 不变。
+
+图片入口复用现有 CV pipeline：
+
+```bash
+python -m src.face_scan_aggregator --images \
+  data/input/stability_01.JPG data/input/stability_02.JPG \
+  data/input/stability_03.JPG data/input/stability_04.JPG \
+  data/input/stability_05.JPG
+```
+
+也可使用 `--profiles path/to/01.json path/to/02.json path/to/03.json`。若有同一份真实
+Reference Action Geometry，可用 `--reference-geometry path/to/reference.json`；否则
+使用当前人工 Cat Eye recipe。输出目录 `data/output/stable_face_scan_validation/` 包含
+`stable_face_scan.json`、可直接传给现有规则引擎的 `stable_face_profile.json`、
+`single_vs_stable_personalization.csv`、`stable_personalization.json`，图片入口另保存
+每帧 Profile / geometry / debug 图。当前仅保留 R07–R10 作为测量参考，不执行规则。
+
+## EyeLocalProfile v0.1
+
+`EyeLocalProfile` 是单眼局部几何契约，与 Face Profile v0.3 平行。教程 bare eye 和用户
+完整脸中的单眼都先适配成同一个 `EyeLocalKeypoints`，再进入同一套纯几何函数：
+
+```text
+tutorial visual points ─┐
+                        ├→ EyeLocalKeypoints → EyeLocalProfile v0.1
+MediaPipe 478 adapter ──┘
+```
+
+Schema 保持为：
+
+```json
+{
+  "version": "0.1",
+  "source_type": "tutorial_reference | user_face",
+  "side": "left | right",
+  "geometry": {
+    "eye_width_px": 0.0,
+    "eye_height_px": 0.0,
+    "eye_width_height_ratio": 0.0,
+    "eye_axis_angle_deg": 0.0,
+    "inner_corner_angle_deg": 0.0,
+    "lower_lid_space_ratio_local": null,
+    "brow_eye_ratio_local": 0.0
+  },
+  "quality": {}
+}
+```
+
+共同定义如下：
+
+- `eye_width_px = distance(eye_inner, eye_outer)`；`eye_height_px =
+  distance(eye_upper, eye_lower)`；宽高比为两者相除。
+- `eye_axis_angle_deg` 是有方向的 inner→outer 向量相对图像水平轴的角度，图像 y 向下
+  会先转换成数学坐标 y 向上。人物右眼在未镜像图中通常接近 180°。该字段只用于局部
+  debug，不替代 Face Profile 的 `eye_tail_angle.mean`。
+- `inner_corner_angle_deg` 以 `eye_inner` 为顶点、使用上下眼睑紧邻内眼角的两个点。
+- `lower_lid_space_ratio_local` 是三个对应的下眼睑到眶下 mesh edge 距离均值除以单眼宽。
+  教程人工图只有在同语义眶下参考链可可靠定位时才计算，否则为 JSON `null`。
+- `brow_eye_ratio_local` 是五个 eye-facing brow contour 点的质心到自然眼轴的垂直距离，
+  再除以单眼宽。教程 crop 未显示完整、可靠的眉毛时必须为 JSON `null`，不能用上眼睑
+  或眼窝褶皱替代眉毛点。
+
+face_05–11 当前选择人物右眼，对未镜像输入对应图片左侧；landmark 分别为 eye
+`133/33/159/145`、inner neighbors `173/155`、lower/infra pairs
+`144-24, 145-23, 153-22`、brow `46/53/52/65/55`。教程图只有一只眼，无法证明素材
+是否镜像，因此 `side=right` 仅表示它与上述 inner-right/outer-left 方向匹配；质量字段
+明确写入 `image_side=single_eye_crop`、`subject_side=unknown`、
+`visual_estimation=true`、`human_confirmed=false`。
+
+生成本轮验证数据：
+
+```bash
+python -m src.eye_local_profile_dataset
+```
+
+该命令输出每个样本的 EyeLocalProfile JSON、测量 debug 图、
+`reference_vs_face05_11.csv`、`reference_and_users_full_report.csv` 和严格 JSON 汇总。
+reference 行不伪造 full-face 值；无法可靠标注的教程 lower-lid 局部值保持为空。
+当前教程 crop 的眉毛同样不可可靠定位，因此 `brow_eye_ratio_local` 也保持为空；
+`inner_corner_angle_deg` 标记为 `validation_pending`，不进入生产规则。
 
 ## 测试
 
@@ -534,3 +870,7 @@ Personalization Engine 消费该契约，不重复几何计算，也不生成眼
 - `personalization_demo/personalization_demo.json`：三位真人 profile 使用同一 recipe 的完整结果。
 - `personalization_demo/personalization_comparison.csv`：三人核心输入、输出参数和 applied rules 对比。
 - `new_input_validation/`：新真人输入的逐人 profile、个性化输出和横向比较报告。
+- `reference_action/`：局部教程标注 JSON、debug overlay、适配后的 Standard Recipe
+  和可选的 Personalized Action。
+- `eye_local_profile/`：教程 bare eye 与 face_05–11 的单眼 Profile、debug 图、局部对比表、
+  full-face + local 联合表和严格 JSON 汇总。

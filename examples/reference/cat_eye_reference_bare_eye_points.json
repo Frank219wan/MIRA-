@@ -1,0 +1,35 @@
+{
+  "crop": {
+    "type": "top",
+    "split": 0.52
+  },
+  "side": "right",
+  "points": {
+    "eye_inner": {"x": 659.0, "y": 305.0},
+    "eye_outer": {"x": 183.0, "y": 286.0},
+    "eye_upper": {"x": 421.0, "y": 139.0},
+    "eye_lower": {"x": 419.0, "y": 351.0},
+    "inner_upper": {"x": 638.0, "y": 278.0},
+    "inner_lower": {"x": 635.0, "y": 325.0},
+    "brow_references": null,
+    "lower_lid_points": null,
+    "lower_lid_references": null
+  },
+  "quality": {
+    "visual_estimation": true,
+    "human_confirmed": false,
+    "image_side": "single_eye_crop",
+    "subject_side": "unknown",
+    "side_assignment": "right_orientation_proxy_inner_on_image_right_outer_on_image_left",
+    "eye_upper_boundary_review": "natural_upper_lid_boundary",
+    "eye_upper_on_eyelash_tip": false,
+    "inner_corner_angle_status": "validation_pending",
+    "inner_corner_angle_production_rule_eligible": false,
+    "brow_visible": false,
+    "brow_reference_reliable": false,
+    "brow_measurement_reason": "Reliable eyebrow landmarks are not visible in the local tutorial crop.",
+    "lower_lid_reference_reliable": false,
+    "is_directly_comparable": false,
+    "quality_note": "Partial comparison: eye points use the common definitions. Eyebrow and infraorbital reference chains are not reliably visible, so both local brow/lower-lid ratios are null; inner-corner angle remains validation_pending."
+  }
+}

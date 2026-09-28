@@ -6,7 +6,8 @@
       "action_id": "A04",
       "parameters": {
         "direction_angle_deg": 10.0,
-        "extension_factor": 1.0
+        "extension_factor": 1.0,
+        "target_region": "outer_third"
       }
     },
     {

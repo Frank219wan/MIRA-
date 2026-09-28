@@ -12,5 +12,12 @@ models/*
 !models/.gitkeep
 models/*.task
 
+# Local tutorial screenshots and manual reference annotations
+examples/reference/*
+
+# Keep reference annotation metadata, ignore reference images
+!examples/reference/*.json
+!examples/reference/.gitkeep
+
 # Local Week 1 SQLite database
 data/*.db
