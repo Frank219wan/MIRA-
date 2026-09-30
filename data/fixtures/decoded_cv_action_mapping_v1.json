@@ -1,0 +1,26 @@
+{
+  "mapping_version": "1.0",
+  "unresolved_inputs": [
+    "Product/application ground truth for mapping decoded product requirements to CV action semantics",
+    "Approved A04 direction_angle_deg and extension_factor baselines",
+    "A decoded lower-lid action source selector plus approved A02 range_factor and intensity_factor baselines"
+  ],
+  "mappings": [
+    {
+      "mapping_id": "upper-lash-line-eyeliner-to-a04",
+      "action_id": "A04",
+      "source": {
+        "area": "upper lash line",
+        "goal": "define",
+        "product_requirement": "eyeliner"
+      },
+      "parameters": null,
+      "required_product_inputs": [
+        "approved direction_angle_deg baseline",
+        "approved extension_factor baseline",
+        "product/application ground truth confirming A04 compatibility"
+      ],
+      "status": "placeholder_requires_product_input"
+    }
+  ]
+}

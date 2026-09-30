@@ -1,4 +1,4 @@
-"""CV handoff envelope that consumes Face Profile v0.1 without reshaping it."""
+"""Backend handoff for the authoritative CV Face Profile v0.3 payload."""
 
 from __future__ import annotations
 
@@ -20,16 +20,28 @@ def _finite_number(value: Any, path: str) -> None:
         raise ValueError(f"Face Profile field must be finite: {path}")
 
 
-def _validate_cv_face_profile_v01(value: dict[str, Any]) -> dict[str, Any]:
-    """Validate the CV-owned v0.1 payload without creating a parallel model."""
+def _validate_cv_face_profile_v03(value: dict[str, Any]) -> dict[str, Any]:
+    """Validate every required v0.3 field without creating a parallel model."""
     required_numbers = (
         ("eye_geometry.eye_tail_angle.left", ("eye_geometry", "eye_tail_angle", "left")),
         ("eye_geometry.eye_tail_angle.right", ("eye_geometry", "eye_tail_angle", "right")),
         ("eye_geometry.eye_tail_angle.mean", ("eye_geometry", "eye_tail_angle", "mean")),
         ("eye_geometry.eye_spacing_ratio", ("eye_geometry", "eye_spacing_ratio")),
+        ("eye_geometry.relative_eye_length.left", ("eye_geometry", "relative_eye_length", "left")),
+        ("eye_geometry.relative_eye_length.right", ("eye_geometry", "relative_eye_length", "right")),
+        ("eye_geometry.relative_eye_length.mean", ("eye_geometry", "relative_eye_length", "mean")),
+        ("eye_geometry.eye_width_height_ratio.left", ("eye_geometry", "eye_width_height_ratio", "left")),
+        ("eye_geometry.eye_width_height_ratio.right", ("eye_geometry", "eye_width_height_ratio", "right")),
+        ("eye_geometry.eye_width_height_ratio.mean", ("eye_geometry", "eye_width_height_ratio", "mean")),
         ("eye_geometry.brow_eye_ratio.left", ("eye_geometry", "brow_eye_ratio", "left")),
         ("eye_geometry.brow_eye_ratio.right", ("eye_geometry", "brow_eye_ratio", "right")),
         ("eye_geometry.brow_eye_ratio.mean", ("eye_geometry", "brow_eye_ratio", "mean")),
+        ("eye_geometry.lower_lid_space_ratio.left", ("eye_geometry", "lower_lid_space_ratio", "left")),
+        ("eye_geometry.lower_lid_space_ratio.right", ("eye_geometry", "lower_lid_space_ratio", "right")),
+        ("eye_geometry.lower_lid_space_ratio.mean", ("eye_geometry", "lower_lid_space_ratio", "mean")),
+        ("eye_geometry.inner_corner_angle.left_deg", ("eye_geometry", "inner_corner_angle", "left_deg")),
+        ("eye_geometry.inner_corner_angle.right_deg", ("eye_geometry", "inner_corner_angle", "right_deg")),
+        ("eye_geometry.inner_corner_angle.mean_deg", ("eye_geometry", "inner_corner_angle", "mean_deg")),
         ("symmetry.eye_width", ("symmetry", "eye_width")),
         ("symmetry.eye_height", ("symmetry", "eye_height")),
         ("symmetry.eye_aspect_ratio", ("symmetry", "eye_aspect_ratio")),
@@ -46,12 +58,16 @@ def _validate_cv_face_profile_v01(value: dict[str, Any]) -> dict[str, Any]:
         raise ValueError("Face Profile missing raw_geometry_reference")
     if not isinstance(value.get("confidence"), dict):
         raise ValueError("Face Profile missing confidence")
+    confidence = value["confidence"]
+    for field in ("pose_normalized", "expression_controlled"):
+        if not isinstance(confidence.get(field), bool):
+            raise ValueError(f"Face Profile confidence.{field} must be boolean")
     return value
 
 
 SUPPORTED_CV_FACE_PROFILE_VALIDATORS: dict[
     str, Callable[[dict[str, Any]], dict[str, Any]]
-] = {FACE_PROFILE_VERSION: _validate_cv_face_profile_v01}
+] = {FACE_PROFILE_VERSION: _validate_cv_face_profile_v03}
 
 
 def validate_cv_face_profile(value: Any) -> dict[str, Any]:

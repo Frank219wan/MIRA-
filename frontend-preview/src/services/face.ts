@@ -2,7 +2,7 @@ import { quality, faceProfile } from "../mocks/faceProfile";
 import { demo } from "./base";
 import { adaptFaceProfile } from "./adapters/face";
 import type { FaceProfileDTO } from "./api/dto";
-// No face-scan HTTP route exists yet. CV integration supplies its v0.1 output here.
+// No face-scan HTTP route exists yet. CV integration supplies its authoritative v0.3 output here.
 let profileDTO: FaceProfileDTO | undefined;
 export function setFaceProfileDTO(dto: FaceProfileDTO) {
   if (!hasFaceProfile()) throw new Error("请先同意使用面部档案");

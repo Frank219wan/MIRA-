@@ -4,7 +4,7 @@
 
 ## 契约与教程解析
 
-CV 的 `Face Profile v0.1` 契约由 `src/face_profile.py` 维护。后端仅通过
+本 Week 1 文档原先引用的 `Face Profile v0.1` 已被 CV 的权威 `Face Profile v0.3` 取代。契约由 `src/face_profile.py` 维护，后端仅通过
 CV Adaptation envelope 原样校验和消费该 JSON，不加入脸型标签、阈值或美学判断。
 
 `src/contracts/` 提供带版本的 Pydantic v2 契约：`StandardRecipe`、Beauty Kit、
@@ -88,7 +88,7 @@ Pydantic Recipe 校验。
 - 教程解析器当前使用 `MockTutorialVisionProvider`；尚未接入真实视频/帧理解模型，也未提交主演示视频。
 - Week 1 教程解析路径固定要求五个步骤；`StandardRecipe` 契约本身允许任意非空的有序步骤。
 - Matching 仅输出结构性 `unmatched` 占位结果，不包含产品能力匹配、排序或替代推荐。
-- CV Adaptation 只校验并透传 CV 的 `Face Profile v0.1`，不调用 CV 推理，也不做个性化调整。
+- CV Adaptation 只校验并透传 CV 的 `Face Profile v0.3`；v0.1 已是 legacy，不调用 CV 推理，也不做个性化调整。
 - Explanation 为固定占位文案，未接入外部 LLM。
 - SQLite 与 `create_all` 仅适合本地 Week 1 演示；没有迁移、鉴权、多用户隔离或生产级并发保障。
 - `MIRA_DEBUG_RUNS=1` 会持久化原始 Provider 输出；不要提交调试数据库或可能含用户来源文字的诊断记录。
