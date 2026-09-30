@@ -796,6 +796,21 @@ reference 行不伪造 full-face 值；无法可靠标注的教程 lower-lid 局
 python -m unittest discover -s tests -v
 ```
 
+## Main Demo Safe Fixtures
+
+`data/fixtures/main_demo/` 提供 Product / My Tutorial 可直接读取的 Main Demo
+结构化结果：Face06 是 multi-adaptation case，Face11 是 minimal-adaptation /
+keep-reference case。两个 Face Profile fixture 都保留完整 v0.3 契约；personalization
+fixture 同时保留 reference-relative 的 raw mapping、validation dead-zone 决策与最终
+A04/A02 参数。
+
+这些 fixture 只包含结构化 CV / personalization 结果，不包含用户原始图片、图片编码、
+EXIF、debug image path 或本地绝对路径。拥有本地 validation outputs 时可重复生成：
+
+```bash
+python -m src.main_demo_safe_fixtures
+```
+
 ## 模块设计
 
 - `FaceLandmarkerDetector`：负责配置和调用 MediaPipe Tasks Face Landmarker。
