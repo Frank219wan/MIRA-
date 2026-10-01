@@ -8,13 +8,20 @@ from .cv_actions import (
 )
 from .explanation import LLMExplanation
 from .makeup import MakeupActionUnit, StandardRecipe
-from .matching import MatchingItem, MatchingResult
+from .matching import (
+    HardConstraintEvidence, MatchingItem, MatchingProvenance, MatchingResult,
+    ScoreComponent, SubstitutionCandidate,
+)
 from .my_tutorial import MyTutorialResponse, MyTutorialStep
+from .tutorial_explanation import ExplanationFacts, GeneratedTutorialText, ParameterChange
 
 __all__ = [
     "AdaptedCVAction", "BeautyKit", "BeautyKitProduct", "CVAdaptation",
     "CVPersonalizedAction", "CVStandardMakeupAction", "DecodedActionMappingConfig",
-    "LLMExplanation", "MyTutorialResponse", "MyTutorialStep",
-    "MakeupActionUnit", "MatchingItem", "MatchingResult",
+    "ExplanationFacts", "GeneratedTutorialText", "LLMExplanation",
+    "HardConstraintEvidence",
+    "MyTutorialResponse", "MyTutorialStep", "ParameterChange",
+    "MakeupActionUnit", "MatchingItem", "MatchingProvenance", "MatchingResult",
     "PersonalizedActionWrapper", "ProductCapability", "StandardRecipe",
+    "ScoreComponent", "SubstitutionCandidate",
 ]

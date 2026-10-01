@@ -1,0 +1,139 @@
+{
+  "schema_version": "0.2",
+  "tutorial_id": "face_11-my-tutorial-v0-2",
+  "recipe_id": "recipe-main-eye-demo-v1",
+  "steps": [
+    {
+      "action_id": "A04",
+      "step_index": 5,
+      "personalization_status": "personalized",
+      "standard_action": {
+        "step_index": 5,
+        "area": "upper lash line",
+        "goal": "define",
+        "product_requirement": "eyeliner",
+        "tool": "liner brush",
+        "motion": "short stroke",
+        "intensity": "light",
+        "target_result": "clean lash-line definition",
+        "time_range_seconds": null,
+        "confidence": null
+      },
+      "cv_standard_action": {
+        "mapping_version": "1.0",
+        "mapping_id": "main-demo-reference-relative:A04",
+        "source_step_index": 5,
+        "standard_makeup_action": {
+          "action_id": "A04",
+          "parameters": {
+            "reference_direction_deg": 5.781666,
+            "reference_extension_ratio": 0.34493,
+            "start_position_ratio": 0.985925
+          }
+        },
+        "source_fixture_path": "data/fixtures/main_demo/face_11_personalization.json",
+        "reference_fixture_path": "data/fixtures/main_demo/main_demo_reference.json",
+        "adapter_version": "1.0",
+        "face_profile_id": "face_11",
+        "source_mode": "reference_relative",
+        "source_field_paths": {
+          "action_id": "$.A04 (object key)",
+          "original_parameters.reference_direction_deg": "reference:$.reference_action.A04.direction_relative_to_eye_axis_deg",
+          "original_parameters.reference_extension_ratio": "reference:$.reference_action.A04.reference_extension_ratio",
+          "original_parameters.start_position_ratio": "reference:$.reference_action.A04.start_position_ratio",
+          "personalized_parameters.personalized_direction_deg": "source:$.A04.personalized_direction",
+          "personalized_parameters.personalized_extension_ratio": "source:$.A04.personalized_extension_ratio",
+          "personalized_parameters.start_position_ratio": "source:$.A04.start_position_ratio",
+          "adjustments.personalized_direction_deg": "source:$.A04.relative_direction_adjustment + $.feature_decisions[effect=A04.direction]",
+          "adjustments.personalized_extension_ratio": "source:$.A04.relative_extension_factor + $.feature_decisions[effect=A04.extension]"
+        }
+      },
+      "match_result": null,
+      "face_profile": {"profile_id": "face_11", "version": "0.3"},
+      "cv_personalized_action": {
+        "schema_version": "0.2",
+        "recipe_id": "recipe-main-eye-demo-v1",
+        "step_index": 5,
+        "face_profile_version": "0.3",
+        "personalized_action": {
+          "action_id": "A04",
+          "original_parameters": {
+            "reference_direction_deg": 5.781666,
+            "reference_extension_ratio": 0.34493,
+            "start_position_ratio": 0.985925
+          },
+          "personalized_parameters": {
+            "personalized_direction_deg": 5.781666,
+            "personalized_extension_ratio": 0.34493,
+            "start_position_ratio": 0.985925
+          },
+          "applied_rules": [],
+          "adjustments": []
+        },
+        "provenance": {
+          "mapping_version": "1.0",
+          "mapping_id": "main-demo-reference-relative:A04",
+          "source_step_index": 5,
+          "standard_makeup_action": {
+            "action_id": "A04",
+            "parameters": {
+              "reference_direction_deg": 5.781666,
+              "reference_extension_ratio": 0.34493,
+              "start_position_ratio": 0.985925
+            }
+          },
+          "source_fixture_path": "data/fixtures/main_demo/face_11_personalization.json",
+          "reference_fixture_path": "data/fixtures/main_demo/main_demo_reference.json",
+          "adapter_version": "1.0",
+          "face_profile_id": "face_11",
+          "source_mode": "reference_relative",
+          "source_field_paths": {
+            "action_id": "$.A04 (object key)",
+            "original_parameters.reference_direction_deg": "reference:$.reference_action.A04.direction_relative_to_eye_axis_deg",
+            "original_parameters.reference_extension_ratio": "reference:$.reference_action.A04.reference_extension_ratio",
+            "original_parameters.start_position_ratio": "reference:$.reference_action.A04.start_position_ratio",
+            "personalized_parameters.personalized_direction_deg": "source:$.A04.personalized_direction",
+            "personalized_parameters.personalized_extension_ratio": "source:$.A04.personalized_extension_ratio",
+            "personalized_parameters.start_position_ratio": "source:$.A04.start_position_ratio",
+            "adjustments.personalized_direction_deg": "source:$.A04.relative_direction_adjustment + $.feature_decisions[effect=A04.direction]",
+            "adjustments.personalized_extension_ratio": "source:$.A04.relative_extension_factor + $.feature_decisions[effect=A04.extension]"
+          }
+        }
+      },
+      "where": "upper lash line",
+      "how": "保持 personalized_direction_deg 不变（5.781666 → 5.781666，Δ 0.0）；保持 personalized_extension_ratio 不变（0.34493 → 0.34493，Δ 0.0）；保持 start_position_ratio 不变（0.985925 → 0.985925，Δ 0.0）",
+      "why": "触发规则：无触发规则。",
+      "stop_when": "clean lash-line definition",
+      "reference_parameters": {
+        "reference_direction_deg": 5.781666,
+        "reference_extension_ratio": 0.34493,
+        "start_position_ratio": 0.985925
+      },
+      "personalized_parameters": {
+        "personalized_direction_deg": 5.781666,
+        "personalized_extension_ratio": 0.34493,
+        "start_position_ratio": 0.985925
+      },
+      "applied_rules": [],
+      "provenance": {
+        "request_id": "main-demo-face_11",
+        "run_id": "main-demo-face_11-a04-template",
+        "source_recipe_id": "recipe-main-eye-demo-v1",
+        "source_step_index": 5,
+        "face_profile_version": "0.3",
+        "face_profile_id": "face_11",
+        "matching_id": null,
+        "product_id": null,
+        "mapping_version": "1.0",
+        "applied_rules": [],
+        "cv_adjustments": [],
+        "explanation_generator_version": "1.0",
+        "prompt_version": "my-tutorial-explanation-v1",
+        "provider_name": "deterministic-template",
+        "model_name": null,
+        "fallback_used": true
+      },
+      "fallback_status": "template_fallback"
+    }
+  ]
+}

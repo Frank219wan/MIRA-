@@ -11,6 +11,7 @@ from src.contracts.beauty_kit import BeautyKit, ProductCapability
 from src.contracts.makeup import StandardRecipe
 from src.contracts.matching import MatchingResult
 from src.services.tutorial_parser import TutorialParserRun
+from src.services.tutorial_explanation import TutorialExplanationRun
 
 from .models import (
     BeautyKitRecord,
@@ -19,6 +20,7 @@ from .models import (
     ParserRunRecord,
     RecipeRecord,
     TutorialRecord,
+    TutorialExplanationRunRecord,
 )
 
 
@@ -61,6 +63,11 @@ def get_beauty_kit(session: Session) -> BeautyKit | None:
     return BeautyKit.model_validate_json(record.payload_json) if record else None
 
 
+def get_beauty_kit_by_id(session: Session, kit_id: str) -> BeautyKit | None:
+    record = session.get(BeautyKitRecord, kit_id)
+    return BeautyKit.model_validate_json(record.payload_json) if record else None
+
+
 def save_product_capability(session: Session, capability: ProductCapability) -> None:
     session.merge(
         ProductCapabilityRecord(
@@ -69,6 +76,20 @@ def save_product_capability(session: Session, capability: ProductCapability) -> 
         )
     )
     session.commit()
+
+
+def get_product_capability(
+    session: Session, capability_id: str
+) -> ProductCapability | None:
+    record = session.get(ProductCapabilityRecord, capability_id)
+    return ProductCapability.model_validate_json(record.payload_json) if record else None
+
+
+def list_product_capabilities(session: Session) -> list[ProductCapability]:
+    records = session.query(ProductCapabilityRecord).order_by(
+        ProductCapabilityRecord.capability_id
+    )
+    return [ProductCapability.model_validate_json(record.payload_json) for record in records]
 
 
 def save_matching_result(session: Session, result: MatchingResult) -> None:
@@ -109,6 +130,39 @@ def save_parser_run(session: Session, run: TutorialParserRun) -> None:
 
 def get_parser_run(session: Session, run_id: str) -> ParserRunRecord | None:
     return session.get(ParserRunRecord, run_id)
+
+
+def save_tutorial_explanation_run(
+    session: Session, run: TutorialExplanationRun
+) -> None:
+    session.merge(
+        TutorialExplanationRunRecord(
+            run_id=run.run_id,
+            request_id=run.request_id,
+            recipe_id=run.recipe_id,
+            step_index=run.step_index,
+            action_id=run.action_id,
+            source_standard_action_json=_json_text(run.source_standard_action) or "{}",
+            face_profile_id=run.face_profile_id,
+            face_profile_version=run.face_profile_version,
+            cv_personalized_action_json=_json_text(run.cv_personalized_action) or "{}",
+            deterministic_facts_json=_json_text(run.deterministic_facts) or "{}",
+            applied_rules_json=_json_text(run.applied_rules) or "[]",
+            explanation_generator_version=run.explanation_generator_version,
+            prompt_version=run.prompt_version,
+            provider_name=run.provider_name,
+            model_name=run.model_name,
+            fallback_used=run.fallback_used,
+            response_json=_json_text(run.response) or "{}",
+        )
+    )
+    session.commit()
+
+
+def get_tutorial_explanation_run(
+    session: Session, run_id: str
+) -> TutorialExplanationRunRecord | None:
+    return session.get(TutorialExplanationRunRecord, run_id)
 
 
 def _json_text(value: object | None) -> str | None:

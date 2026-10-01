@@ -61,6 +61,12 @@ class AdaptedCVAction(ContractModel):
     mapping_id: str = Field(min_length=1)
     source_step_index: int = Field(ge=1)
     standard_makeup_action: CVStandardMakeupAction
+    source_fixture_path: str | None = None
+    reference_fixture_path: str | None = None
+    adapter_version: str | None = None
+    face_profile_id: str | None = None
+    source_mode: Literal["reference_relative"] | None = None
+    source_field_paths: dict[str, str] = Field(default_factory=dict)
 
 
 class CVAdjustment(ContractModel):

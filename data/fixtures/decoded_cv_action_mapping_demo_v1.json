@@ -1,0 +1,23 @@
+{
+  "mapping_version": "1.0",
+  "unresolved_inputs": [
+    "SYNTHETIC DEMO ONLY: A04 baselines below are not Product/CV Ground Truth and must not be used for Face 06/11 product output"
+  ],
+  "mappings": [
+    {
+      "mapping_id": "synthetic-demo-upper-lash-line-eyeliner-to-a04",
+      "action_id": "A04",
+      "source": {
+        "area": "upper lash line",
+        "goal": "define",
+        "product_requirement": "eyeliner"
+      },
+      "parameters": {
+        "direction_angle_deg": 10.0,
+        "extension_factor": 1.0
+      },
+      "required_product_inputs": [],
+      "status": "approved"
+    }
+  ]
+}

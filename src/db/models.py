@@ -68,3 +68,27 @@ class ParserRunRecord(Base):
     validation_error: Mapped[str | None] = mapped_column(Text, nullable=True)
     error_traceback: Mapped[str | None] = mapped_column(Text, nullable=True)
     duration_ms: Mapped[int | None] = mapped_column(nullable=True)
+
+
+class TutorialExplanationRunRecord(Base):
+    """Development trace for wording generation; CV values remain verbatim JSON."""
+
+    __tablename__ = "tutorial_explanation_runs"
+
+    run_id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    request_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    recipe_id: Mapped[str] = mapped_column(String(128))
+    step_index: Mapped[int] = mapped_column()
+    action_id: Mapped[str] = mapped_column(String(32))
+    source_standard_action_json: Mapped[str] = mapped_column(Text)
+    face_profile_id: Mapped[str] = mapped_column(String(128))
+    face_profile_version: Mapped[str] = mapped_column(String(32))
+    cv_personalized_action_json: Mapped[str] = mapped_column(Text)
+    deterministic_facts_json: Mapped[str] = mapped_column(Text)
+    applied_rules_json: Mapped[str] = mapped_column(Text)
+    explanation_generator_version: Mapped[str] = mapped_column(String(64))
+    prompt_version: Mapped[str] = mapped_column(String(64))
+    provider_name: Mapped[str] = mapped_column(String(128))
+    model_name: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    fallback_used: Mapped[bool] = mapped_column()
+    response_json: Mapped[str] = mapped_column(Text)

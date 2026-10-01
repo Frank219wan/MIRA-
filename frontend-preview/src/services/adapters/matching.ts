@@ -6,8 +6,8 @@ import { adaptRecipe } from "./tutorial";
 export type AdaptedMatch = MatchResult & {
   provenance: {
     status: "backend" | "frontend-fallback";
-    score: "frontend-fallback";
-    details: "frontend-fallback";
+    score: "backend" | "frontend-fallback";
+    details: "backend" | "frontend-fallback";
   };
 };
 export function adaptMatching(
@@ -40,17 +40,26 @@ export function adaptMatching(
       actionId: a.id,
       status: item ? statuses[item.status] : "missing",
       bestMatch: products.find((p) => p.id === item?.product_id) ?? null,
-      score: 0,
-      capabilityChecks: [], // Contract has no score or capability evaluation. UI displays “未提供”.
-      difference: item?.note
-        ? `服务说明：${chineseText(item.note, "匹配说明待补充中文")}`
+      score: item?.match_score ?? 0,
+      capabilityChecks: item
+        ? [
+            ...item.satisfied_capabilities.map((label) => ({ label, passed: true })),
+            ...item.missing_capabilities.map((label) => ({ label, passed: false })),
+          ]
+        : [],
+      difference: item?.difference
+        ? chineseText(item.difference, "匹配差异待补充中文")
         : "后端暂未提供差异分析（前端占位）",
-      impact: "后端暂未评估妆效影响（前端占位）",
-      missingCapability: [],
+      impact: item?.impact
+        ? chineseText(item.impact, "妆效影响待补充中文")
+        : "后端暂未评估妆效影响（前端占位）",
+      missingCapability: item?.missing_capabilities ?? [],
+      reason: item?.reason ?? undefined,
+      functionalConflict: item?.functional_conflict,
       provenance: {
         status: item ? "backend" : "frontend-fallback",
-        score: "frontend-fallback",
-        details: "frontend-fallback",
+        score: item ? "backend" : "frontend-fallback",
+        details: item ? "backend" : "frontend-fallback",
       },
     };
   });

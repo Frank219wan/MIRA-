@@ -16,13 +16,26 @@ export function adaptBeautyKit(dto: BeautyKitDTO): Product[] {
     if (!p.product_id || !p.name || !Array.isArray(p.capability_ids))
       throw new Error("Invalid beauty kit product");
     const metadata = localMetadata[p.product_id];
+    const backendShade = p.shade_name
+      ? [{
+          shadeName: p.shade_name,
+          hex: p.color_attributes?.hex ?? "",
+          hue: p.color_attributes?.hue ?? "unknown",
+          depth: p.depth ?? "unknown",
+          finish: p.finish ?? "unknown",
+          pigmentation: "unknown",
+          blendability: "unknown",
+          reflectivity: p.reflectivity ?? "unknown",
+          texture: "unknown",
+        }]
+      : [];
     return {
       id: p.product_id,
-      productName: chineseText(p.name, "产品名称待补充中文"),
-      brand: metadata?.brand ?? "品牌待补充",
+      productName: chineseText(p.product_name ?? p.name, "产品名称待补充中文"),
+      brand: p.brand ?? metadata?.brand ?? "品牌待补充",
       category: metadata?.category ?? "眼部",
       productImage: metadata?.productImage ?? null,
-      shades: structuredClone(metadata?.shades ?? []),
+      shades: structuredClone(backendShade.length ? backendShade : metadata?.shades ?? []),
     };
   });
 }

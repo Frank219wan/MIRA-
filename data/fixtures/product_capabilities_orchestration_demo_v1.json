@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "data_status": "synthetic_demo_only_not_product_ground_truth",
+  "capabilities": [
+    {"schema_version": "1.0", "capability_id": "demo-cap-primer", "product_category": "eye primer", "supported_areas": ["upper eyelid"], "supported_goals": ["prime"], "supported_product_requirements": ["eye primer"], "compatible_finishes": ["natural"]},
+    {"schema_version": "1.0", "capability_id": "demo-cap-transition", "product_category": "eye shadow", "supported_areas": ["crease"], "supported_goals": ["add depth"], "supported_product_requirements": ["matte transition shadow"], "compatible_finishes": ["matte"]},
+    {"schema_version": "1.0", "capability_id": "demo-cap-deep", "product_category": "eye shadow", "supported_areas": ["outer corner"], "supported_goals": ["define"], "supported_product_requirements": ["matte deep shadow"], "compatible_finishes": ["matte"]},
+    {"schema_version": "1.0", "capability_id": "demo-cap-shimmer", "product_category": "eye shadow", "supported_areas": ["center lid"], "supported_goals": ["brighten"], "supported_product_requirements": ["shimmer shadow"], "compatible_finishes": ["shimmer"]},
+    {"schema_version": "1.0", "capability_id": "demo-cap-eyeliner", "product_category": "eyeliner", "supported_areas": ["upper lash line"], "supported_goals": ["define"], "supported_product_requirements": ["eyeliner"], "compatible_finishes": ["matte"]}
+  ]
+}

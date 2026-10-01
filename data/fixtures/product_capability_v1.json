@@ -3,5 +3,7 @@
   "capability_id": "capability-neutral-shadow",
   "product_category": "eye shadow palette",
   "supported_areas": ["crease", "outer corner", "center lid"],
-  "supported_goals": ["add depth", "define", "brighten"]
+  "supported_goals": ["add depth", "define", "brighten"],
+  "supported_product_requirements": ["matte transition shadow", "matte deep shadow"],
+  "compatible_finishes": ["matte"]
 }

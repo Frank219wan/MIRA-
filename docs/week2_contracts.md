@@ -37,11 +37,12 @@ and every adjustment audit field.
 
 ## MyTutorialResponse v0.2
 
-The response is a backend-owned orchestration schema only. It can link the
+The response is backend-owned. Its wording layer can link the
 decoded action, adapted CV action, matching item, Face Profile reference,
-wrapped CV result, optional user-facing instruction fields, provenance, and a
-fallback status. No service currently generates this response.
+wrapped CV result, user-facing `where`/`how`/`why`/`stop_when` fields,
+provenance, and fallback status. `POST /my-tutorial` now generates wording from
+deterministic facts while copying CV parameters and rule IDs unchanged.
 
-AR remains `pending_cv_contract`. The frontend mock polygon, region, and vector
-fields are not a production contract. CV ownership, coordinate space,
+AR is deliberately absent from MyTutorialResponse v0.2. The frontend mock
+polygon, region, and vector fields are not a production contract. CV ownership, coordinate space,
 orientation/mirroring, landmarks, and confidence semantics remain unresolved.

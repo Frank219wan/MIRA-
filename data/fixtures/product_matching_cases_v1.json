@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "data_status": "demo_only_not_product_ground_truth",
+  "recipe_fixture": "standard_recipe_v1.json",
+  "beauty_kit_fixture": "beauty_kit_v1.json",
+  "capability_fixture": "product_capabilities_demo_v1.json",
+  "cases": [
+    {
+      "case": "strong_match",
+      "step_index": 2,
+      "expected_decision": "strong_match",
+      "expected_product_id": "demo-transition-taupe",
+      "expected_score": 100
+    },
+    {
+      "case": "low_match",
+      "step_index": 3,
+      "expected_decision": "low_match",
+      "expected_product_id": "demo-soft-brown",
+      "expected_score": 75
+    },
+    {
+      "case": "missing_capability",
+      "step_index": 1,
+      "expected_decision": "missing_capability",
+      "expected_product_id": null,
+      "expected_score": 0
+    },
+    {
+      "case": "functional_conflict",
+      "step_index": 4,
+      "expected_decision": "functional_conflict",
+      "expected_product_id": null,
+      "expected_score": 0
+    }
+  ]
+}

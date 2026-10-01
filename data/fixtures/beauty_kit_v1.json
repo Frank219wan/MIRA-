@@ -1,6 +1,46 @@
 {
   "schema_version": "1.0",
   "kit_id": "kit-demo-v1",
-  "name": "Demo eye kit",
-  "products": [{"product_id": "product-neutral-palette", "name": "Neutral palette", "capability_ids": ["capability-neutral-shadow"]}]
+  "name": "Demo eye kit (placeholder product data)",
+  "products": [
+    {
+      "product_id": "demo-transition-taupe",
+      "name": "Demo Transition Taupe",
+      "product_name": "Demo Transition Taupe",
+      "brand": "MIRA Demo",
+      "category": "eye shadow",
+      "shade_name": "Taupe 02",
+      "color_attributes": {"hex": "#A98272", "hue": "neutral brown"},
+      "finish": "matte",
+      "depth": "medium",
+      "reflectivity": "low",
+      "capability_ids": ["capability-demo-transition-shadow"]
+    },
+    {
+      "product_id": "demo-soft-brown",
+      "name": "Demo Soft Brown",
+      "product_name": "Demo Soft Brown",
+      "brand": "MIRA Demo",
+      "category": "eye shadow",
+      "shade_name": "Soft Brown 03",
+      "color_attributes": {"hex": "#98705F", "hue": "warm brown"},
+      "finish": "matte",
+      "depth": "medium",
+      "reflectivity": "medium",
+      "capability_ids": ["capability-demo-deep-shadow-low-match"]
+    },
+    {
+      "product_id": "demo-matte-champagne",
+      "name": "Demo Matte Champagne",
+      "product_name": "Demo Matte Champagne",
+      "brand": "MIRA Demo",
+      "category": "eye shadow",
+      "shade_name": "Champagne 01",
+      "color_attributes": {"hex": "#D1B68B", "hue": "champagne"},
+      "finish": "matte",
+      "depth": "light",
+      "reflectivity": "low",
+      "capability_ids": ["capability-demo-shimmer-function"]
+    }
+  ]
 }

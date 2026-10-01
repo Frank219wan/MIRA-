@@ -57,9 +57,11 @@ export default function LiveCoach() {
           </div>
           <div className="coach-grid">
             <FaceViewport label="实时指导画面">
-              <AROverlay guidance={a.arGuidance} personalized={adapted} />
+              {a.arGuidance && (
+                <AROverlay guidance={a.arGuidance} personalized={adapted} />
+              )}
               <span className="region-label">
-                目标区域：{a.arGuidance.region}
+                目标区域：{a.arGuidance?.region ?? a.personalized.where}
                 <br />
                 方向：{a.personalized.direction}
               </span>

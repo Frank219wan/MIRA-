@@ -3,5 +3,92 @@
   "matching_id": "match-demo-v1",
   "recipe_id": "recipe-main-eye-demo-v1",
   "beauty_kit_id": "kit-demo-v1",
-  "items": [{"step_index": 2, "status": "matched", "product_id": "product-neutral-palette", "capability_id": "capability-neutral-shadow", "note": "Fixture only; no matching algorithm has run."}]
+  "items": [
+    {
+      "step_index": 1,
+      "status": "unmatched",
+      "decision": "missing_capability",
+      "match_score": 0,
+      "reason": "No Beauty Kit product satisfies the required capability.",
+      "difference": "Missing capability for eye primer.",
+      "impact": "This recipe step cannot be reproduced with the current Beauty Kit.",
+      "satisfied_capabilities": [],
+      "missing_capabilities": ["product_requirement:eye primer"],
+      "substitution_candidates": []
+    },
+    {
+      "step_index": 2,
+      "status": "matched",
+      "product_id": "demo-transition-taupe",
+      "capability_id": "capability-demo-transition-shadow",
+      "decision": "strong_match",
+      "best_match": {
+        "product_id": "demo-transition-taupe",
+        "name": "Demo Transition Taupe",
+        "product_name": "Demo Transition Taupe",
+        "brand": "MIRA Demo",
+        "category": "eye shadow",
+        "shade_name": "Taupe 02",
+        "color_attributes": {"hex": "#A98272", "hue": "neutral brown"},
+        "finish": "matte",
+        "depth": "medium",
+        "reflectivity": "low",
+        "capability_ids": ["capability-demo-transition-shadow"]
+      },
+      "match_score": 100,
+      "reason": "Meets all hard constraints with strong capability coverage.",
+      "difference": "All configured product attributes match.",
+      "impact": "Expected to reproduce the required function.",
+      "satisfied_capabilities": ["product_requirement", "category", "area", "goal", "finish", "depth", "reflectivity"],
+      "missing_capabilities": [],
+      "substitution_candidates": []
+    },
+    {
+      "step_index": 3,
+      "status": "substitution_candidate",
+      "product_id": "demo-soft-brown",
+      "capability_id": "capability-demo-deep-shadow-low-match",
+      "decision": "low_match",
+      "best_match": {
+        "product_id": "demo-soft-brown",
+        "name": "Demo Soft Brown",
+        "product_name": "Demo Soft Brown",
+        "brand": "MIRA Demo",
+        "category": "eye shadow",
+        "shade_name": "Soft Brown 03",
+        "color_attributes": {"hex": "#98705F", "hue": "warm brown"},
+        "finish": "matte",
+        "depth": "medium",
+        "reflectivity": "medium",
+        "capability_ids": ["capability-demo-deep-shadow-low-match"]
+      },
+      "match_score": 75,
+      "reason": "Meets all hard constraints but differs on optional attributes.",
+      "difference": "Soft differences: goal, depth, reflectivity.",
+      "impact": "The required function is available, but the visible result may differ.",
+      "satisfied_capabilities": ["product_requirement", "category", "area", "finish"],
+      "missing_capabilities": ["goal", "depth", "reflectivity"],
+      "substitution_candidates": []
+    },
+    {
+      "step_index": 4,
+      "status": "unmatched",
+      "decision": "functional_conflict",
+      "match_score": 0,
+      "reason": "Available products fail a required functional finish constraint.",
+      "difference": "Closest product has an incompatible finish.",
+      "impact": "Using it would not reproduce the required cosmetic function.",
+      "satisfied_capabilities": [],
+      "missing_capabilities": ["finish", "reflectivity"],
+      "functional_conflict": "demo-matte-champagne fails required finish for shimmer shadow.",
+      "substitution_candidates": [
+        {
+          "product_id": "demo-matte-champagne",
+          "match_score": 20,
+          "hard_constraint_failures": ["finish"],
+          "difference": "Differs on finish, reflectivity."
+        }
+      ]
+    }
+  ]
 }

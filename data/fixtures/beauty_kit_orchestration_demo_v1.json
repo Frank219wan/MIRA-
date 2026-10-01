@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0",
+  "kit_id": "kit-orchestration-synthetic-demo-v1",
+  "name": "Synthetic orchestration happy-path kit (not real product data)",
+  "products": [
+    {"product_id": "demo-primer", "name": "Synthetic Primer", "product_name": "Synthetic Primer", "brand": "MIRA Demo", "category": "eye primer", "shade_name": "Clear", "color_attributes": {}, "finish": "natural", "depth": "none", "reflectivity": "low", "capability_ids": ["demo-cap-primer"]},
+    {"product_id": "demo-transition", "name": "Synthetic Transition", "product_name": "Synthetic Transition", "brand": "MIRA Demo", "category": "eye shadow", "shade_name": "Taupe", "color_attributes": {"hex": "#A98272"}, "finish": "matte", "depth": "medium", "reflectivity": "low", "capability_ids": ["demo-cap-transition"]},
+    {"product_id": "demo-deep", "name": "Synthetic Deep Brown", "product_name": "Synthetic Deep Brown", "brand": "MIRA Demo", "category": "eye shadow", "shade_name": "Deep Brown", "color_attributes": {"hex": "#49332B"}, "finish": "matte", "depth": "deep", "reflectivity": "low", "capability_ids": ["demo-cap-deep"]},
+    {"product_id": "demo-shimmer", "name": "Synthetic Shimmer", "product_name": "Synthetic Shimmer", "brand": "MIRA Demo", "category": "eye shadow", "shade_name": "Champagne", "color_attributes": {"hex": "#D1B68B"}, "finish": "shimmer", "depth": "light", "reflectivity": "high", "capability_ids": ["demo-cap-shimmer"]},
+    {"product_id": "demo-liner", "name": "Synthetic Eyeliner", "product_name": "Synthetic Eyeliner", "brand": "MIRA Demo", "category": "eyeliner", "shade_name": "Black", "color_attributes": {"hex": "#000000"}, "finish": "matte", "depth": "deep", "reflectivity": "low", "capability_ids": ["demo-cap-eyeliner"]}
+  ]
+}

@@ -1,0 +1,1076 @@
+{
+  "schema_version": "0.2",
+  "tutorial_id": "tutorial-synthetic-demo-v0.2",
+  "recipe_id": "recipe-main-eye-demo-v1",
+  "steps": [
+    {
+      "action_id": null,
+      "step_index": 1,
+      "personalization_status": "not_applicable",
+      "standard_action": {
+        "step_index": 1,
+        "area": "upper eyelid",
+        "goal": "prime",
+        "product_requirement": "eye primer",
+        "tool": "fingertip",
+        "motion": "pat",
+        "intensity": "light",
+        "target_result": "even base",
+        "time_range_seconds": null,
+        "confidence": null
+      },
+      "cv_standard_action": null,
+      "match_result": {
+        "step_index": 1,
+        "status": "matched",
+        "product_id": "demo-primer",
+        "capability_id": "demo-cap-primer",
+        "note": "Meets all hard constraints with strong capability coverage.",
+        "decision": "strong_match",
+        "best_match": {
+          "product_id": "demo-primer",
+          "name": "Synthetic Primer",
+          "product_name": "Synthetic Primer",
+          "brand": "MIRA Demo",
+          "category": "eye primer",
+          "shade_name": "Clear",
+          "color_attributes": {},
+          "finish": "natural",
+          "depth": "none",
+          "reflectivity": "low",
+          "capability_ids": [
+            "demo-cap-primer"
+          ]
+        },
+        "match_score": 100.0,
+        "reason": "Meets all hard constraints with strong capability coverage.",
+        "difference": "All configured product attributes match.",
+        "impact": "Expected to reproduce the required function.",
+        "satisfied_capabilities": [
+          "product_requirement",
+          "category",
+          "area",
+          "goal",
+          "finish",
+          "depth",
+          "reflectivity"
+        ],
+        "missing_capabilities": [],
+        "functional_conflict": null,
+        "substitution_candidates": [],
+        "provenance": {
+          "matcher_version": "1.0",
+          "rules_version": "demo-product-rules-1.0",
+          "source_step_index": 1,
+          "product_requirement": "eye primer",
+          "evaluated_product_ids": [
+            "demo-primer",
+            "demo-transition",
+            "demo-deep",
+            "demo-shimmer",
+            "demo-liner"
+          ],
+          "pre_cap_score": 100.0,
+          "hard_constraint_score_cap": 20.0,
+          "hard_constraints": [
+            {
+              "constraint": "capability_metadata",
+              "expected": [
+                "demo-cap-primer"
+              ],
+              "actual": [
+                "demo-cap-primer"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "product_requirement",
+              "expected": [
+                "eye primer"
+              ],
+              "actual": [
+                "eye primer"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "category",
+              "expected": [
+                "eye primer"
+              ],
+              "actual": [
+                "eye primer"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "finish",
+              "expected": [],
+              "actual": [
+                "natural"
+              ],
+              "passed": true
+            }
+          ],
+          "score_components": [
+            {
+              "component": "product_requirement",
+              "points_awarded": 40.0,
+              "points_possible": 40.0,
+              "evidence": "required=eye primer; supported=['eye primer']"
+            },
+            {
+              "component": "category",
+              "points_awarded": 10.0,
+              "points_possible": 10.0,
+              "evidence": "expected=['eye primer']; actual=['eye primer']"
+            },
+            {
+              "component": "area",
+              "points_awarded": 15.0,
+              "points_possible": 15.0,
+              "evidence": "required=upper eyelid; supported=['upper eyelid']"
+            },
+            {
+              "component": "goal",
+              "points_awarded": 15.0,
+              "points_possible": 15.0,
+              "evidence": "required=prime; supported=['prime']"
+            },
+            {
+              "component": "finish",
+              "points_awarded": 10.0,
+              "points_possible": 10.0,
+              "evidence": "expected=[]; actual=natural"
+            },
+            {
+              "component": "depth",
+              "points_awarded": 5.0,
+              "points_possible": 5.0,
+              "evidence": "desired=[]; actual=none"
+            },
+            {
+              "component": "reflectivity",
+              "points_awarded": 5.0,
+              "points_possible": 5.0,
+              "evidence": "desired=['low']; actual=low"
+            }
+          ]
+        }
+      },
+      "face_profile": {
+        "profile_id": "synthetic-face-a",
+        "version": "0.3"
+      },
+      "cv_personalized_action": null,
+      "where": "upper eyelid",
+      "how": "使用 fingertip，以 light 强度进行 pat。",
+      "why": "此步骤暂不支持 CV 个性化；保留原教程确定性步骤。",
+      "stop_when": "even base",
+      "reference_parameters": {},
+      "personalized_parameters": {},
+      "applied_rules": [],
+      "provenance": {
+        "request_id": "synthetic-demo-request",
+        "run_id": "tutorial-explanation-ccd15746-c78f-4e09-9ee7-586f2f8417d0",
+        "source_recipe_id": "recipe-main-eye-demo-v1",
+        "source_step_index": 1,
+        "face_profile_version": "0.3",
+        "face_profile_id": "synthetic-face-a",
+        "matching_id": "match-702d7de2-7927-4518-ae1d-4c0b1c306cc3",
+        "product_id": "demo-primer",
+        "mapping_version": "1.0",
+        "applied_rules": [],
+        "cv_adjustments": [],
+        "explanation_generator_version": "1.0",
+        "prompt_version": "standard-action-fallback-v1",
+        "provider_name": "deterministic-template",
+        "model_name": null,
+        "fallback_used": true
+      },
+      "fallback_status": "standard_action_fallback"
+    },
+    {
+      "action_id": null,
+      "step_index": 2,
+      "personalization_status": "not_applicable",
+      "standard_action": {
+        "step_index": 2,
+        "area": "crease",
+        "goal": "add depth",
+        "product_requirement": "matte transition shadow",
+        "tool": "blending brush",
+        "motion": "blend",
+        "intensity": "sheer",
+        "target_result": "soft transition",
+        "time_range_seconds": null,
+        "confidence": null
+      },
+      "cv_standard_action": null,
+      "match_result": {
+        "step_index": 2,
+        "status": "matched",
+        "product_id": "demo-transition",
+        "capability_id": "demo-cap-transition",
+        "note": "Meets all hard constraints with strong capability coverage.",
+        "decision": "strong_match",
+        "best_match": {
+          "product_id": "demo-transition",
+          "name": "Synthetic Transition",
+          "product_name": "Synthetic Transition",
+          "brand": "MIRA Demo",
+          "category": "eye shadow",
+          "shade_name": "Taupe",
+          "color_attributes": {
+            "hex": "#A98272"
+          },
+          "finish": "matte",
+          "depth": "medium",
+          "reflectivity": "low",
+          "capability_ids": [
+            "demo-cap-transition"
+          ]
+        },
+        "match_score": 100.0,
+        "reason": "Meets all hard constraints with strong capability coverage.",
+        "difference": "All configured product attributes match.",
+        "impact": "Expected to reproduce the required function.",
+        "satisfied_capabilities": [
+          "product_requirement",
+          "category",
+          "area",
+          "goal",
+          "finish",
+          "depth",
+          "reflectivity"
+        ],
+        "missing_capabilities": [],
+        "functional_conflict": null,
+        "substitution_candidates": [],
+        "provenance": {
+          "matcher_version": "1.0",
+          "rules_version": "demo-product-rules-1.0",
+          "source_step_index": 2,
+          "product_requirement": "matte transition shadow",
+          "evaluated_product_ids": [
+            "demo-primer",
+            "demo-transition",
+            "demo-deep",
+            "demo-shimmer",
+            "demo-liner"
+          ],
+          "pre_cap_score": 100.0,
+          "hard_constraint_score_cap": 20.0,
+          "hard_constraints": [
+            {
+              "constraint": "capability_metadata",
+              "expected": [
+                "demo-cap-transition"
+              ],
+              "actual": [
+                "demo-cap-transition"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "product_requirement",
+              "expected": [
+                "matte transition shadow"
+              ],
+              "actual": [
+                "matte transition shadow"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "category",
+              "expected": [
+                "eye shadow",
+                "eye shadow palette"
+              ],
+              "actual": [
+                "eye shadow"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "finish",
+              "expected": [
+                "matte"
+              ],
+              "actual": [
+                "matte"
+              ],
+              "passed": true
+            }
+          ],
+          "score_components": [
+            {
+              "component": "product_requirement",
+              "points_awarded": 40.0,
+              "points_possible": 40.0,
+              "evidence": "required=matte transition shadow; supported=['matte transition shadow']"
+            },
+            {
+              "component": "category",
+              "points_awarded": 10.0,
+              "points_possible": 10.0,
+              "evidence": "expected=['eye shadow', 'eye shadow palette']; actual=['eye shadow']"
+            },
+            {
+              "component": "area",
+              "points_awarded": 15.0,
+              "points_possible": 15.0,
+              "evidence": "required=crease; supported=['crease']"
+            },
+            {
+              "component": "goal",
+              "points_awarded": 15.0,
+              "points_possible": 15.0,
+              "evidence": "required=add depth; supported=['add depth']"
+            },
+            {
+              "component": "finish",
+              "points_awarded": 10.0,
+              "points_possible": 10.0,
+              "evidence": "expected=['matte']; actual=matte"
+            },
+            {
+              "component": "depth",
+              "points_awarded": 5.0,
+              "points_possible": 5.0,
+              "evidence": "desired=['medium']; actual=medium"
+            },
+            {
+              "component": "reflectivity",
+              "points_awarded": 5.0,
+              "points_possible": 5.0,
+              "evidence": "desired=['low']; actual=low"
+            }
+          ]
+        }
+      },
+      "face_profile": {
+        "profile_id": "synthetic-face-a",
+        "version": "0.3"
+      },
+      "cv_personalized_action": null,
+      "where": "crease",
+      "how": "使用 blending brush，以 sheer 强度进行 blend。",
+      "why": "此步骤暂不支持 CV 个性化；保留原教程确定性步骤。",
+      "stop_when": "soft transition",
+      "reference_parameters": {},
+      "personalized_parameters": {},
+      "applied_rules": [],
+      "provenance": {
+        "request_id": "synthetic-demo-request",
+        "run_id": "tutorial-explanation-ede81707-6b97-49b5-b0cb-af6228183033",
+        "source_recipe_id": "recipe-main-eye-demo-v1",
+        "source_step_index": 2,
+        "face_profile_version": "0.3",
+        "face_profile_id": "synthetic-face-a",
+        "matching_id": "match-702d7de2-7927-4518-ae1d-4c0b1c306cc3",
+        "product_id": "demo-transition",
+        "mapping_version": "1.0",
+        "applied_rules": [],
+        "cv_adjustments": [],
+        "explanation_generator_version": "1.0",
+        "prompt_version": "standard-action-fallback-v1",
+        "provider_name": "deterministic-template",
+        "model_name": null,
+        "fallback_used": true
+      },
+      "fallback_status": "standard_action_fallback"
+    },
+    {
+      "action_id": null,
+      "step_index": 3,
+      "personalization_status": "not_applicable",
+      "standard_action": {
+        "step_index": 3,
+        "area": "outer corner",
+        "goal": "define",
+        "product_requirement": "matte deep shadow",
+        "tool": "detail brush",
+        "motion": "press and blend",
+        "intensity": "medium",
+        "target_result": "defined outer corner",
+        "time_range_seconds": null,
+        "confidence": null
+      },
+      "cv_standard_action": null,
+      "match_result": {
+        "step_index": 3,
+        "status": "matched",
+        "product_id": "demo-deep",
+        "capability_id": "demo-cap-deep",
+        "note": "Meets all hard constraints with strong capability coverage.",
+        "decision": "strong_match",
+        "best_match": {
+          "product_id": "demo-deep",
+          "name": "Synthetic Deep Brown",
+          "product_name": "Synthetic Deep Brown",
+          "brand": "MIRA Demo",
+          "category": "eye shadow",
+          "shade_name": "Deep Brown",
+          "color_attributes": {
+            "hex": "#49332B"
+          },
+          "finish": "matte",
+          "depth": "deep",
+          "reflectivity": "low",
+          "capability_ids": [
+            "demo-cap-deep"
+          ]
+        },
+        "match_score": 100.0,
+        "reason": "Meets all hard constraints with strong capability coverage.",
+        "difference": "All configured product attributes match.",
+        "impact": "Expected to reproduce the required function.",
+        "satisfied_capabilities": [
+          "product_requirement",
+          "category",
+          "area",
+          "goal",
+          "finish",
+          "depth",
+          "reflectivity"
+        ],
+        "missing_capabilities": [],
+        "functional_conflict": null,
+        "substitution_candidates": [],
+        "provenance": {
+          "matcher_version": "1.0",
+          "rules_version": "demo-product-rules-1.0",
+          "source_step_index": 3,
+          "product_requirement": "matte deep shadow",
+          "evaluated_product_ids": [
+            "demo-primer",
+            "demo-transition",
+            "demo-deep",
+            "demo-shimmer",
+            "demo-liner"
+          ],
+          "pre_cap_score": 100.0,
+          "hard_constraint_score_cap": 20.0,
+          "hard_constraints": [
+            {
+              "constraint": "capability_metadata",
+              "expected": [
+                "demo-cap-deep"
+              ],
+              "actual": [
+                "demo-cap-deep"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "product_requirement",
+              "expected": [
+                "matte deep shadow"
+              ],
+              "actual": [
+                "matte deep shadow"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "category",
+              "expected": [
+                "eye shadow",
+                "eye shadow palette"
+              ],
+              "actual": [
+                "eye shadow"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "finish",
+              "expected": [
+                "matte"
+              ],
+              "actual": [
+                "matte"
+              ],
+              "passed": true
+            }
+          ],
+          "score_components": [
+            {
+              "component": "product_requirement",
+              "points_awarded": 40.0,
+              "points_possible": 40.0,
+              "evidence": "required=matte deep shadow; supported=['matte deep shadow']"
+            },
+            {
+              "component": "category",
+              "points_awarded": 10.0,
+              "points_possible": 10.0,
+              "evidence": "expected=['eye shadow', 'eye shadow palette']; actual=['eye shadow']"
+            },
+            {
+              "component": "area",
+              "points_awarded": 15.0,
+              "points_possible": 15.0,
+              "evidence": "required=outer corner; supported=['outer corner']"
+            },
+            {
+              "component": "goal",
+              "points_awarded": 15.0,
+              "points_possible": 15.0,
+              "evidence": "required=define; supported=['define']"
+            },
+            {
+              "component": "finish",
+              "points_awarded": 10.0,
+              "points_possible": 10.0,
+              "evidence": "expected=['matte']; actual=matte"
+            },
+            {
+              "component": "depth",
+              "points_awarded": 5.0,
+              "points_possible": 5.0,
+              "evidence": "desired=['deep']; actual=deep"
+            },
+            {
+              "component": "reflectivity",
+              "points_awarded": 5.0,
+              "points_possible": 5.0,
+              "evidence": "desired=['low']; actual=low"
+            }
+          ]
+        }
+      },
+      "face_profile": {
+        "profile_id": "synthetic-face-a",
+        "version": "0.3"
+      },
+      "cv_personalized_action": null,
+      "where": "outer corner",
+      "how": "使用 detail brush，以 medium 强度进行 press and blend。",
+      "why": "此步骤暂不支持 CV 个性化；保留原教程确定性步骤。",
+      "stop_when": "defined outer corner",
+      "reference_parameters": {},
+      "personalized_parameters": {},
+      "applied_rules": [],
+      "provenance": {
+        "request_id": "synthetic-demo-request",
+        "run_id": "tutorial-explanation-80257475-00d2-42b9-89bd-1fd8d18c7187",
+        "source_recipe_id": "recipe-main-eye-demo-v1",
+        "source_step_index": 3,
+        "face_profile_version": "0.3",
+        "face_profile_id": "synthetic-face-a",
+        "matching_id": "match-702d7de2-7927-4518-ae1d-4c0b1c306cc3",
+        "product_id": "demo-deep",
+        "mapping_version": "1.0",
+        "applied_rules": [],
+        "cv_adjustments": [],
+        "explanation_generator_version": "1.0",
+        "prompt_version": "standard-action-fallback-v1",
+        "provider_name": "deterministic-template",
+        "model_name": null,
+        "fallback_used": true
+      },
+      "fallback_status": "standard_action_fallback"
+    },
+    {
+      "action_id": null,
+      "step_index": 4,
+      "personalization_status": "not_applicable",
+      "standard_action": {
+        "step_index": 4,
+        "area": "center lid",
+        "goal": "brighten",
+        "product_requirement": "shimmer shadow",
+        "tool": "flat shader brush",
+        "motion": "pat",
+        "intensity": "medium",
+        "target_result": "reflective lid",
+        "time_range_seconds": null,
+        "confidence": null
+      },
+      "cv_standard_action": null,
+      "match_result": {
+        "step_index": 4,
+        "status": "matched",
+        "product_id": "demo-shimmer",
+        "capability_id": "demo-cap-shimmer",
+        "note": "Meets all hard constraints with strong capability coverage.",
+        "decision": "strong_match",
+        "best_match": {
+          "product_id": "demo-shimmer",
+          "name": "Synthetic Shimmer",
+          "product_name": "Synthetic Shimmer",
+          "brand": "MIRA Demo",
+          "category": "eye shadow",
+          "shade_name": "Champagne",
+          "color_attributes": {
+            "hex": "#D1B68B"
+          },
+          "finish": "shimmer",
+          "depth": "light",
+          "reflectivity": "high",
+          "capability_ids": [
+            "demo-cap-shimmer"
+          ]
+        },
+        "match_score": 100.0,
+        "reason": "Meets all hard constraints with strong capability coverage.",
+        "difference": "All configured product attributes match.",
+        "impact": "Expected to reproduce the required function.",
+        "satisfied_capabilities": [
+          "product_requirement",
+          "category",
+          "area",
+          "goal",
+          "finish",
+          "depth",
+          "reflectivity"
+        ],
+        "missing_capabilities": [],
+        "functional_conflict": null,
+        "substitution_candidates": [],
+        "provenance": {
+          "matcher_version": "1.0",
+          "rules_version": "demo-product-rules-1.0",
+          "source_step_index": 4,
+          "product_requirement": "shimmer shadow",
+          "evaluated_product_ids": [
+            "demo-primer",
+            "demo-transition",
+            "demo-deep",
+            "demo-shimmer",
+            "demo-liner"
+          ],
+          "pre_cap_score": 100.0,
+          "hard_constraint_score_cap": 20.0,
+          "hard_constraints": [
+            {
+              "constraint": "capability_metadata",
+              "expected": [
+                "demo-cap-shimmer"
+              ],
+              "actual": [
+                "demo-cap-shimmer"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "product_requirement",
+              "expected": [
+                "shimmer shadow"
+              ],
+              "actual": [
+                "shimmer shadow"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "category",
+              "expected": [
+                "eye shadow",
+                "eye shadow palette"
+              ],
+              "actual": [
+                "eye shadow"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "finish",
+              "expected": [
+                "shimmer",
+                "metallic"
+              ],
+              "actual": [
+                "shimmer"
+              ],
+              "passed": true
+            }
+          ],
+          "score_components": [
+            {
+              "component": "product_requirement",
+              "points_awarded": 40.0,
+              "points_possible": 40.0,
+              "evidence": "required=shimmer shadow; supported=['shimmer shadow']"
+            },
+            {
+              "component": "category",
+              "points_awarded": 10.0,
+              "points_possible": 10.0,
+              "evidence": "expected=['eye shadow', 'eye shadow palette']; actual=['eye shadow']"
+            },
+            {
+              "component": "area",
+              "points_awarded": 15.0,
+              "points_possible": 15.0,
+              "evidence": "required=center lid; supported=['center lid']"
+            },
+            {
+              "component": "goal",
+              "points_awarded": 15.0,
+              "points_possible": 15.0,
+              "evidence": "required=brighten; supported=['brighten']"
+            },
+            {
+              "component": "finish",
+              "points_awarded": 10.0,
+              "points_possible": 10.0,
+              "evidence": "expected=['shimmer', 'metallic']; actual=shimmer"
+            },
+            {
+              "component": "depth",
+              "points_awarded": 5.0,
+              "points_possible": 5.0,
+              "evidence": "desired=['light', 'medium']; actual=light"
+            },
+            {
+              "component": "reflectivity",
+              "points_awarded": 5.0,
+              "points_possible": 5.0,
+              "evidence": "desired=['high']; actual=high"
+            }
+          ]
+        }
+      },
+      "face_profile": {
+        "profile_id": "synthetic-face-a",
+        "version": "0.3"
+      },
+      "cv_personalized_action": null,
+      "where": "center lid",
+      "how": "使用 flat shader brush，以 medium 强度进行 pat。",
+      "why": "此步骤暂不支持 CV 个性化；保留原教程确定性步骤。",
+      "stop_when": "reflective lid",
+      "reference_parameters": {},
+      "personalized_parameters": {},
+      "applied_rules": [],
+      "provenance": {
+        "request_id": "synthetic-demo-request",
+        "run_id": "tutorial-explanation-8775830a-435c-4e30-9be8-b4e5d5e11a36",
+        "source_recipe_id": "recipe-main-eye-demo-v1",
+        "source_step_index": 4,
+        "face_profile_version": "0.3",
+        "face_profile_id": "synthetic-face-a",
+        "matching_id": "match-702d7de2-7927-4518-ae1d-4c0b1c306cc3",
+        "product_id": "demo-shimmer",
+        "mapping_version": "1.0",
+        "applied_rules": [],
+        "cv_adjustments": [],
+        "explanation_generator_version": "1.0",
+        "prompt_version": "standard-action-fallback-v1",
+        "provider_name": "deterministic-template",
+        "model_name": null,
+        "fallback_used": true
+      },
+      "fallback_status": "standard_action_fallback"
+    },
+    {
+      "action_id": "A04",
+      "step_index": 5,
+      "personalization_status": "personalized",
+      "standard_action": {
+        "step_index": 5,
+        "area": "upper lash line",
+        "goal": "define",
+        "product_requirement": "eyeliner",
+        "tool": "liner brush",
+        "motion": "short stroke",
+        "intensity": "light",
+        "target_result": "clean lash-line definition",
+        "time_range_seconds": null,
+        "confidence": null
+      },
+      "cv_standard_action": {
+        "mapping_version": "1.0",
+        "mapping_id": "synthetic-demo-upper-lash-line-eyeliner-to-a04",
+        "source_step_index": 5,
+        "standard_makeup_action": {
+          "action_id": "A04",
+          "parameters": {
+            "direction_angle_deg": 10.0,
+            "extension_factor": 1.0
+          }
+        }
+      },
+      "match_result": {
+        "step_index": 5,
+        "status": "matched",
+        "product_id": "demo-liner",
+        "capability_id": "demo-cap-eyeliner",
+        "note": "Meets all hard constraints with strong capability coverage.",
+        "decision": "strong_match",
+        "best_match": {
+          "product_id": "demo-liner",
+          "name": "Synthetic Eyeliner",
+          "product_name": "Synthetic Eyeliner",
+          "brand": "MIRA Demo",
+          "category": "eyeliner",
+          "shade_name": "Black",
+          "color_attributes": {
+            "hex": "#000000"
+          },
+          "finish": "matte",
+          "depth": "deep",
+          "reflectivity": "low",
+          "capability_ids": [
+            "demo-cap-eyeliner"
+          ]
+        },
+        "match_score": 100.0,
+        "reason": "Meets all hard constraints with strong capability coverage.",
+        "difference": "All configured product attributes match.",
+        "impact": "Expected to reproduce the required function.",
+        "satisfied_capabilities": [
+          "product_requirement",
+          "category",
+          "area",
+          "goal",
+          "finish",
+          "depth",
+          "reflectivity"
+        ],
+        "missing_capabilities": [],
+        "functional_conflict": null,
+        "substitution_candidates": [],
+        "provenance": {
+          "matcher_version": "1.0",
+          "rules_version": "demo-product-rules-1.0",
+          "source_step_index": 5,
+          "product_requirement": "eyeliner",
+          "evaluated_product_ids": [
+            "demo-primer",
+            "demo-transition",
+            "demo-deep",
+            "demo-shimmer",
+            "demo-liner"
+          ],
+          "pre_cap_score": 100.0,
+          "hard_constraint_score_cap": 20.0,
+          "hard_constraints": [
+            {
+              "constraint": "capability_metadata",
+              "expected": [
+                "demo-cap-eyeliner"
+              ],
+              "actual": [
+                "demo-cap-eyeliner"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "product_requirement",
+              "expected": [
+                "eyeliner"
+              ],
+              "actual": [
+                "eyeliner"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "category",
+              "expected": [
+                "eyeliner"
+              ],
+              "actual": [
+                "eyeliner"
+              ],
+              "passed": true
+            },
+            {
+              "constraint": "finish",
+              "expected": [],
+              "actual": [
+                "matte"
+              ],
+              "passed": true
+            }
+          ],
+          "score_components": [
+            {
+              "component": "product_requirement",
+              "points_awarded": 40.0,
+              "points_possible": 40.0,
+              "evidence": "required=eyeliner; supported=['eyeliner']"
+            },
+            {
+              "component": "category",
+              "points_awarded": 10.0,
+              "points_possible": 10.0,
+              "evidence": "expected=['eyeliner']; actual=['eyeliner']"
+            },
+            {
+              "component": "area",
+              "points_awarded": 15.0,
+              "points_possible": 15.0,
+              "evidence": "required=upper lash line; supported=['upper lash line']"
+            },
+            {
+              "component": "goal",
+              "points_awarded": 15.0,
+              "points_possible": 15.0,
+              "evidence": "required=define; supported=['define']"
+            },
+            {
+              "component": "finish",
+              "points_awarded": 10.0,
+              "points_possible": 10.0,
+              "evidence": "expected=[]; actual=matte"
+            },
+            {
+              "component": "depth",
+              "points_awarded": 5.0,
+              "points_possible": 5.0,
+              "evidence": "desired=['deep']; actual=deep"
+            },
+            {
+              "component": "reflectivity",
+              "points_awarded": 5.0,
+              "points_possible": 5.0,
+              "evidence": "desired=['low']; actual=low"
+            }
+          ]
+        }
+      },
+      "face_profile": {
+        "profile_id": "synthetic-face-a",
+        "version": "0.3"
+      },
+      "cv_personalized_action": {
+        "schema_version": "0.2",
+        "recipe_id": "recipe-main-eye-demo-v1",
+        "step_index": 5,
+        "face_profile_version": "0.3",
+        "personalized_action": {
+          "action_id": "A04",
+          "original_parameters": {
+            "direction_angle_deg": 10.0,
+            "extension_factor": 1.0
+          },
+          "personalized_parameters": {
+            "direction_angle_deg": 12.6,
+            "extension_factor": 1.016667
+          },
+          "applied_rules": [
+            "R01",
+            "R02",
+            "R03",
+            "R04"
+          ],
+          "adjustments": [
+            {
+              "rule_ids": [
+                "R01",
+                "R02"
+              ],
+              "feature_path": "eye_geometry.eye_tail_angle.mean",
+              "feature_value": 8.5,
+              "parameter": "direction_angle_deg",
+              "operation": "add",
+              "adjustment_value": 2.6,
+              "original_value": 10.0,
+              "personalized_value": 12.6
+            },
+            {
+              "rule_ids": [
+                "R03",
+                "R04"
+              ],
+              "feature_path": "eye_geometry.relative_eye_length.mean",
+              "feature_value": 0.205,
+              "parameter": "extension_factor",
+              "operation": "multiply",
+              "adjustment_value": 1.016667,
+              "original_value": 1.0,
+              "personalized_value": 1.016667
+            }
+          ]
+        },
+        "provenance": {
+          "mapping_version": "1.0",
+          "mapping_id": "synthetic-demo-upper-lash-line-eyeliner-to-a04",
+          "source_step_index": 5,
+          "standard_makeup_action": {
+            "action_id": "A04",
+            "parameters": {
+              "direction_angle_deg": 10.0,
+              "extension_factor": 1.0
+            }
+          }
+        }
+      },
+      "where": "upper lash line",
+      "how": "让线条更上扬一些（10.0 → 12.6，Δ 2.6）；向外延伸得更远一些（1.0 → 1.016667，Δ 0.016667）",
+      "why": "依据 CV 证据：eye_geometry.eye_tail_angle.mean=8.5，规则 R01,R02；eye_geometry.relative_eye_length.mean=0.205，规则 R03,R04。触发规则：R01,R02,R03,R04。",
+      "stop_when": "clean lash-line definition",
+      "reference_parameters": {
+        "direction_angle_deg": 10.0,
+        "extension_factor": 1.0
+      },
+      "personalized_parameters": {
+        "direction_angle_deg": 12.6,
+        "extension_factor": 1.016667
+      },
+      "applied_rules": [
+        "R01",
+        "R02",
+        "R03",
+        "R04"
+      ],
+      "provenance": {
+        "request_id": "synthetic-demo-request",
+        "run_id": "tutorial-explanation-b52e3d0d-d5af-422d-a65e-ee30db52b2bf",
+        "source_recipe_id": "recipe-main-eye-demo-v1",
+        "source_step_index": 5,
+        "face_profile_version": "0.3",
+        "face_profile_id": "synthetic-face-a",
+        "matching_id": "match-702d7de2-7927-4518-ae1d-4c0b1c306cc3",
+        "product_id": "demo-liner",
+        "mapping_version": "1.0",
+        "applied_rules": [
+          "R01",
+          "R02",
+          "R03",
+          "R04"
+        ],
+        "cv_adjustments": [
+          {
+            "rule_ids": [
+              "R01",
+              "R02"
+            ],
+            "feature_path": "eye_geometry.eye_tail_angle.mean",
+            "feature_value": 8.5,
+            "parameter": "direction_angle_deg",
+            "operation": "add",
+            "adjustment_value": 2.6,
+            "original_value": 10.0,
+            "personalized_value": 12.6
+          },
+          {
+            "rule_ids": [
+              "R03",
+              "R04"
+            ],
+            "feature_path": "eye_geometry.relative_eye_length.mean",
+            "feature_value": 0.205,
+            "parameter": "extension_factor",
+            "operation": "multiply",
+            "adjustment_value": 1.016667,
+            "original_value": 1.0,
+            "personalized_value": 1.016667
+          }
+        ],
+        "explanation_generator_version": "1.0",
+        "prompt_version": "my-tutorial-explanation-v1",
+        "provider_name": "deterministic-template",
+        "model_name": null,
+        "fallback_used": true
+      },
+      "fallback_status": "template_fallback"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "rules_version": "demo-product-rules-1.0",
+  "data_status": "demo_only_pending_product_ground_truth",
+  "hard_constraint_score_cap": 20,
+  "scoring_weights": {
+    "product_requirement": 40,
+    "category": 10,
+    "area": 15,
+    "goal": 15,
+    "finish": 10,
+    "depth": 5,
+    "reflectivity": 5
+  },
+  "requirements": [
+    {
+      "product_requirement": "eye primer",
+      "accepted_categories": ["eye primer"],
+      "required_finishes": [],
+      "desired_depths": [],
+      "desired_reflectivity": ["low"]
+    },
+    {
+      "product_requirement": "matte transition shadow",
+      "accepted_categories": ["eye shadow", "eye shadow palette"],
+      "required_finishes": ["matte"],
+      "desired_depths": ["medium"],
+      "desired_reflectivity": ["low"]
+    },
+    {
+      "product_requirement": "matte deep shadow",
+      "accepted_categories": ["eye shadow", "eye shadow palette"],
+      "required_finishes": ["matte"],
+      "desired_depths": ["deep"],
+      "desired_reflectivity": ["low"]
+    },
+    {
+      "product_requirement": "shimmer shadow",
+      "accepted_categories": ["eye shadow", "eye shadow palette"],
+      "required_finishes": ["shimmer", "metallic"],
+      "desired_depths": ["light", "medium"],
+      "desired_reflectivity": ["high"]
+    },
+    {
+      "product_requirement": "eyeliner",
+      "accepted_categories": ["eyeliner"],
+      "required_finishes": [],
+      "desired_depths": ["deep"],
+      "desired_reflectivity": ["low"]
+    }
+  ]
+}

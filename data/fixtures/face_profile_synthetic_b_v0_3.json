@@ -1,0 +1,22 @@
+{
+  "version": "0.3",
+  "eye_geometry": {
+    "eye_tail_angle": {"left": -4.0, "right": -3.0, "mean": -3.5},
+    "eye_spacing_ratio": 1.18,
+    "relative_eye_length": {"left": 0.34, "right": 0.35, "mean": 0.345},
+    "eye_width_height_ratio": {"left": 2.2, "right": 2.3, "mean": 2.25},
+    "brow_eye_ratio": {"left": 0.54, "right": 0.56, "mean": 0.55},
+    "lower_lid_space_ratio": {"left": 0.22, "right": 0.23, "mean": 0.225},
+    "inner_corner_angle": {"left_deg": 58.0, "right_deg": 59.0, "mean_deg": 58.5}
+  },
+  "symmetry": {
+    "eye_width": 0.02,
+    "eye_height": 0.02,
+    "eye_aspect_ratio": 0.02,
+    "eye_tail_angle_difference": 1.0
+  },
+  "raw_geometry_reference": {
+    "source": "synthetic_demo_fixture_b_not_real_face_data"
+  },
+  "confidence": {"pose_normalized": true, "expression_controlled": true}
+}

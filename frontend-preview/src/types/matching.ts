@@ -8,4 +8,6 @@ export interface MatchResult {
   difference: string;
   impact: string;
   missingCapability: string[];
+  reason?: string;
+  functionalConflict?: string | null;
 }

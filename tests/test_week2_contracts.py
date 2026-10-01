@@ -152,26 +152,15 @@ class WeekTwoContractTests(unittest.TestCase):
         self.assertEqual(wrapper.personalized_action.model_dump(), before)
         self.assertEqual(cv_output, before)
 
-    def test_my_tutorial_v02_is_schema_only_and_marks_ar_pending(self):
-        action = load_fixture("standard_recipe_v1.json")["action_units"][0]
-        response = MyTutorialResponse.model_validate(
-            {
-                "tutorial_id": "tutorial-1",
-                "recipe_id": "recipe-main-eye-demo-v1",
-                "steps": [
-                    {
-                        "step_index": 1,
-                        "standard_action": action,
-                        "instructions": {},
-                        "provenance": {"recipe": "backend"},
-                        "fallback_status": "mapping_pending",
-                    }
-                ],
-            }
+    def test_my_tutorial_v02_exposes_wording_and_no_ar_contract(self):
+        properties = MyTutorialResponse.model_json_schema()["$defs"]["MyTutorialStep"][
+            "properties"
+        ]
+        self.assertTrue(
+            {"action_id", "where", "how", "why", "stop_when"}.issubset(properties)
         )
-        self.assertEqual(response.schema_version, "0.2")
-        self.assertEqual(response.steps[0].ar_guidance_status, "pending_cv_contract")
-        self.assertIsNone(response.steps[0].instructions.where)
+        self.assertNotIn("ar_guidance", properties)
+        self.assertNotIn("ar_guidance_status", properties)
 
 
 if __name__ == "__main__":
