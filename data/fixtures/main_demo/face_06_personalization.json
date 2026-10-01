@@ -1,0 +1,181 @@
+{
+  "mode": "reference_relative",
+  "sample_id": "face_06",
+  "reference_id": "cat_eye_main_demo",
+  "triggered_rules": [
+    "R02",
+    "R03",
+    "R06"
+  ],
+  "decision": "APPLY_RELATIVE_ADJUSTMENT",
+  "dead_zone": {
+    "enabled": true,
+    "status": "expert_rule_v0_pending_validation",
+    "scope": "validation_only",
+    "thresholds": {
+      "eye_tail_angle_deg": 1.25,
+      "relative_eye_length": 0.019,
+      "lower_lid_space_ratio": 0.0045
+    }
+  },
+  "source_validation_result": {
+    "case": "face06",
+    "mode": "reference_relative_with_validation_dead_zone",
+    "dead_zone_enabled": true,
+    "dead_zone_config": {
+      "status": "expert_rule_v0_pending_validation",
+      "scope": "validation_only",
+      "eye_tail_angle_deg": 1.25,
+      "relative_eye_length": 0.019,
+      "lower_lid_space_ratio": 0.0045
+    },
+    "blogger_p0": {
+      "eye_tail_angle.mean": 7.109,
+      "relative_eye_length.mean": 0.2123,
+      "lower_lid_space_ratio.mean": 0.1413
+    },
+    "user_p0": {
+      "eye_tail_angle.mean": 11.635,
+      "relative_eye_length.mean": 0.1898,
+      "lower_lid_space_ratio.mean": 0.1697
+    },
+    "differences": {
+      "delta_eye_tail": 4.526,
+      "delta_relative_eye_length": -0.0225,
+      "delta_lower_lid_space": 0.0284
+    },
+    "feature_decisions": {
+      "eye_tail_angle.mean": {
+        "blogger": 7.109,
+        "user": 11.635,
+        "difference": 4.526,
+        "threshold": 1.25,
+        "inside_dead_zone": false,
+        "keep_reference": false,
+        "triggered_rule": "R02",
+        "decision": "APPLY_RELATIVE_ADJUSTMENT",
+        "reason": "difference_outside_dead_zone"
+      },
+      "relative_eye_length.mean": {
+        "blogger": 0.2123,
+        "user": 0.1898,
+        "difference": -0.0225,
+        "threshold": 0.019,
+        "inside_dead_zone": false,
+        "keep_reference": false,
+        "triggered_rule": "R03",
+        "decision": "APPLY_RELATIVE_ADJUSTMENT",
+        "reason": "difference_outside_dead_zone"
+      },
+      "lower_lid_space_ratio.mean": {
+        "blogger": 0.1413,
+        "user": 0.1697,
+        "difference": 0.0284,
+        "threshold": 0.0045,
+        "inside_dead_zone": false,
+        "keep_reference": false,
+        "triggered_rule": "R06",
+        "decision": "APPLY_RELATIVE_ADJUSTMENT",
+        "reason": "difference_outside_dead_zone"
+      }
+    },
+    "A04": {
+      "direction": {
+        "reference_direction_deg": 5.781666,
+        "blogger_correction_deg": 3.1564,
+        "user_correction_deg": 1.346,
+        "raw_relative_adjustment_deg": -1.8104,
+        "relative_adjustment_deg": -1.8104,
+        "personalized_direction_deg": 3.971266
+      },
+      "extension": {
+        "reference_extension_ratio": 0.34493,
+        "blogger_adaptation_factor": 0.9826,
+        "user_adaptation_factor": 1.0876,
+        "raw_relative_adaptation_factor": 1.106859352738,
+        "relative_adaptation_factor": 1.106859352738,
+        "personalized_extension_ratio": 0.38178899654
+      },
+      "start_position_ratio": 0.985925
+    },
+    "A02": {
+      "reference_range_factor": 1.0,
+      "reference_intensity_factor": 1.0,
+      "blogger_range_mapping_factor": 0.9065,
+      "user_range_mapping_factor": 1.0485,
+      "raw_relative_range_factor": 1.156646442361,
+      "personalized_range_factor": 1.156646442361,
+      "blogger_intensity_mapping_factor": 0.921,
+      "user_intensity_mapping_factor": 1.015667,
+      "raw_relative_intensity_factor": 1.102787187839,
+      "personalized_intensity_factor": 1.102787187839
+    },
+    "triggered_rules": [
+      "R02",
+      "R03",
+      "R06"
+    ]
+  },
+  "feature_decisions": [
+    {
+      "feature": "eye_tail_angle.mean",
+      "blogger_value": 7.109,
+      "user_value": 11.635,
+      "signed_difference": 4.526,
+      "threshold": 1.25,
+      "inside_dead_zone": false,
+      "triggered_rule": "R02",
+      "decision": "APPLY_RELATIVE_ADJUSTMENT",
+      "effect": "A04.direction"
+    },
+    {
+      "feature": "relative_eye_length.mean",
+      "blogger_value": 0.2123,
+      "user_value": 0.1898,
+      "signed_difference": -0.0225,
+      "threshold": 0.019,
+      "inside_dead_zone": false,
+      "triggered_rule": "R03",
+      "decision": "APPLY_RELATIVE_ADJUSTMENT",
+      "effect": "A04.extension"
+    },
+    {
+      "feature": "lower_lid_space_ratio.mean",
+      "blogger_value": 0.1413,
+      "user_value": 0.1697,
+      "signed_difference": 0.0284,
+      "threshold": 0.0045,
+      "inside_dead_zone": false,
+      "triggered_rule": "R06",
+      "decision": "APPLY_RELATIVE_ADJUSTMENT",
+      "effect": "A02.range_and_intensity"
+    }
+  ],
+  "A04": {
+    "reference_direction": 5.781666,
+    "blogger_correction": 3.1564,
+    "user_correction": 1.346,
+    "raw_relative_direction_adjustment": -1.8104,
+    "relative_direction_adjustment": -1.8104,
+    "personalized_direction": 3.971266,
+    "reference_extension_ratio": 0.34493,
+    "blogger_extension_factor": 0.9826,
+    "user_extension_factor": 1.0876,
+    "raw_relative_extension_factor": 1.106859352738,
+    "relative_extension_factor": 1.106859352738,
+    "personalized_extension_ratio": 0.38178899654,
+    "start_position_ratio": 0.985925
+  },
+  "A02": {
+    "reference_range_factor": 1.0,
+    "blogger_range_factor": 0.9065,
+    "user_range_factor": 1.0485,
+    "raw_relative_range_factor": 1.156646442361,
+    "personalized_range_factor": 1.156646442361,
+    "reference_intensity_factor": 1.0,
+    "blogger_intensity_factor": 0.921,
+    "user_intensity_factor": 1.015667,
+    "raw_relative_intensity_factor": 1.102787187839,
+    "personalized_intensity_factor": 1.102787187839
+  }
+}

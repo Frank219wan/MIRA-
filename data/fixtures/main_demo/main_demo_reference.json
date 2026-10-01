@@ -1,0 +1,20 @@
+{
+  "reference_id": "cat_eye_main_demo",
+  "source_type": "safe_fixture",
+  "blogger_face_profile_p0": {
+    "eye_tail_angle_mean": 7.109,
+    "relative_eye_length_mean": 0.2123,
+    "lower_lid_space_ratio_mean": 0.1413
+  },
+  "reference_action": {
+    "A04": {
+      "direction_relative_to_eye_axis_deg": 5.781666,
+      "reference_extension_ratio": 0.34493,
+      "start_position_ratio": 0.985925
+    },
+    "A02": {
+      "range_factor": 1.0,
+      "intensity_factor": 1.0
+    }
+  }
+}
