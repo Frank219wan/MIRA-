@@ -13,7 +13,7 @@ export function adaptMyTutorialResponse(
       throw new Error("Mismatched My Tutorial step");
     const match = step.match_result;
     return {
-      actionId: step.action_id ?? `step-${step.step_index}`,
+      actionId: `${dto.recipe_id}:${step.step_index}`,
       reference: {
         where: step.standard_action.area,
         direction: step.standard_action.motion,
