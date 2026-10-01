@@ -811,6 +811,48 @@ EXIF、debug image path 或本地绝对路径。拥有本地 validation outputs 
 python -m src.main_demo_safe_fixtures
 ```
 
+## Tutorial Video → Reference Package
+
+MIRA Main Demo v0.1 支持以下最小闭环：Tutorial Video → timestamp-based
+BEFORE/A04/AFTER keyframe extraction → Blogger Face Profile v0.3 → 已有
+Reference Action Geometry v0.1 → portable Reference Package → 已有 reference-relative
+personalization + validation dead zone → A04/A02 AR Spatial Guidance。
+
+视频桥接只保存视频 basename 和结构化结果；原视频、抽帧、CV debug 图继续放在被忽略的
+`data/output/`。A04 annotation points 仍由人工标注 JSON 提供，不进行 eyeliner tip 自动
+识别。当前 timestamps 可由 Tutorial Parser 或 Demo metadata 预先提供；本版本不声称已经
+实现完整 automatic video understanding 或 photorealistic makeup try-on。
+
+从视频生成 Reference Package：
+
+```bash
+python -m src.tutorial_video_reference \
+  --video tutorial.mp4 \
+  --before 3.2 --a04 108.5 --after 145.0 \
+  --annotation examples/reference/a04_points.json \
+  --output data/output/tutorial_video_reference/
+```
+
+Reference Package 与用户 Face Profile 可继续进入统一 Demo 命令。稳定演示使用
+`existing_reference`；视频技术展示使用 `video_reference`：
+
+```bash
+python tools/run_main_demo_pipeline.py \
+  --mode existing_reference --sample face_06 \
+  --landmarks data/output/current_frame_eye_landmarks.json
+
+python tools/run_main_demo_pipeline.py \
+  --mode video_reference \
+  --reference-package data/output/tutorial_video_reference/reference_package.json \
+  --user-profile data/fixtures/main_demo/face_06_face_profile.json \
+  --landmarks data/output/current_frame_eye_landmarks.json
+```
+
+AR 后端仅输出 normalized camera-space geometry。A04 是方向线；A02 是 lower-lid
+target-region 窄带，intensity 仅作为 metadata，并不等同于 UI opacity。可选 debug
+renderer 位于 `tools/render_ar_guidance_debug.py`，所有图片输出仍只写入
+`data/output/`。
+
 ## 模块设计
 
 - `FaceLandmarkerDetector`：负责配置和调用 MediaPipe Tasks Face Landmarker。

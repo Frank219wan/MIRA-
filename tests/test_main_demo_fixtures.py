@@ -32,7 +32,7 @@ EYE_GEOMETRY_KEYS = {
     "inner_corner_angle",
 }
 FORBIDDEN_TEXT = (
-    "/Users/",
+    "/" + "Users/",
     "wansiyu",
     ".jpg",
     ".jpeg",
