@@ -853,6 +853,42 @@ target-region 窄带，intensity 仅作为 metadata，并不等同于 UI opacity
 renderer 位于 `tools/render_ar_guidance_debug.py`，所有图片输出仍只写入
 `data/output/`。
 
+## Local Webcam Cat Eye Demo
+
+本地 Webcam Demo 使用 Mac 默认摄像头完成一次 Stable Face Scan，然后基于
+`cat_eye_main_demo` 生成一次个性化结果，并在后续帧中实时绘制 A04 眼线方向线
+和 A02 下眼睑区域。建议使用仓库已有的 Python 3.9 `.venv`，其中已配置兼容的
+MediaPipe 和 OpenCV：
+
+```bash
+cd /Users/wansiyu/Documents/ChatGPT/欧莱雅/beauty-face-engine
+source .venv/bin/activate
+python tools/run_cat_eye_webcam_demo.py
+```
+
+首次运行时，macOS 可能会请求 Terminal 或 Python 的 Camera 权限。默认扫描 30 个
+有效帧，通常需要数秒，实际时间取决于光线、遮挡和设备性能；20 秒超时时，只要
+已经收集至少 3 个有效帧就会继续。可通过 `--scan-target`、`--scan-timeout`、
+`--camera` 和 `--side left|right` 调整；默认引导用户本人的右眼。
+
+实时窗口快捷键：
+
+- `P`：只显示 personalized guidance。
+- `R`：只显示 Blogger Reference guidance。
+- `B`：同时显示两者。
+- `S`：仅保存结构化 JSON 到被 Git 忽略的 `data/output/webcam_cat_eye_demo/`。
+- `Q`：退出。
+
+摄像头原始帧在未镜像坐标中完成 landmark、Face Profile 和 AR 几何计算；仅在显示
+阶段做水平镜像，因此 left/right 始终指用户本人的解剖学侧。程序不会自动保存
+摄像头视频、帧图或 debug 图片。
+
+每次启动并完成扫描后都会新建一个 session ID，绑定当次 Stable Face
+Profile hash、personalization、Live Overlay 和保存结果。`data/output/` 只是
+保存目标，程序不会从中读取旧 personalization 作为 Live State。当前版本
+没有热键重新扫描；退出后再运行命令会建立一个全新 session，不保留上一轮
+profile、personalization、AR snapshot 或 overlay summary 的对象引用。
+
 ## 模块设计
 
 - `FaceLandmarkerDetector`：负责配置和调用 MediaPipe Tasks Face Landmarker。
