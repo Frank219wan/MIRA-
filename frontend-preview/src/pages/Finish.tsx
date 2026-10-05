@@ -41,7 +41,12 @@ export default function Finish() {
                     ["产品能力缺口", `${data.missing.length} 项`],
                   ]
                 : [["产品使用方式", "通用描述"]]),
-              ["AI 个性化调整数量", `${data.adjustmentCount} 项`],
+              [
+                data.exampleProfile
+                  ? "AI 调整数量（示例档案）"
+                  : "AI 个性化调整数量",
+                `${data.adjustmentCount} 项`,
+              ],
             ].map(([k, v]) => (
               <Card key={k}>
                 <span>{k}</span>
