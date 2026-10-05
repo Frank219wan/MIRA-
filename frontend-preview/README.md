@@ -40,3 +40,7 @@ Scanning requires explicit consent before camera access or uploads. Browser-side
 The countdown and capture tolerate brief blinking and minor movement, while sustained movement stops capture. These are conservative input checks, not an accuracy guarantee or comprehensive occlusion detection. See `docs/SCAN-QUALITY.md`.
 
 Photo review is temporary. Users may separately opt in to keep numeric face profiles in the current browser session, and can clear them. Tutorial illustrations are generic closed-eyelid diagrams, not personal photo renderings.
+
+## Personalization integration
+
+`personalizationService` sends supported A02/A04 actions to `POST /personalization`, validates the response and normalizes it for My Tutorial. A measured v0.3 face profile takes priority; when absent, the bundled synthetic v0.3 fixture is explicitly labeled as demo input. API failures keep the existing fallback with diagnostic logging. Tutorial numeric parameters still use the documented cat-eye preset, not measurements extracted from the tutorial.

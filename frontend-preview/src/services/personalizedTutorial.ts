@@ -14,15 +14,8 @@ import {
   getProductUseMode,
   type TutorialProduct,
 } from "./productMode";
-import {
-  toEngineRecipe,
-  applyPersonalization,
-} from "./adapters/personalization";
-import type { PersonalizedAction } from "../types/guidance";
-import type {
-  PersonalizationRequestDTO,
-  PersonalizationResultDTO,
-} from "./api/dto";
+import { personalizeTutorialActions } from "./personalizationService";
+export { personalizeTutorialActions } from "./personalizationService";
 import type { CVAdaptationDTO } from "./api/dto";
 export async function getCVAdaptation(): Promise<CVAdaptationDTO | null> {
   const face_profile = getFaceProfileDTO();
@@ -41,40 +34,6 @@ export async function getCVAdaptation(): Promise<CVAdaptationDTO | null> {
       return result;
     },
     () => null,
-  );
-}
-export async function personalizeTutorialActions(
-  actions: PersonalizedAction[],
-) {
-  const face = getFaceProfileDTO();
-  if (!face) return actions;
-  return withFallback(
-    "getPersonalization",
-    async () => {
-      const recipe = await getRecipeDTO();
-      const mapping = toEngineRecipe(recipe);
-      if (!mapping.standardRecipe.actions.length) return actions;
-      // Do not merge responses into a fallback or different tutorial.
-      if (
-        !mapping.tutorialActionIds.every((id) =>
-          actions.some((a) => a.actionId === id),
-        )
-      )
-        throw new Error("Personalization tutorial identity mismatch");
-      const payload: PersonalizationRequestDTO = {
-        face_profile: face,
-        standard_recipe: mapping.standardRecipe,
-        target_effect: "cat_eye",
-      };
-      const result = await request<PersonalizationResultDTO>(
-        "/personalization",
-        payload,
-      );
-      if (JSON.stringify(getFaceProfileDTO()) !== JSON.stringify(face))
-        return actions;
-      return applyPersonalization(actions, mapping, result);
-    },
-    () => actions,
   );
 }
 export async function getPersonalizedTutorialContext() {
@@ -120,6 +79,9 @@ export async function getPersonalizedTutorialContext() {
       })),
       products: products.map((product) => product.source),
       geometry: face.provenance.geometry,
+      personalizationFace:
+        personalized.find((a) => a.faceProfileSource)?.faceProfileSource ??
+        "unavailable",
       adaptation: adaptation ? "backend-passthrough" : "unavailable",
     } as const,
   };
@@ -133,7 +95,9 @@ export const savePersonalizedTutorial = async () => {
     JSON.stringify({
       savedAt: new Date().toISOString(),
       faceAdapted: context.actions.some(
-        (a) => a.personalizationSource === "backend-personalization",
+        (a) =>
+          a.personalizationSource === "backend-personalization" &&
+          a.faceProfileSource === "scan",
       ),
       productMode: context.productMode,
       actions: context.actions,

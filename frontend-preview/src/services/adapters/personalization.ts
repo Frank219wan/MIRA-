@@ -100,8 +100,7 @@ export function applyPersonalization(
       !item.personalized_parameters ||
       !Array.isArray(item.applied_rules) ||
       !item.applied_rules.every((x) => typeof x === "string") ||
-      !Array.isArray(item.adjustments) ||
-      !item.adjustments.length
+      !Array.isArray(item.adjustments)
     )
       throw new Error("Invalid personalization action response");
     for (const [key, value] of Object.entries(expected.parameters)) {
@@ -140,6 +139,32 @@ export function applyPersonalization(
       whyChanged: `根据面部参数应用 ${item.applied_rules.join("、")}；基于猫眼预设参数调整。`,
       personalizationSource: "backend-personalization",
       backendPersonalization: structuredClone(item),
+      adjustmentDetails: item.adjustments.map((adjustment) => ({
+        label:
+          (
+            {
+              direction_angle_deg: "眼线方向（°）",
+              extension_factor: "眼尾长度",
+              range_factor: "晕染范围",
+              intensity_factor: "上色深浅",
+            } as Record<string, string>
+          )[adjustment.parameter] || "参数调整",
+        description: describeAdjustment(
+          adjustment.parameter,
+          adjustment.original_value,
+          adjustment.personalized_value,
+        ),
+        basis:
+          (
+            {
+              "eye_geometry.eye_tail_angle.mean": "眼尾角度",
+              "eye_geometry.relative_eye_length.mean": "相对眼长",
+              "eye_geometry.lower_lid_space_ratio.mean": "下眼睑空间比例",
+              "eye_geometry.inner_corner_angle.mean_deg": "内眼角角度",
+              "eye_geometry.brow_eye_ratio.mean": "眉眼比例",
+            } as Record<string, string>
+          )[adjustment.feature_path] || "面部结构",
+      })),
       parameterSource: mapping.parameterSource,
     });
   });

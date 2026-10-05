@@ -8,6 +8,8 @@ export interface ARGuidance {
 }
 export interface PersonalizedAction {
   actionId: string;
+  faceProfileSource?: "scan" | "mock";
+  adjustmentDetails?: { label: string; description: string; basis: string }[];
   personalizationSource?: "backend-personalization" | "mock/standard-fallback";
   backendPersonalization?: PersonalizedEngineActionDTO;
   parameterSource?: "frontend-demo-baseline";

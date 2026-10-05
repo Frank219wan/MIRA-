@@ -1,4 +1,3 @@
-import { describeAdjustment } from "../services/adapters/personalization";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { Page } from "../components/layout/Page";
@@ -35,7 +34,11 @@ export default function MyTutorial() {
             : "通用产品已准备"}
         </Tag>
         {adapted ? (
-          <Tag>✓ 已加入后端面部调整</Tag>
+          <Tag>
+            {context?.provenance.personalizationFace === "mock"
+              ? "✓ 后端调整 · 示例面部档案"
+              : "✓ 已加入后端面部调整"}
+          </Tag>
         ) : (
           <>
             <span>当前使用标准位置与方向</span>
@@ -69,43 +72,16 @@ export default function MyTutorial() {
                     <summary>查看本次调整</summary>
                     <p>相比猫眼预设，本次调整如下：</p>
                     <dl>
-                      {action.backendPersonalization?.adjustments.map(
-                        (adjustment, i) => {
-                          const labels: Record<string, string> = {
-                            direction_angle_deg: "眼线方向（°）",
-                            extension_factor: "眼尾长度",
-                            range_factor: "晕染范围",
-                            intensity_factor: "上色深浅",
-                          };
-                          const features: Record<string, string> = {
-                            "eye_geometry.eye_tail_angle.mean": "眼尾角度",
-                            "eye_geometry.relative_eye_length.mean": "相对眼长",
-                            "eye_geometry.lower_lid_space_ratio.mean":
-                              "下眼睑空间比例",
-                            "eye_geometry.inner_corner_angle.mean_deg":
-                              "内眼角角度",
-                            "eye_geometry.brow_eye_ratio.mean": "眉眼比例",
-                          };
-                          return (
-                            <div key={i}>
-                              <dt>
-                                {labels[adjustment.parameter] || "参数调整"}
-                              </dt>
-                              <dd>
-                                {describeAdjustment(
-                                  adjustment.parameter,
-                                  adjustment.original_value,
-                                  adjustment.personalized_value,
-                                )}
-                                <br />
-                                依据：
-                                {features[adjustment.feature_path] ||
-                                  "面部结构"}
-                              </dd>
-                            </div>
-                          );
-                        },
-                      )}
+                      {action.adjustmentDetails?.map((adjustment, i) => (
+                        <div key={i}>
+                          <dt>{adjustment.label}</dt>
+                          <dd>
+                            {adjustment.description}
+                            <br />
+                            依据：{adjustment.basis}
+                          </dd>
+                        </div>
+                      ))}
                     </dl>
                   </details>
                 </>

@@ -51,7 +51,11 @@ export default function LiveCoach() {
           <div className="coach-top">
             <JourneyNavigation backTo="/my-tutorial" progress={100} />
             <Tag>
-              {adapted ? "已启用面部适配" : "标准教程区域 · 未使用面部适配"}
+              {adapted
+                ? a.faceProfileSource === "mock"
+                  ? "示例面部档案 · 后端调整"
+                  : "已启用面部适配"
+                : "标准教程区域 · 未使用面部适配"}
             </Tag>
           </div>
           <div className="coach-grid">
