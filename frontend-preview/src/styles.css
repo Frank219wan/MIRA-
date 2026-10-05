@@ -2999,3 +2999,30 @@ button:disabled:hover {
     font-size: 12px;
   }
 }
+
+/* Scan feedback: positioning aid only, never a quality verdict. */
+.scan-position-guide {
+  position: absolute;
+  inset: 15% 27% 18%;
+  border: 1px solid rgba(255,255,255,.85);
+  outline: 1px solid rgba(0,0,0,.25);
+  border-radius: 48%;
+  pointer-events: none;
+}
+.scan-review { display: block; width: 100%; max-height: 420px; object-fit: contain; }
+.scan-capture-progress { display: block; width: 100%; height: 3px; accent-color: #111; margin: 20px 0; }
+.scan-adjustment { margin-top: 12px; font-size: 14px; line-height: 1.7; }
+.scan-adjustment summary { cursor: pointer; text-decoration: underline; text-underline-offset: 4px; }
+.scan-adjustment dl { margin: 8px 0; }
+.scan-adjustment dd { margin: 0 0 8px; font-variant-numeric: tabular-nums; }
+
+.scan-countdown { text-align: center; font-size: 32px; font-variant-numeric: tabular-nums; line-height: 1.4; margin-bottom: 12px; letter-spacing: -.02em; }
+
+.scan-consent { display: flex; align-items: flex-start; gap: 10px; line-height: 1.7; cursor: pointer; }
+.scan-consent input[type="checkbox"] { flex: 0 0 18px; width: 18px; height: 18px; margin: 5px 0 0; padding: 0; accent-color: #111; }
+.scan-consent span { flex: 1; min-width: 0; font-size: 14px; }
+.step-illustration { margin: 0; padding: 28px; background: var(--surface); border-radius: 10px; align-self: start; }
+.step-illustration figcaption { font-weight: 600; }
+.step-illustration svg { display: block; width: 100%; max-height: 460px; margin: 24px auto; }
+.step-illustration p { line-height: 1.7; }
+.step-illustration small { display: block; margin-top: 16px; color: var(--warm-gray); line-height: 1.6; }

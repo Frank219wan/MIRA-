@@ -1,10 +1,15 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Page } from "../components/layout/Page";
 import { Card } from "../components/ui/primitives";
 import { Button } from "../components/ui/button";
-import { getFaceProfileContext, hasFaceProfile } from "../services/face";
+import {
+  getFaceProfileContext,
+  hasFaceProfile,
+  setFaceConsent,
+} from "../services/face";
 import { useService } from "../hooks/useService";
 export default function BeautyProfile() {
+  const navigate = useNavigate();
   const { data: context, error } = useService(getFaceProfileContext);
   const data = context?.profile;
   if (!hasFaceProfile())
@@ -87,6 +92,15 @@ export default function BeautyProfile() {
         </>
       )}
       <div className="action-row">
+        <Button
+          variant="tertiary"
+          onClick={() => {
+            setFaceConsent(false);
+            navigate("/face-scan");
+          }}
+        >
+          清除面部档案
+        </Button>
         <Button asChild variant="tertiary">
           <Link to="/face-scan">返回扫描说明</Link>
         </Button>

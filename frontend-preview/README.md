@@ -32,3 +32,11 @@ Vite proxies `/api` to that backend. The services support `/tutorials/parse`, `/
 Face images are submitted only for an explicitly requested scan in API mode. Backend-derived personalization is identified separately from fallback. The backend currently used by this prototype supports personalization for A02/A04; other steps retain their standard or fallback guidance.
 
 Only frontend runtime source, static display assets, package manifests, and build configuration are included here. Backend code and documentation remain untouched.
+
+## Latest scan preview
+
+Scanning requires explicit consent before camera access or uploads. Browser-side input checks run locally using the bundled MediaPipe model and WASM assets in `public/models/face/` (about 37 MB). These are public runtime dependencies, not user face images. Real aggregation and personalization still require the compatible backend in API mode.
+
+The countdown and capture tolerate brief blinking and minor movement, while sustained movement stops capture. These are conservative input checks, not an accuracy guarantee or comprehensive occlusion detection. See `docs/SCAN-QUALITY.md`.
+
+Photo review is temporary. Users may separately opt in to keep numeric face profiles in the current browser session, and can clear them. Tutorial illustrations are generic closed-eyelid diagrams, not personal photo renderings.

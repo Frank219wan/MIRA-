@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Mic, RotateCcw, ArrowRight } from "lucide-react";
-import { FaceViewport } from "../components/face/FaceViewport";
-import { AROverlay } from "../components/coach/AROverlay";
+import { StepIllustration } from "../components/coach/StepIllustration";
 import { Button } from "../components/ui/button";
 import { Tag, Progress } from "../components/ui/primitives";
 import { getPersonalizedTutorial } from "../services/personalizedTutorial";
@@ -12,7 +11,6 @@ import {
   getCoachIntents,
   recordCompletedStep,
 } from "../services/coach";
-import { hasFaceProfile } from "../services/face";
 import type { CoachIntent } from "../types/guidance";
 import { useService } from "../hooks/useService";
 import { JourneyNavigation } from "../components/tutorial/JourneyNavigation";
@@ -25,7 +23,7 @@ export default function LiveCoach() {
   const [showVoice, setShowVoice] = useState(false);
   const nav = useNavigate();
   const a = data?.[index];
-  const adapted = hasFaceProfile();
+  const adapted = a?.personalizationSource === "backend-personalization";
   function next() {
     if (!a) return;
     recordCompletedStep(a.actionId);
@@ -57,14 +55,7 @@ export default function LiveCoach() {
             </Tag>
           </div>
           <div className="coach-grid">
-            <FaceViewport label="实时指导画面">
-              <AROverlay guidance={a.arGuidance} personalized={adapted} />
-              <span className="region-label">
-                目标区域：{a.arGuidance.region}
-                <br />
-                方向：{a.personalized.direction}
-              </span>
-            </FaceViewport>
+            <StepIllustration action={actions?.[index]} />
             <aside className="coach-instructions">
               <span className="eyebrow">
                 步骤 {String(index + 1).padStart(2, "0")} /{" "}

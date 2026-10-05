@@ -5,6 +5,41 @@ import type {
 } from "../api/dto";
 import type { PersonalizedAction } from "../../types/guidance";
 
+// Presentation only: compare engine values without inventing physical distances.
+export function describeAdjustment(
+  parameter: string,
+  before: number,
+  after: number,
+): string {
+  const choices: Record<string, [string, string, string]> = {
+    direction_angle_deg: [
+      "眼线方向保持不变",
+      "眼尾向上扬一些",
+      "眼线方向放平一些",
+    ],
+    extension_factor: [
+      "眼尾延伸长度保持不变",
+      "眼尾延伸画长一些",
+      "眼尾延伸画短一些",
+    ],
+    range_factor: [
+      "下眼睑晕染范围保持不变",
+      "下眼睑晕染范围扩大一些",
+      "下眼睑晕染范围收窄一些",
+    ],
+    intensity_factor: [
+      "下眼睑上色深浅保持不变",
+      "下眼睑上色加深一些",
+      "下眼睑上色减淡一些",
+    ],
+  };
+  return (
+    choices[parameter]?.[
+      Math.abs(after - before) < 1e-8 ? 0 : after > before ? 1 : 2
+    ] || "根据面部信息调整"
+  );
+}
+
 // Parser action_units contain no numeric parameters. These are the documented
 // Engine v0 demo baselines, NOT measured tutorial values or inferred rules.
 const baseline = {
@@ -96,8 +131,8 @@ export function applyPersonalization(
     const p = item.personalized_parameters;
     const summary =
       item.action_id === "A04"
-        ? `眼线方向 ${p.direction_angle_deg.toFixed(2)}°；延伸系数 ${p.extension_factor.toFixed(3)}`
-        : `下眼睑范围系数 ${p.range_factor.toFixed(3)}；强度系数 ${p.intensity_factor.toFixed(3)}`;
+        ? `眼线方向 ${p.direction_angle_deg.toFixed(2)}°；${describeAdjustment("extension_factor", item.original_parameters.extension_factor, p.extension_factor)}`
+        : `${describeAdjustment("range_factor", item.original_parameters.range_factor, p.range_factor)}；${describeAdjustment("intensity_factor", item.original_parameters.intensity_factor, p.intensity_factor)}`;
     updates.set(action.actionId, {
       ...action,
       personalized: { ...action.personalized, direction: summary },
