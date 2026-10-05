@@ -44,3 +44,7 @@ Photo review is temporary. Users may separately opt in to keep numeric face prof
 ## Personalization integration
 
 `personalizationService` sends supported A02/A04 actions to `POST /personalization`, validates the response and normalizes it for My Tutorial. A measured v0.3 face profile takes priority; when absent, the bundled synthetic v0.3 fixture is explicitly labeled as demo input. API failures keep the existing fallback with diagnostic logging. Tutorial numeric parameters still use the documented cat-eye preset, not measurements extracted from the tutorial.
+
+## Demo user center
+
+Use the avatar entry to open `/account`. Nickname-only demo login creates no real account and sends no credentials. Saved tutorials are collected in this browser's localStorage, with detail views and removal; different demo nicknames share this browser collection. Existing single saves migrate automatically. Face profiles still follow explicit consent and optional session-only retention. Clearing site data removes saved tutorials.

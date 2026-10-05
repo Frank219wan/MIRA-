@@ -1,3 +1,5 @@
+import UserCenter from "./pages/UserCenter";
+import SavedTutorial from "./pages/SavedTutorial";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import Home from "./pages/Home";
@@ -18,6 +20,8 @@ export default function App() {
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/account" element={<UserCenter />} />
+          <Route path="/account/tutorial/:id" element={<SavedTutorial />} />
           <Route path="/tutorial" element={<TutorialInput />} />
           <Route path="/tutorial/parsing" element={<Parsing />} />
           <Route path="/tutorial/recipe" element={<Recipe />} />

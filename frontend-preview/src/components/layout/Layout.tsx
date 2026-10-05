@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { ArrowUpRight, House, ShoppingBag } from "lucide-react";
+import { ArrowUpRight, House, ShoppingBag, UserRound } from "lucide-react";
 export function Layout() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -27,6 +27,9 @@ export function Layout() {
             <ShoppingBag size={16} />
             我的美妆工具库
             <ArrowUpRight size={15} />
+          </Link>
+          <Link className="account-avatar" to="/account" aria-label="个人中心">
+            <UserRound size={20} />
           </Link>
         </nav>
       </header>

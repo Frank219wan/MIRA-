@@ -1,3 +1,4 @@
+import { storeTutorial } from "./userCenter";
 import { withFallback } from "./base";
 import {
   hasFaceProfile,
@@ -90,19 +91,26 @@ export const getPersonalizedTutorial = async () =>
   (await getPersonalizedTutorialContext()).actions;
 export const savePersonalizedTutorial = async () => {
   const context = await getPersonalizedTutorialContext();
-  localStorage.setItem(
-    "mira-saved-tutorial",
-    JSON.stringify({
-      savedAt: new Date().toISOString(),
-      faceAdapted: context.actions.some(
-        (a) =>
-          a.personalizationSource === "backend-personalization" &&
-          a.faceProfileSource === "scan",
-      ),
-      productMode: context.productMode,
-      actions: context.actions,
-      provenance: context.provenance,
-    }),
-  );
+  const tutorial = await getTutorial();
+  let title = "我的美妆教程";
+  try {
+    title =
+      JSON.parse(sessionStorage.getItem("mira-input") || "null")?.name || title;
+  } catch {
+    /* retain default title */
+  }
+  storeTutorial({
+    id: context.actions.map((a) => a.actionId).join("|"),
+    title,
+    savedAt: new Date().toISOString(),
+    stepNames: tutorial.map((a) => a.name),
+    faceAdapted: context.actions.some(
+      (a) =>
+        a.personalizationSource === "backend-personalization" &&
+        a.faceProfileSource === "scan",
+    ),
+    productMode: context.productMode,
+    actions: context.actions,
+  });
   return true;
 };

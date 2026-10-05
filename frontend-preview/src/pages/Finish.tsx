@@ -72,6 +72,13 @@ export default function Finish() {
           <Link to="/">完成</Link>
         </Button>
       </div>
+      {saved && (
+        <p>
+          <Link className="text-link" to="/account">
+            前往我的教程 ↗
+          </Link>
+        </p>
+      )}
       {saveError && <p role="alert">{saveError}</p>}
     </Page>
   );

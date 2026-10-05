@@ -3026,3 +3026,15 @@ button:disabled:hover {
 .step-illustration svg { display: block; width: 100%; max-height: 460px; margin: 24px auto; }
 .step-illustration p { line-height: 1.7; }
 .step-illustration small { display: block; margin-top: 16px; color: var(--warm-gray); line-height: 1.6; }
+
+.account-avatar { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid var(--line); border-radius: 50%; flex-shrink: 0; }
+.account-avatar:hover { background: var(--surface); }
+.account-avatar:focus-visible { outline: 2px solid #111; outline-offset: 3px; }
+.demo-login { max-width: 440px; margin: 20px 0 60px; }
+.demo-login p { line-height: 1.8; margin: 16px 0; }
+.account-section { padding: 30px 0; border-bottom: 1px solid var(--line); }
+.account-section p { line-height: 1.8; margin: 12px 0; }
+.account-count { font-size: 16px; color: var(--warm-gray); margin-left: 12px; }
+.account-tutorial { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 24px 0; }
+.account-tutorial > div { min-width: 0; overflow-wrap: anywhere; }
+@media(max-width: 640px) { .header-actions { flex-wrap: wrap; justify-content: flex-end; gap: 10px; } .account-tutorial { align-items: flex-start; flex-direction: column; gap: 4px; } }
