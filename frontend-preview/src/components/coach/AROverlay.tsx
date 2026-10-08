@@ -13,7 +13,7 @@ export function AROverlay({
     <svg
       className="ar-overlay"
       viewBox="0 0 100 100"
-      aria-label={personalized ? "个性化区域示意" : "标准教程区域示意"}
+      aria-label={personalized ? "个性化区域示意" : "当前指导区域示意"}
     >
       <defs>
         <marker

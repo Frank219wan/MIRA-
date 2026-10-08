@@ -1,3 +1,4 @@
+import { PreferenceGuidance } from "../components/preferences/PreferenceGuidance";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Check } from "lucide-react";
@@ -22,7 +23,7 @@ export default function Finish() {
   return (
     <Page
       eyebrow="05 / 完成"
-      title="妆容完成"
+      title="完成啦，这是你的这一次 Look"
       backTo="/live-coach"
       progress={100}
     >
@@ -34,19 +35,13 @@ export default function Finish() {
         <>
           <div className="stats">
             {[
-              ["完成教程步骤", `${data.completed} / 5`],
-              ...(data.productMode === "beauty-kit"
-                ? [
-                    ["现有产品复用", `${data.reused} 件`],
-                    ["产品能力缺口", `${data.missing.length} 项`],
-                  ]
-                : [["产品使用方式", "通用描述"]]),
-              [
-                data.exampleProfile
-                  ? "AI 调整数量（示例档案）"
-                  : "AI 个性化调整数量",
-                `${data.adjustmentCount} 项`,
-              ],
+              ["步骤完成", `${data.completed} / ${data.total}`],
+              ...(data.productMode === "beauty-kit" && data.reusedSteps > 0
+                ? [["使用已有产品完成", `${data.reusedSteps} / ${data.total}`]]
+                : []),
+              ...(!data.exampleProfile && data.adjustmentCount > 0
+                ? [["面部适配", `${data.adjustmentCount} 项调整`]]
+                : []),
             ].map(([k, v]) => (
               <Card key={k}>
                 <span>{k}</span>
@@ -54,22 +49,37 @@ export default function Finish() {
               </Card>
             ))}
           </div>
-          <Card>
-            <h2>属于你的操作笔记</h2>
-            {data.adapted ? data.changes.map((x) => <p key={x}>{x}</p>) : null}
-            <p>{data.productChange}</p>
-            {data.productMode === "beauty-kit" && (
-              <p>产品能力缺口：{data.missing.join(" / ") || "无"}。</p>
-            )}
-          </Card>
+          {(data.adapted ||
+            data.localAppearanceGuidance.length > 0 ||
+            data.reusedSteps > 0) && (
+            <Card>
+              <h2>留给下次的妆容笔记</h2>
+              {data.adapted && (
+                <>
+                  <p>
+                    {data.exampleProfile
+                      ? "本次参考面部方案的调整，未使用你的扫描："
+                      : "本次使用的面部调整："}
+                  </p>
+                  {data.changes.map((x) => (
+                    <p key={x}>{x}</p>
+                  ))}
+                </>
+              )}
+              {data.reusedSteps === data.total && data.total > 0 && (
+                <p>这次用已有产品完成了整个妆容。</p>
+              )}
+              <PreferenceGuidance guidance={data.localAppearanceGuidance} />
+            </Card>
+          )}
         </>
       )}
       <div className="action-row">
         <Button variant="outline" onClick={save} disabled={saved}>
-          {saved ? "已保存至此浏览器" : "保存本次教程"}
+          {saved ? "已保存至此浏览器" : "保存这次教程"}
         </Button>
         <Button asChild>
-          <Link to="/">完成</Link>
+          <Link to="/">回到首页</Link>
         </Button>
       </div>
       {saved && (

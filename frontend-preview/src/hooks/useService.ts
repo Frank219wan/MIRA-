@@ -15,8 +15,8 @@ export function useService<T>(service: () => Promise<T>) {
             (service as { statusKey?: string }).statusKey || "",
           );
           setNotice(
-            status?.source === "mock-fallback"
-              ? "当前服务暂不可用，正在展示演示数据。"
+            status?.source === "mock-fallback" || status?.source === "demo"
+              ? "暂未取得本次结果，以下为参考方案。"
               : "",
           );
         }

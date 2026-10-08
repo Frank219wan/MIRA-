@@ -23,7 +23,7 @@ export function StepCard({ action: a }: { action: MakeupAction }) {
             <dd>{a.area}</dd>
           </div>
           <div>
-            <dt>所需产品能力</dt>
+            <dt>产品需要</dt>
             <dd>
               <CapabilityTags value={a.productRequirement} />
             </dd>
@@ -38,7 +38,7 @@ export function StepCard({ action: a }: { action: MakeupAction }) {
         </dl>
         <details>
           <summary>
-            <span>查看细节</span>
+            <span>展开步骤</span>
             <ChevronDown size={14} />
           </summary>
           <dl className="step-expanded">
@@ -46,7 +46,7 @@ export function StepCard({ action: a }: { action: MakeupAction }) {
               ["目标", a.goal],
               ["工具", a.tool],
               ["强度", a.intensity],
-              ["预期效果", a.targetResult],
+              ["目标效果", a.targetResult],
             ].map(([k, v]) => (
               <div key={k}>
                 <dt>{k}</dt>

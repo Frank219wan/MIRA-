@@ -102,7 +102,7 @@ export async function scanFaceImages(
           );
         if (error instanceof ApiError && error.code === "face_scan_unavailable")
           throw new Error(
-            "扫描服务暂不可用，请稍后重试，或跳过扫描继续标准教程。",
+            "扫描服务暂不可用，请稍后重试，或跳过扫描继续基础教程。",
           );
         throw error;
       }

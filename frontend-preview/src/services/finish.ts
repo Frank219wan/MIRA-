@@ -2,15 +2,27 @@ import type { PersonalizedAction } from "../types/guidance";
 import { describeAdjustment } from "./adapters/personalization";
 import { getCompletedSteps } from "./coach";
 import { getMatchResult } from "./matching";
-import { getPersonalizedTutorial } from "./personalizedTutorial";
+import { getPersonalizedTutorialContext } from "./personalizedTutorial";
 import { getProductUseMode } from "./productMode";
 export const getFinishSummary = async () => {
   const productMode = getProductUseMode();
   const matches = productMode === "beauty-kit" ? await getMatchResult() : [];
-  const actions = await getPersonalizedTutorial();
+  const context = await getPersonalizedTutorialContext();
+  const actions = context.actions;
   const adjustmentSummary = summarizeAdjustments(actions);
   return {
-    completed: getCompletedSteps().length,
+    completed: actions.filter((a) => getCompletedSteps().includes(a.actionId))
+      .length,
+    total: actions.length,
+    localAppearanceGuidance: context.localAppearanceGuidance,
+    reusedSteps: actions.filter(
+      (a) =>
+        a.productSource === "matched" &&
+        matches.some(
+          (m) => m.actionId === a.actionId && m.provenance.status === "backend",
+        ) &&
+        getCompletedSteps().includes(a.actionId),
+    ).length,
     productMode,
     reused: new Set(
       matches

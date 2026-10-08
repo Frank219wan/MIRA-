@@ -38,7 +38,6 @@ export function Layout() {
       </main>
       <footer>
         <span>MIRA 映己</span>
-        <span>部分结果为演示数据</span>
       </footer>
     </>
   );

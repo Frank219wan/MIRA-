@@ -14,19 +14,17 @@ export default function Home() {
           transition={{ duration: 0.7 }}
         >
           <h1>
-            <span className="hero-opening">把喜欢的美妆教程，</span>
+            <span className="hero-opening">把喜欢的妆，</span>
             <br />
-            变成<span className="hero-emphasis">属于你的</span>
+            变成<span className="hero-emphasis">你的画法。</span>
             <br className="hero-break" />
-            教程。
           </h1>
           <p>
-            MIRA 拆解你喜欢的美妆教程，匹配已有产品，根据面部结构调整，
-            再生成可以逐步跟随的教程。
+            从喜欢的教程开始，读懂关键步骤，选择已有产品，并结合面部设置生成可跟随的上妆指导。
           </p>
           <Button asChild>
             <Link to="/tutorial">
-              从教程开始
+              开始制作我的教程
               <ArrowRight size={18} />
             </Link>
           </Button>
@@ -40,29 +38,28 @@ export default function Home() {
       <section className="home-process" aria-label="MIRA 使用流程">
         <div className="journey">
           {[
-            ["Decode", "拆解教程"],
-            ["Match", "匹配已有"],
-            ["Adapt", "为你调整"],
-            ["Coach", "陪你完成"],
-          ].map(([label, description], i) => (
+            ["DECODE", "读懂教程", "整理步骤、产品特性与操作方式"],
+            ["MATCH", "匹配产品", "从美妆工具库中寻找适合的选择"],
+            ["ADAPT", "适配面部", "结合面部设置调整位置与方向"],
+            ["COACH", "实时指导", "跟随步骤示意与操作提示完成妆容"],
+          ].map(([label, description, detail], i) => (
             <div key={label}>
               <span className="journey-number">0{i + 1}</span>
               <span>
                 <strong>{label}</strong>
                 <small>{description}</small>
+                <small className="process-detail">{detail}</small>
               </span>
               {i < 3 && <ArrowRight size={20} />}
             </div>
           ))}
         </div>
         <p className="home-difference">
-          不是推荐相似妆容，而是把你喜欢的教程改写成你能真正完成的版本。
+          从参考妆容到实际完成，让每一步都有清晰的画法。
         </p>
         <aside className="home-support">
-          <span>MIRA 支持服务 · 演示</span>
-          <p>
-            若在教程上传、产品匹配或步骤理解中遇到问题，支持服务可协助说明。
-          </p>
+          <span>使用帮助</span>
+          <p>暂不添加产品或面部信息，也可以使用基础指导开始跟妆。</p>
         </aside>
       </section>
     </div>

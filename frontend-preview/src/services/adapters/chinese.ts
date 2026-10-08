@@ -34,7 +34,7 @@ const terms: Record<string, string> = {
   "clean lash-line definition": "睫毛根部线条干净清晰",
   "neutral palette": "大地色眼影盘",
   "week 1 structural placeholder; no matching algorithm executed.":
-    "当前为接口占位结果，尚未执行产品匹配算法。",
+    "尚未完成产品评估，请按步骤需求选择。",
 };
 export function chineseText(text: string, fallback = "中文说明待补充"): string {
   const translated = terms[text.trim().toLowerCase()];

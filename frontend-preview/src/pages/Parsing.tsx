@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { Check, ArrowRight, LoaderCircle } from "lucide-react";
 import { Card, Progress, Placeholder } from "../components/ui/primitives";
 import { Button } from "../components/ui/button";
-import { JourneyNavigation } from "../components/tutorial/JourneyNavigation";
 import { useService } from "../hooks/useService";
 import { getParsingStages, getTutorial } from "../services/tutorial";
 export default function Parsing() {
@@ -25,7 +24,9 @@ export default function Parsing() {
   const percent = data ? Math.round((index / (data.length - 1)) * 100) : 0;
   return (
     <div className="page parsing-page">
-      <JourneyNavigation backTo="/tutorial" progress={done ? 25 : 0} />
+      <Link className="back parsing-breadcrumb" to="/tutorial">
+        灵感之旅 <span>/</span> 01 / 拆解教程
+      </Link>
       {notice && <p role="status">{notice}</p>}
       {error ? (
         <Card>
@@ -124,7 +125,7 @@ export default function Parsing() {
               </p>
             </div>
             <p className="demo-footnote">
-              当前为预设解析流程，关键帧与识别结果待接入。
+              进度为流程展示，关键画面尚未提供。
             </p>
           </section>
           <div className="parsing-bottom">

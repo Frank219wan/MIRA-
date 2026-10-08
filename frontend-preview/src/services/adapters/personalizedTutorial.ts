@@ -19,6 +19,10 @@ export function adaptPersonalizedTutorial(
       return {
         ...structuredClone(existing),
         personalizationSource: "mock/standard-fallback",
+        personalized: { where: a.area, direction: a.motion },
+        instructions: a.motion,
+        stopWhen: a.targetResult,
+        whyChanged: "本步骤沿用教程的基础位置与操作。",
         product: product.label,
         productSource: product.source,
       };
@@ -35,7 +39,7 @@ export function adaptPersonalizedTutorial(
       product: product.label,
       productSource: product.source,
       goal: a.goal,
-      whyChanged: "个性化演示占位：当前保留原教程动作，尚未生成真实面部适配。",
+      whyChanged: "本步骤沿用教程的基础位置与操作。",
       instructions: a.motion,
       stopWhen: a.targetResult,
       arGuidance: {

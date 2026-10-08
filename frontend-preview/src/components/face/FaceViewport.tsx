@@ -13,7 +13,7 @@ export function FaceViewport({
       <div className="camera-caption">
         <span className="camera-dot" />
         {label}
-        {!live && <span>演示画面</span>}
+        {!live && <span>取景示意</span>}
       </div>
       {!live && (
         <>
