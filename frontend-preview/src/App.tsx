@@ -1,3 +1,4 @@
+import LocalAppearance from "./pages/LocalAppearance";
 import UserCenter from "./pages/UserCenter";
 import SavedTutorial from "./pages/SavedTutorial";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/tutorial/recipe" element={<Recipe />} />
           <Route path="/beauty-kit" element={<BeautyKit />} />
           <Route path="/matching" element={<Matching />} />
+          <Route path="/face-preferences" element={<LocalAppearance />} />
           <Route path="/face-scan" element={<FaceScan />} />
           <Route path="/beauty-profile" element={<BeautyProfile />} />
           <Route path="/my-tutorial" element={<MyTutorial />} />

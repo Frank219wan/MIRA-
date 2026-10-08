@@ -19,7 +19,7 @@ export default function UserCenter() {
   const [error, setError] = useState("");
   if (!user)
     return (
-      <Page title="欢迎来到 MIRA" eyebrow="个人空间" backTo="/">
+      <Page title="欢迎来到 MIRA 映己" eyebrow="个人空间" backTo="/">
         <form
           className="demo-login"
           onSubmit={(e) => {
@@ -32,7 +32,7 @@ export default function UserCenter() {
             }
           }}
         >
-          <h2>演示登录</h2>
+          <h2>本机个人空间</h2>
           <p>无需密码，不创建真实账号。</p>
           <label htmlFor="demo-name">昵称</label>
           <input
@@ -53,7 +53,7 @@ export default function UserCenter() {
   return (
     <Page title={`${user}的个人空间`} eyebrow="个人中心" backTo="/">
       <div className="section-topline">
-        <span>本机演示账号 · 退出不会删除收藏</span>
+        <span>本机个人空间 · 退出不会删除收藏</span>
         <Button
           variant="tertiary"
           onClick={() => {
@@ -61,7 +61,7 @@ export default function UserCenter() {
             setUser(null);
           }}
         >
-          退出演示登录
+          退出本机个人空间
         </Button>
       </div>
       <section className="account-section">
@@ -96,10 +96,10 @@ export default function UserCenter() {
           我的教程 <span className="account-count">{tutorials.length}</span>
         </h2>
         <p className="face-scan-note">
-          保存在当前浏览器；清除网站数据会删除收藏，不同演示昵称共用本机收藏。
+          保存在当前浏览器；清除网站数据会删除收藏，不同昵称共用本机收藏。
         </p>
         {!tutorials.length ? (
-          <p>还没有保存教程。完成跟做后，可点击“保存本次教程”。</p>
+          <p>还没有保存教程。完成跟做后，可点击“保存这次教程”。</p>
         ) : (
           tutorials.map((t) => (
             <article className="account-tutorial" key={t.id}>
@@ -112,7 +112,7 @@ export default function UserCenter() {
                 </Link>
                 <p>
                   {t.actions.length} 个步骤 ·{" "}
-                  {t.faceAdapted ? "已使用扫描档案" : "标准或示例档案"} ·{" "}
+                  {t.faceAdapted ? "已使用扫描档案" : "基础或参考面部方案"} ·{" "}
                   {new Date(t.savedAt).toLocaleDateString("zh-CN")}
                 </p>
               </div>

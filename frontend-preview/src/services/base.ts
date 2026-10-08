@@ -25,7 +25,7 @@ export async function withFallback<T>(
       error,
     });
     if (!apiConfig.mockFallback) throw e;
-    console.warn(`[MIRA ${name}] 使用演示数据：${error}`);
+    console.warn(`[MIRA ${name}] 使用参考方案：${error}`);
     return fallback();
   }
 }

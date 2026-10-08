@@ -1,0 +1,7 @@
+{
+  "version": "0.1",
+  "eye_geometry": {"eye_tail_angle": {"left": 10.059, "right": 10.712, "mean": 10.386}, "eye_spacing_ratio": 1.3851, "brow_eye_ratio": {"left": 0.6777, "right": 0.6467, "mean": 0.6622}},
+  "symmetry": {"eye_width": 0.013, "eye_height": 0.0299, "eye_aspect_ratio": 0.0169, "eye_tail_angle_difference": 0.653},
+  "raw_geometry_reference": {"source": "face_geometry.json"},
+  "confidence": {"pose_normalized": false, "expression_controlled": false}
+}

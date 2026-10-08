@@ -57,7 +57,7 @@ export default function BeautyProfile() {
                   </div>
                 ))}
               </dl>
-              <p>比例用于定位，不代表美的标准。</p>
+              <p>用于确定教程中的上妆位置。</p>
             </Card>
             <Card>
               <h2>局部结构</h2>
@@ -72,7 +72,7 @@ export default function BeautyProfile() {
             </Card>
             <Card>
               <h2>色彩倾向</h2>
-              <p>色彩信息为演示数据。</p>
+              <p>色彩参考 · 尚未分析你的肤色。</p>
               <dl>
                 {[
                   ["底色倾向", data.undertone],
@@ -91,6 +91,11 @@ export default function BeautyProfile() {
           </div>
         </>
       )}
+      <p>
+        <Link className="text-link" to="/face-preferences">
+          设置局部呈现偏好 ↗
+        </Link>
+      </p>
       <div className="action-row">
         <Button
           variant="tertiary"
@@ -105,7 +110,7 @@ export default function BeautyProfile() {
           <Link to="/face-scan">返回扫描说明</Link>
         </Button>
         <Button asChild>
-          <Link to="/my-tutorial">查看我的专属教程 →</Link>
+          <Link to="/my-tutorial">继续生成我的教程 →</Link>
         </Button>
       </div>
     </Page>

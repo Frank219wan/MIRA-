@@ -12,7 +12,12 @@ export default function Recipe() {
   return (
     <Page
       eyebrow="01 / 拆解教程"
-      title="你的教程已拆解"
+      title="这个妆是这样完成的"
+      description={
+        data
+          ? `已整理 ${data.length} 个关键步骤，可以先查看完整流程。`
+          : undefined
+      }
       backTo="/tutorial"
       progress={25}
     >
@@ -40,7 +45,7 @@ export default function Recipe() {
         <div>
           <span className="eyebrow">选择产品方式</span>
           <h2>你想怎样准备这份教程？</h2>
-          <p>可以匹配已有产品，也可以直接使用无品牌指向的通用描述。</p>
+          <p>可以匹配已有产品，也可以直接使用步骤中的产品需求。</p>
         </div>
         <div className="product-path-actions">
           <Button asChild variant="outline">
@@ -54,7 +59,7 @@ export default function Recipe() {
           </Button>
           <Button asChild variant="outline">
             <Link to="/face-scan" onClick={() => setProductUseMode("generic")}>
-              暂不匹配，使用通用产品
+              按产品需求继续
               <ArrowRight size={17} />
             </Link>
           </Button>

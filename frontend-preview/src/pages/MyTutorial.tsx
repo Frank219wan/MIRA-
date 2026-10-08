@@ -1,3 +1,4 @@
+import { PreferenceGuidance } from "../components/preferences/PreferenceGuidance";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check } from "lucide-react";
 import { Page } from "../components/layout/Page";
@@ -21,30 +22,35 @@ export default function MyTutorial() {
   return (
     <Page
       eyebrow="03 / 准备完成"
-      title="教程已准备好"
+      title="你的教程准备好了"
       backTo={hasFaceProfile() ? "/beauty-profile" : "/face-scan"}
       progress={100}
     >
+      <p>
+        {actions
+          ? `${actions.length} 个步骤已整理，可查看产品选择与面部设置。`
+          : "正在整理教程"}
+      </p>
+      <Link className="text-link" to="/face-scan">
+        调整面部设置 ↗
+      </Link>
       <div className="included">
-        <Tag>✓ 原教程已拆解</Tag>
+        <Tag>✓ 教程步骤已解析</Tag>
         <Tag>
           ✓{" "}
           {context?.productMode === "beauty-kit"
-            ? "产品已匹配"
-            : "通用产品已准备"}
+            ? "已整理产品选择"
+            : "产品需求已整理"}
         </Tag>
         {adapted ? (
           <Tag>
             {context?.provenance.personalizationFace === "mock"
-              ? "✓ 后端调整 · 示例面部档案"
-              : "✓ 已加入后端面部调整"}
+              ? "参考面部方案 · 未使用你的扫描"
+              : "✓ 已应用扫描档案"}
           </Tag>
         ) : (
           <>
-            <span>当前使用标准位置与方向</span>
-            <Link className="text-link" to="/face-scan">
-              添加面部调整 ↗
-            </Link>
+            <span>使用基础位置指导</span>
           </>
         )}
       </div>
@@ -67,10 +73,10 @@ export default function MyTutorial() {
               <p>{action.product}</p>
               {action.personalizationSource === "backend-personalization" && (
                 <>
-                  <p>{action.personalized.direction} · 相比猫眼预设</p>
+                  <p>{action.personalized.direction} · 相比基础猫眼方案</p>
                   <details className="scan-adjustment">
                     <summary>查看本次调整</summary>
-                    <p>相比猫眼预设，本次调整如下：</p>
+                    <p>相比基础猫眼方案，本次调整如下：</p>
                     <dl>
                       {action.adjustmentDetails?.map((adjustment, i) => (
                         <div key={i}>
@@ -88,20 +94,24 @@ export default function MyTutorial() {
               )}
             </div>
             <span className="overview-source">
-              {action.productSource === "matched" ? "我的产品" : "通用描述"}
+              {action.productSource === "matched" ? "我的产品" : "产品需求"}
             </span>
             <Check size={17} aria-hidden="true" />
           </div>
         ))}
       </section>
+      <PreferenceGuidance guidance={context?.localAppearanceGuidance || []} />
+      <Link className="text-link" to="/face-preferences">
+        调整局部呈现偏好 ↗
+      </Link>
       <div className="tutorial-start">
         <div>
-          <h2>跟随时会逐步显示位置、方向与停止条件。</h2>
-          <p>完整操作只在跟做过程中展开，随时可以重复当前步骤。</p>
+          <h2>跟随步骤，确认位置、方向与完成效果。</h2>
+          <p>随时可以重复当前步骤。</p>
         </div>
         <Button asChild onClick={resetCoach}>
           <Link to="/live-coach">
-            开始跟做
+            开始跟妆
             <ArrowRight size={17} />
           </Link>
         </Button>

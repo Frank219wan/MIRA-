@@ -1,3 +1,4 @@
+import { clearLocalAppearancePreferences } from "./localAppearance";
 import { actions, stages } from "../mocks/tutorial";
 import { demo, withFallback } from "./base";
 import { request, ApiError } from "./api/client";
@@ -16,7 +17,7 @@ function parseInput(): TutorialMediaInputDTO {
       '{"kind":"example","name":"柔棕日常眼妆"}',
   );
   if (input.kind !== "example" || !apiConfig.exampleMediaPath)
-    throw new Error("当前后端仅支持服务器媒体路径；上传文件和链接暂用演示数据");
+    throw new Error("当前后端仅支持服务器媒体路径；上传文件和链接暂用参考方案");
   return {
     media_path: apiConfig.exampleMediaPath,
     media_kind: apiConfig.exampleMediaKind,
@@ -82,6 +83,7 @@ export const saveTutorialInput = async (input: TutorialInput) => {
   sessionStorage.removeItem("mira-recipe-id");
   sessionStorage.removeItem("mira-completed");
   clearProductUseMode();
+  clearLocalAppearancePreferences();
   sessionStorage.setItem("mira-input", JSON.stringify(input));
   return input;
 };

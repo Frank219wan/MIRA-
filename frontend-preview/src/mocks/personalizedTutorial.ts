@@ -30,7 +30,7 @@ export function personalizedTutorial(adapted: boolean): PersonalizedAction[] {
             ? "已有暖棕色略深，减少蘸粉量，让衔接更柔和。"
             : adapted
               ? "当前区域与示例面部档案适配，保留原教程动作。"
-              : "尚未使用面部适配，保留参考教程的标准位置和方向。",
+              : "尚未使用面部适配，保留参考教程的基础位置和方向。",
     instructions:
       i === 3
         ? "取少量哑光香槟色轻按中央，仅增加浅色层次，不追求珠光效果。"

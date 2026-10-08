@@ -34,15 +34,20 @@ export default function TutorialInput() {
     nav("/tutorial/parsing");
   }
   return (
-    <Page eyebrow="01 / 拆解教程" title="添加参考教程" backTo="/" progress={0}>
+    <Page
+      eyebrow="01 / 拆解教程"
+      title="从一个你喜欢的妆开始"
+      backTo="/"
+      progress={0}
+    >
       <div className="input-grid">
         <section>
           <div className="input-tabs" role="group" aria-label="教程输入方式">
             {[
-              ["video", "上传视频", Upload],
-              ["link", "粘贴链接", LinkIcon],
+              ["video", "上传教程视频", Upload],
+              ["link", "粘贴教程链接", LinkIcon],
               ["image", "上传参考图片", Image],
-              ["example", "使用示例教程", Play],
+              ["example", "试试示例教程", Play],
             ].map(([id, label, Icon]) => (
               <button
                 key={String(id)}
@@ -81,7 +86,7 @@ export default function TutorialInput() {
                   placeholder="https://…"
                   type="url"
                 />
-                <small>链接仅作记录，解析使用示例数据。</small>
+                <small>链接仅作记录，本次将使用示例教程。</small>
               </label>
             ) : (
               <label
@@ -126,9 +131,7 @@ export default function TutorialInput() {
                   {file ? "重新选择" : "选择文件"}
                   <ArrowRight size={14} />
                 </span>
-                <small>
-                  文件仅用于本地选择，不会上传。解析将展示示例结果。
-                </small>
+                <small>文件仅在本地选择，暂不上传；本次将使用示例教程。</small>
               </label>
             )}
           </div>
@@ -139,20 +142,20 @@ export default function TutorialInput() {
           )}
           <div className="action-row">
             <Button onClick={go}>
-              开始拆解
+              开始解析教程
               <ArrowRight size={17} />
             </Button>
           </div>
         </section>
         <aside className="guidelines">
-          <h2>输入建议</h2>
+          <h2>为了获得更清晰的拆解结果</h2>
           <ul>
             {[
-              "单人教程",
+              "单人出镜更容易看清操作",
               "面部和眼部清晰可见",
               "正面或半侧面",
               "建议 1–5 分钟",
-              "能看到实际化妆步骤",
+              "完整展示主要上妆步骤",
             ].map((x) => (
               <li key={x}>
                 <Check size={12} />

@@ -1,3 +1,4 @@
+import type { LocalAppearanceGuidance } from "./localAppearance";
 import type { PersonalizedAction } from "../types/guidance";
 export interface SavedTutorial {
   id: string;
@@ -7,6 +8,7 @@ export interface SavedTutorial {
   stepNames?: string[];
   faceAdapted?: boolean;
   productMode?: string;
+  localAppearanceGuidance?: LocalAppearanceGuidance[];
 }
 const KEY = "mira-tutorials";
 function valid(value: unknown): value is SavedTutorial {

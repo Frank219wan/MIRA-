@@ -1,3 +1,7 @@
+import {
+  getLocalAppearancePreferences,
+  compileLocalAppearance,
+} from "./localAppearance";
 import { storeTutorial } from "./userCenter";
 import { withFallback } from "./base";
 import {
@@ -67,6 +71,10 @@ export async function getPersonalizedTutorialContext() {
   ).length;
   return {
     actions: personalized,
+    localAppearanceGuidance: compileLocalAppearance(
+      getLocalAppearancePreferences(),
+      actions,
+    ),
     face,
     adaptation,
     productMode,
@@ -111,6 +119,7 @@ export const savePersonalizedTutorial = async () => {
     ),
     productMode: context.productMode,
     actions: context.actions,
+    localAppearanceGuidance: context.localAppearanceGuidance,
   });
   return true;
 };

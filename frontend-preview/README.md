@@ -1,50 +1,111 @@
-# MIRA frontend preview
+# MIRA 映己 · 前端 Demo
 
-This is a frontend prototype for preview only. Do not merge into main yet.
+中文美妆教程演示，使用 React、Vite 和 TypeScript。前端可连接现有 FastAPI，也可独立使用离线演示数据。
 
-## Run locally
+## 本地启动
 
-```bash
-cd frontend-preview
-npm install
+```sh
+npm ci
 npm run dev
 ```
 
-Open the local URL printed by Vite (normally http://127.0.0.1:5173).
-Requires Node.js 22.12+ or a compatible newer version.
+打开 http://127.0.0.1:5173 。生产检查使用 `npm run build`。静态托管需要配置 SPA fallback 到 `index.html`，保证子路由可以直接打开。
 
-```bash
+不启动后端时，`.env.example` 的默认配置会使用完整离线演示数据。
+
+## 接入现有 FastAPI
+
+前端包含 DTO、adapter、统一 API client、错误处理和 Mock fallback。页面只调用 `src/services/`，不直接请求后端。`backend-reference/` 是只读后端参考，不需要修改其业务代码或说明文档。
+
+### 1. 准备并启动后端
+
+在项目根目录准备 Python 环境：
+
+```sh
+python3 -m venv .runtime/api-venv
+.runtime/api-venv/bin/pip install -r backend-reference/requirements.txt
+```
+
+数据库使用项目下的 `.runtime/mira_week1.db`。将下面的数据库路径替换为当前项目的绝对路径，然后启动 FastAPI：
+
+```sh
+cd backend-reference
+MIRA_DATABASE_URL=sqlite:////absolute/path/to/mira-demo/.runtime/mira_week1.db \
+  ../.runtime/api-venv/bin/uvicorn src.api.app:app --host 127.0.0.1 --port 8000
+```
+
+健康检查地址为 http://127.0.0.1:8000/health 。
+
+### 2. 配置并启动前端
+
+```sh
+cp .env.example .env.local
+```
+
+真实 API + Mock fallback 推荐配置：
+
+```env
+VITE_DEMO_MODE=false
+VITE_MOCK_FALLBACK=true
+VITE_API_BASE_URL=/api
+VITE_API_TIMEOUT_MS=30000
+VITE_EXAMPLE_MEDIA_PATH=data/input/main_eye_tutorial.mp4
+VITE_EXAMPLE_MEDIA_KIND=video
+```
+
+```sh
+npm ci
+npm run dev -- --port 5173
+```
+
+开发环境中，Vite 将 `/api/*` 代理到 `http://127.0.0.1:8000/*`。生产环境需要提供同源 `/api` 反向代理，或将 `VITE_API_BASE_URL` 指向已配置 CORS 的后端地址。
+
+### 3. 数据来源
+
+- 真实接口：`POST /tutorials/parse`、`GET /recipes/:id`、`GET /beauty-kit`、`POST /matching`，以及有真实 Face Profile 时的 `POST /cv-adaptation`。
+- 前端补充：产品品牌、图片、色号和质地等后端暂缺的展示资料。
+- 演示数据：Parsing 阶段与关键画面、扫描质量、色彩分析、个性化动作和实时指导。
+- `VITE_MOCK_FALLBACK=true` 时，真实请求失败会回退到演示数据并保留来源提示；设为 `false` 可进行严格联调。
+
+## 体验流程
+
+首页 → 添加参考教程 → 解析 → 配方 → 美妆工具库 → 产品匹配 → 扫描说明。
+
+- 同意扫描：示例取景状态 → 示例面部档案 → 专属教程 → 实时指导 → 完成。
+- 暂不扫描：直接生成仅结合教程和产品的教程。
+- 上传与链接目前只记录输入，不上传文件；示例教程可通过配置的后端可读媒体路径调用真实解析接口。
+- 添加产品入口保留为演示流程，识别、搜索和手动保存尚未接入。
+- 语音按钮展示可点击意图，不启用麦克风。
+- 保存的教程位于浏览器 localStorage；流程状态和面部选择位于 sessionStorage。当前没有账户、云存储或真实面部采集。
+
+## 前端结构
+
+- `src/types/`：页面使用的 domain types。
+- `src/services/api/`：统一 API client 和后端 DTO。
+- `src/services/adapters/`：后端 contract 到现有 domain model 的映射。
+- `src/services/`：页面数据边界，负责 API 请求、适配和 fallback。
+- `src/mocks/`：离线演示及接口 fallback 数据。
+- `src/pages/`：页面，只通过 services 获取数据。
+- `src/components/`：布局、基础 UI、教程、产品和扫描组件。
+- `src/lib/config.ts`：API 地址、超时、Demo 模式和 fallback 配置。
+
+面部摄像头组件与 AR overlay 已分离；AR 坐标为 0–100 的归一化示意坐标。Parsing 的阶段动画是前端视觉进度，不代表后端任务进度。
+
+更详细的字段映射与数据来源说明见 [ADAPTATION.md](./ADAPTATION.md)，真实联调记录见 [INTEGRATION.md](./INTEGRATION.md)。
+
+## 素材
+
+品牌素材位于 `public/assets/brand/`，教程素材位于 `public/assets/tutorial/`，扫描说明图片位于 `public/assets/face/`。产品图片通过本地 metadata 补充，拆解关键帧仍保留占位。
+
+## 验证
+
+```sh
+npm test
 npm run build
 ```
 
-## Data and optional backend connection
+实时后端可用时可运行：
 
-The default preview uses bundled mock data. No backend, database, credentials, or personal face profiles are included. Face scanning requires a compatible backend; in this standalone preview you can skip scanning and continue with the standard tutorial.
-
-To connect an independently running compatible backend at http://127.0.0.1:8000:
-
-```bash
-VITE_DEMO_MODE=false VITE_MOCK_FALLBACK=true npm run dev
+```sh
+npm run test:live
 ```
-
-Vite proxies `/api` to that backend. The services support `/tutorials/parse`, `/recipes/:id`, `/beauty-kit`, `/matching`, `/cv-adaptation`, `/face-scan`, and `/personalization`. Parsing currently requires a server-side media path; configure `VITE_EXAMPLE_MEDIA_PATH` and `VITE_EXAMPLE_MEDIA_KIND` for a sample available on that backend. Backend availability and implemented capabilities determine which results are real; unavailable features retain fallback data.
-
-Face images are submitted only for an explicitly requested scan in API mode. Backend-derived personalization is identified separately from fallback. The backend currently used by this prototype supports personalization for A02/A04; other steps retain their standard or fallback guidance.
-
-Only frontend runtime source, static display assets, package manifests, and build configuration are included here. Backend code and documentation remain untouched.
-
-## Latest scan preview
-
-Scanning requires explicit consent before camera access or uploads. Browser-side input checks run locally using the bundled MediaPipe model and WASM assets in `public/models/face/` (about 37 MB). These are public runtime dependencies, not user face images. Real aggregation and personalization still require the compatible backend in API mode.
-
-The countdown and capture tolerate brief blinking and minor movement, while sustained movement stops capture. These are conservative input checks, not an accuracy guarantee or comprehensive occlusion detection. See `docs/SCAN-QUALITY.md`.
-
-Photo review is temporary. Users may separately opt in to keep numeric face profiles in the current browser session, and can clear them. Tutorial illustrations are generic closed-eyelid diagrams, not personal photo renderings.
-
-## Personalization integration
-
-`personalizationService` sends supported A02/A04 actions to `POST /personalization`, validates the response and normalizes it for My Tutorial. A measured v0.3 face profile takes priority; when absent, the bundled synthetic v0.3 fixture is explicitly labeled as demo input. API failures keep the existing fallback with diagnostic logging. Tutorial numeric parameters still use the documented cat-eye preset, not measurements extracted from the tutorial.
-
-## Demo user center
-
-Use the avatar entry to open `/account`. Nickname-only demo login creates no real account and sends no credentials. Saved tutorials are collected in this browser's localStorage, with detail views and removal; different demo nicknames share this browser collection. Existing single saves migrate automatically. Face profiles still follow explicit consent and optional session-only retention. Clearing site data removes saved tutorials.

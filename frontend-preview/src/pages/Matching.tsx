@@ -16,7 +16,8 @@ export default function Matching() {
   return (
     <Page
       eyebrow="02 / 产品匹配"
-      title="匹配结果"
+      title="看看你的产品能完成哪些步骤"
+      description="按每一步的产品需求查看选择；没有匹配时，也可按需求准备。"
       backTo="/beauty-kit"
       progress={50}
     >
@@ -26,9 +27,6 @@ export default function Matching() {
       </div>
       <Progress value={Math.round((n / (data?.length || 1)) * 100)} />
       {error && <p>{error}</p>}
-      {data?.some((m) => m.difference.includes("接口占位结果")) && (
-        <p role="status">当前匹配结果为接口占位，尚未评估真实产品能力。</p>
-      )}
       {notice && <p role="status">{notice}</p>}
       <div className="matching-list">
         {data?.map((m, i) => (
@@ -46,7 +44,7 @@ export default function Matching() {
                   ? "已匹配"
                   : m.status === "partial"
                     ? "部分匹配"
-                    : "能力缺口"}
+                    : "待准备"}
               </Tag>
               <ChevronDown size={16} />
             </summary>
@@ -59,8 +57,8 @@ export default function Matching() {
                       ?.productRequirement
                   }
                 </p>
-                <h3>最佳匹配产品</h3>
-                <p>{m.bestMatch?.productName || "暂无匹配产品"}</p>
+                <h3>产品选择</h3>
+                <p>{m.bestMatch?.productName || "暂无高度匹配的产品"}</p>
                 <div className="checks">
                   {m.capabilityChecks.map((c) => (
                     <span key={c.label} data-passed={c.passed}>
@@ -71,15 +69,18 @@ export default function Matching() {
                 </div>
               </div>
               <div>
-                <span className="eyebrow">匹配分数</span>
-                <strong className="score">
-                  {m.provenance.score === "frontend-fallback"
-                    ? "未提供"
-                    : m.score}
-                  {m.provenance.score !== "frontend-fallback" && (
-                    <small>/ 100 · 演示</small>
-                  )}
-                </strong>
+                {m.provenance.score === "backend" && (
+                  <>
+                    <span className="eyebrow">匹配度</span>
+                    <strong className="score">
+                      {m.score}
+                      <small>/ 100</small>
+                    </strong>
+                  </>
+                )}
+                {m.provenance.status === "mock" && (
+                  <p>参考产品方案 · 尚未完成本次匹配</p>
+                )}
                 <h3>差异</h3>
                 <p>{m.difference}</p>
                 <h3>对妆效的影响</h3>
@@ -99,7 +100,7 @@ export default function Matching() {
       </div>
       <div className="action-row">
         <Button asChild>
-          <Link to="/face-scan">生成我的教程 →</Link>
+          <Link to="/face-scan">继续设置面部 →</Link>
         </Button>
       </div>
     </Page>

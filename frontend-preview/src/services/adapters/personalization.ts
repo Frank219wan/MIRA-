@@ -136,7 +136,7 @@ export function applyPersonalization(
       ...action,
       personalized: { ...action.personalized, direction: summary },
       instructions: `${action.instructions}。${summary}。`,
-      whyChanged: `根据面部参数应用 ${item.applied_rules.join("、")}；基于猫眼预设参数调整。`,
+      whyChanged: "结合面部结构，在基础猫眼方案上调整范围与方向。",
       personalizationSource: "backend-personalization",
       backendPersonalization: structuredClone(item),
       adjustmentDetails: item.adjustments.map((adjustment) => ({

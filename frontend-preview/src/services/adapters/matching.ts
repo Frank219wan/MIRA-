@@ -43,9 +43,9 @@ export function adaptMatching(
       score: 0,
       capabilityChecks: [], // Contract has no score or capability evaluation. UI displays “未提供”.
       difference: item?.note
-        ? `服务说明：${chineseText(item.note, "匹配说明待补充中文")}`
-        : "后端暂未提供差异分析（前端占位）",
-      impact: "后端暂未评估妆效影响（前端占位）",
+        ? `${chineseText(item.note, "匹配说明待补充中文")}`
+        : "尚无差异分析",
+      impact: "尚无妆效评估",
       missingCapability: [],
       provenance: {
         status: item ? "backend" : "frontend-fallback",

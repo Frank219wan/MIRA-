@@ -101,9 +101,7 @@ export function StepIllustration({ action }: { action?: MakeupAction }) {
         </text>
       </svg>
       <p>{action?.motion}</p>
-      <small>
-        通用位置示意，不是原教程视频或扫描照片。请结合右侧操作说明。
-      </small>
+      <small>位置示意，请结合右侧说明与镜中妆效操作。</small>
     </figure>
   );
 }

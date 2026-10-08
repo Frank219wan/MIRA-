@@ -39,7 +39,7 @@ export const getMatchResult = (): Promise<ServiceMatch[]> =>
             bestMatch: null,
             score: 0,
             capabilityChecks: [],
-            difference: "演示占位：尚无匹配结果",
+            difference: "尚无匹配结果",
             impact: "尚未评估",
             missingCapability: [],
           }),
