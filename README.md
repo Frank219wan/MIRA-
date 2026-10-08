@@ -889,6 +889,39 @@ Profile hash、personalization、Live Overlay 和保存结果。`data/output/` �
 没有热键重新扫描；退出后再运行命令会建立一个全新 session，不保留上一轮
 profile、personalization、AR snapshot 或 overlay summary 的对象引用。
 
+## Special Area Preference v0.1
+
+Special Area Preference 允许用户手动圈选自己在意、希望保留或希望处理的区域，
+并自行选择 `KEEP`、`BLEND`、`COVER` 或 `HIGHLIGHT`。系统只保存用户选择的
+normalized polygon、位置、可选标签和 preference，再据此生成 complexion/base
+makeup 教程；不会自动检测或诊断区域类型，也不会自动推荐遮盖。
+
+`user_label` 完全来自用户输入，`preference` 完全来自用户选择。教程输出中的
+`decision_source` 固定为 `user_preference`。
+
+内部左右语义始终采用用户本人视角：
+
+- `subject_left_cheek`：被拍摄者／用户本人自己的左脸颊。
+- `subject_right_cheek`：被拍摄者／用户本人自己的右脸颊。
+
+`subject_left` 和 `subject_right` 永远不表示图片画面的左／右。对于正脸非镜像照片，
+image-left 通常对应 subject-right，image-right 通常对应 subject-left，但当前版本不依赖
+这一假设进行自动判断；location 仍由用户手动选择。不要使用 `image_left_cheek` 或
+`image_right_cheek` 表示用户本人的左右脸颊。旧的歧义值 `left_cheek` 和
+`right_cheek` 不属于 v0.1 合法枚举，也不会写入新输出。
+
+本地图片 Demo：
+
+```bash
+python tools/run_special_area_image_demo.py \
+  --image data/input/special_area_demo/subject01_front.jpg \
+  --output data/output/special_area_demo/
+```
+
+左键添加 polygon 点；`Backspace` 或 `U` 撤销；`C` 清空；至少三个点后按
+`Enter` 确认；`Q` 退出。输入图片、debug 图片和生成 JSON 都只保留在被 Git
+忽略的 `data/input/`、`data/output/`，不会进入 fixture。
+
 ## 模块设计
 
 - `FaceLandmarkerDetector`：负责配置和调用 MediaPipe Tasks Face Landmarker。
