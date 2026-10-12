@@ -43,3 +43,6 @@ app.include_router(preview_router)
 
 from integration.upload_parser import router as upload_parser_router
 app.include_router(upload_parser_router)
+
+from integration.static_guidance import router as static_router
+app.include_router(static_router)

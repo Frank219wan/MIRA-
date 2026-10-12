@@ -18,6 +18,8 @@ export interface SelectionRegion {
 }
 export interface LocalAppearancePreference {
   id?: string;
+  imageSource?: "illustration" | "user-photo";
+  imageId?: string;
   selection?: SelectionRegion;
   region: LocalRegion;
   preference: AppearancePreference;
@@ -144,4 +146,8 @@ export function compileLocalAppearance(
       actionIds,
     };
   });
+}
+
+export function isPhotoSelectionCurrent(p: LocalAppearancePreference, imageId?: string) {
+  return p.imageSource === "user-photo" && !!imageId && p.imageId === imageId;
 }

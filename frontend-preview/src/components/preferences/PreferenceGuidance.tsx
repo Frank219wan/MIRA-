@@ -23,7 +23,9 @@ export function PreferenceGuidance({
             {g.integrateStyle &&
               ` · ${g.integrateStyle === "natural" ? "自然保留" : "突出呈现"}`}
           </h3>
+          <small>{g.source === "backend-special-area" ? "局部底妆规则建议" : "前端呈现建议"}</small>
           <p>{g.instruction}</p>
+          {g.imageSource !== "user-photo" && <small>示意图偏好，尚未绑定本人照片。</small>}
           <p>做到这里就可以：{g.stopWhen}</p>
           {!g.actionIds.length && (
             <small>本教程未包含该区域的底妆步骤，可在需要时参考。</small>

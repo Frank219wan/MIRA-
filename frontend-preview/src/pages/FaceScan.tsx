@@ -1,3 +1,4 @@
+import { retainStaticFace, clearStaticFace } from "../services/staticFace";
 import { LocalAppearanceCard } from "../components/preferences/LocalAppearanceCard";
 import {
   checkScanImage,
@@ -117,6 +118,13 @@ export default function FaceScan() {
         0;
       clearReview();
       reviewURL.current = URL.createObjectURL(images[Math.max(0, validIndex)]);
+      const bitmap = await createImageBitmap(images[Math.max(0, validIndex)]);
+      try {
+        const landmarks = await checkScanImage(bitmap, 1024);
+        if (run !== generation.current) return;
+        await retainStaticFace(images[Math.max(0, validIndex)], landmarks);
+        if (run !== generation.current) { clearStaticFace(); return; }
+      } finally { bitmap.close(); }
       setReview(reviewURL.current);
       setPhase("complete");
       setValidFrames(result.valid_frame_count);
@@ -228,7 +236,7 @@ export default function FaceScan() {
       <details className="face-scan-note">
         <summary>隐私与图片使用说明</summary>
         <p>
-          同意后才会开启摄像头或处理你选择的照片。画面先在浏览器检查，再发送到扫描服务计算面部数值；服务处理结束后清理原图，本次图片仅在回看和区域标记时临时保留。面部数值仅用于调整教程的位置、范围与方向，不用于身份识别。只有另行勾选保留，数值档案才会在当前浏览器会话中保存。
+          同意后才会开启摄像头或处理你选择的照片。画面先在浏览器检查，再发送到扫描服务计算面部数值；服务处理结束后清理原图，本次图片仅在回看、区域标记和静态上妆指导时临时保留。面部数值仅用于调整教程的位置、范围与方向，不用于身份识别。只有另行勾选保留，数值档案才会在当前浏览器会话中保存。
         </p>
         <p>
           取消同意将停止采集并清除本地面部数据；已发送的请求可能仍会完成服务器临时处理，但返回结果不会继续使用。不扫描也可使用基础教程。

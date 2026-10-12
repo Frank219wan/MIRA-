@@ -1,3 +1,4 @@
+import { StaticPhotoGuidance } from "../components/coach/StaticPhotoGuidance";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -177,6 +178,7 @@ export default function TutorialInput() {
           </div>
         </section>
         <aside className="guidelines">
+          {mode === "example" && <StaticPhotoGuidance />}
           {mode === "example" && <ReferenceImage className="tutorial-step-sheet" src="/assets/tutorial/purple-eye-steps.jpg" alt="紫色眼妆六步图解" caption="眼妆步骤参考" />}
           <h2>为了获得更清晰的拆解结果</h2>
           <ul>

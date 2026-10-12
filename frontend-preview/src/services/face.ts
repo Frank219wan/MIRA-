@@ -1,3 +1,4 @@
+import { clearStaticFace } from "./staticFace";
 import { quality, faceProfile } from "../mocks/faceProfile";
 import { demo, withFallback } from "./base";
 import { adaptFaceProfile } from "./adapters/face";
@@ -62,6 +63,7 @@ export const hasFaceProfile = () =>
   sessionStorage.getItem("mira-face") === "true";
 export const setFaceConsent = (enabled: boolean) => {
   scanRevision++;
+  if (!enabled) clearStaticFace();
   sessionStorage.setItem("mira-face", String(enabled));
   if (!enabled) {
     profileDTO = undefined;
@@ -75,6 +77,7 @@ export async function scanFaceImages(
   images: Blob[],
 ): Promise<FaceScanResultDTO | null> {
   const revision = ++scanRevision;
+  clearStaticFace();
   profileDTO = undefined;
   sessionStorage.removeItem(PROFILE_KEY);
   return withFallback(

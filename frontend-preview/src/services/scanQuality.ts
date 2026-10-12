@@ -64,14 +64,15 @@ let detector:
   Promise<import("@mediapipe/tasks-vision").FaceLandmarker> | undefined;
 export async function checkScanImage(
   source: HTMLVideoElement | ImageBitmap,
+  resolution = 256,
 ): Promise<Point[]> {
   const width =
     source instanceof HTMLVideoElement ? source.videoWidth : source.width;
   const height =
     source instanceof HTMLVideoElement ? source.videoHeight : source.height;
   const canvas = document.createElement("canvas");
-  canvas.width = 256;
-  canvas.height = Math.max(1, Math.round((256 * height) / width));
+  canvas.width = Math.min(width, resolution);
+  canvas.height = Math.max(1, Math.round((canvas.width * height) / width));
   const ctx = canvas.getContext("2d", { willReadFrequently: true })!;
   ctx.drawImage(source, 0, 0, canvas.width, canvas.height);
   const issue = pixelIssue(

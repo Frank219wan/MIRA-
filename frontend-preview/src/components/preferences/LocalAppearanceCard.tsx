@@ -1,3 +1,4 @@
+import { getStaticFace } from "../../services/staticFace";
 import { useNavigate } from "react-router-dom";
 import { copyPreferencePreview } from "../../services/preferencePreview";
 import { useState, useRef, useEffect, type PointerEvent } from "react";
@@ -8,6 +9,7 @@ import {
   setLocalAppearancePreferences,
   type AppearancePreference,
   type SelectionRegion,
+  isPhotoSelectionCurrent,
 } from "../../services/localAppearance";
 const choices = [
   ["keep", "保留原有呈现", "保持这个区域现在的状态，只调整周围妆容。"],
@@ -23,6 +25,8 @@ export function LocalAppearanceCard({
   editor?: boolean;
 }) {
   const nav = useNavigate();
+  const currentFace = getStaticFace();
+  image = currentFace?.image || image;
   const [editingId, setEditingId] = useState<string>();
   const sectionRef = useRef<HTMLElement>(null);
   const [saved, setSaved] = useState(getLocalAppearancePreferences);
@@ -39,7 +43,7 @@ export function LocalAppearanceCard({
     const existing = saved.find((p) => (p.id || p.region) === id);
     setEditingId(id);
     setError("");
-    setRegion(existing?.selection);
+    setRegion(existing && isPhotoSelectionCurrent(existing, currentFace?.id) ? existing.selection : undefined);
     setPreference(existing?.preference);
     setStyle(existing?.integrateStyle ?? null);
     setSelecting(true);
@@ -79,6 +83,8 @@ export function LocalAppearanceCard({
         id: editingId || crypto.randomUUID(),
         region: "局部区域" as const,
         selection: region,
+        imageSource: currentFace ? "user-photo" as const : "illustration" as const,
+        imageId: currentFace?.id,
         preference,
         integrateStyle: preference === "integrate" ? style : null,
       };
@@ -103,9 +109,9 @@ export function LocalAppearanceCard({
       {selecting ? (
         <>
           <h2>选择想单独设置的区域</h2>
-          <p>在面部轻点一个位置，后续教程会根据你的选择调整。</p>
+          <p>{currentFace ? "在本次照片上选择区域。" : "示意图标记仅表达偏好；本人照片上的定位需要重新标记。"}</p>
           <div
-            className="region-canvas"
+            className={`region-canvas ${currentFace ? "region-canvas-photo" : ""}`}
             role="button"
             tabIndex={0}
             aria-label="选择面部位置，点击或按方向键调整选区"
@@ -165,7 +171,7 @@ export function LocalAppearanceCard({
               draggable={false}
             />
             {saved
-              .filter((p) => p.selection && (p.id || p.region) !== editingId)
+              .filter((p) => p.selection && (p.id || p.region) !== editingId && (currentFace ? isPhotoSelectionCurrent(p, currentFace.id) : p.imageSource !== "user-photo"))
               .map((p, i) => (
                 <span
                   key={p.id || p.region}
