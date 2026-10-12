@@ -24,7 +24,7 @@ export interface LocalAppearancePreference {
   integrateStyle: "natural" | "highlight" | null;
 }
 export interface LocalAppearanceGuidance extends LocalAppearancePreference {
-  source: "frontend-preference";
+  source: "frontend-preference" | "backend-special-area";
   label: string;
   instruction: string;
   stopWhen: string;

@@ -1,7 +1,5 @@
-import {
-  getLocalAppearancePreferences,
-  compileLocalAppearance,
-} from "./localAppearance";
+import { getLocalAppearancePreferences } from "./localAppearance";
+import { getLocalAppearanceGuidance } from "./specialAreaService";
 import { storeTutorial } from "./userCenter";
 import { withFallback } from "./base";
 import {
@@ -71,7 +69,7 @@ export async function getPersonalizedTutorialContext() {
   ).length;
   return {
     actions: personalized,
-    localAppearanceGuidance: compileLocalAppearance(
+    localAppearanceGuidance: await getLocalAppearanceGuidance(
       getLocalAppearancePreferences(),
       actions,
     ),

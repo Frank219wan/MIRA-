@@ -1,0 +1,3 @@
+# Install together with the selected backend's requirements.txt.
+python-multipart>=0.0.18,<1
+pytest>=8,<10

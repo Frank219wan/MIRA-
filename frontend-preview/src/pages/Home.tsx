@@ -6,7 +6,7 @@ export default function Home() {
   const reduced = useReducedMotion();
   return (
     <div className="home">
-      <section className="hero">
+      <section className="hero hero-editorial">
         <motion.div
           className="hero-copy"
           initial={reduced ? false : { opacity: 0, y: 20 }}
@@ -31,7 +31,7 @@ export default function Home() {
         </motion.div>
         <div className="hero-visual">
           <div className="hero-image">
-            <img src="/assets/hero/hero-makeup.jpg" alt="精致眼妆灵感" />
+            <img src="/assets/hero/beauty-adaptation.png" alt="面部妆容位置与方向示意" />
           </div>
         </div>
       </section>
@@ -53,6 +53,9 @@ export default function Home() {
               {i < 3 && <ArrowRight size={20} />}
             </div>
           ))}
+        </div>
+        <div className="home-feature-image">
+          <img src="/assets/hero/beauty-scan.jpg" alt="面部适配与局部区域呈现示意" loading="lazy" />
         </div>
         <p className="home-difference">
           从参考妆容到实际完成，让每一步都有清晰的画法。

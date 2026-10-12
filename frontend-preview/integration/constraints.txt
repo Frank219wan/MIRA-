@@ -1,0 +1,3 @@
+# Compatible with the backend's numpy==1.26.4 and MediaPipe 0.10.21.
+jax==0.4.35
+jaxlib==0.4.35

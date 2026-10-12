@@ -3384,3 +3384,63 @@ button:disabled:hover {
   text-align: center;
   font-size: 12px;
 }
+
+/* Borderless photography, scaled to the available viewport. */
+.hero.hero-editorial {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: clamp(420px, 65svh, 580px);
+  padding: 24px 0;
+  overflow: hidden;
+  border-radius: 0;
+  background: var(--white);
+}
+.hero-editorial .hero-visual {
+  position: absolute;
+  inset: 0 0 0 20%;
+  z-index: -1;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 44%);
+  mask-image: linear-gradient(to right, transparent, #000 44%);
+}
+.hero-editorial .hero-image { height: 100%; border: 0; border-radius: 0; }
+.hero-editorial .hero-image > img {
+  width: 100%; height: 100%; object-fit: cover; object-position: 65% center;
+}
+.hero-editorial .hero-copy {
+  width: 42%;
+  padding: 16px 0;
+  background: transparent;
+}
+.hero-editorial h1 { font-size: clamp(30px, 3vw, 48px); margin-top: 0; }
+.hero-editorial p { max-width: 350px; }
+.home-feature-image {
+  width: min(100%, 1000px);
+  margin: 64px auto 24px;
+  overflow: hidden;
+  aspect-ratio: 1.95;
+  -webkit-mask-image: radial-gradient(ellipse, #000 45%, transparent 73%);
+  mask-image: radial-gradient(ellipse, #000 45%, transparent 73%);
+}
+.home-feature-image img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.12); }
+.tutorial-step-sheet { margin: 0 0 28px; }
+.tutorial-step-sheet img { width: 100%; height: auto; object-fit: contain; max-height: none; }
+.recipe-aside .reference-image img { height: auto; object-fit: contain; }
+.recipe-aside .tutorial-step-sheet { margin-top: 24px; }
+.example .reference-image img { object-position: center 38%; }
+@media (max-width: 700px) {
+  .hero.hero-editorial { min-height: 0; padding: 0; flex-direction: column; align-items: stretch; }
+  .hero-editorial .hero-visual { position: relative; inset: auto; order: -1; height: clamp(240px, 75vw, 340px); mask-image: none; -webkit-mask-image: none; }
+  .hero-editorial .hero-image > img { object-position: 75% top; }
+  .hero-editorial .hero-copy { width: 100%; padding: 16px 0 32px; }
+  .hero-editorial h1 { font-size: 32px; }
+  .hero-editorial p { font-size: 15px; }
+  .home-feature-image { width: 100%; margin-top: 32px; aspect-ratio: 1.4; }
+  .tutorial-step-sheet { max-width: 480px; margin-inline: auto; }
+}
+
+.hero-editorial .hero-visual::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 76%, var(--white));
+}

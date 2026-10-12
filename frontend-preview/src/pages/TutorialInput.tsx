@@ -68,8 +68,8 @@ export default function TutorialInput() {
             {mode === "example" ? (
               <div className="example">
                 <ReferenceImage
-                  src="/assets/tutorial/smokey-eye.jpg"
-                  alt="烟熏眼妆参考"
+                  src="/assets/tutorial/purple-eye-look.jpg"
+                  alt="紫色眼妆完整妆效参考"
                   caption="已有参考素材"
                 />
                 <div>
@@ -148,6 +148,7 @@ export default function TutorialInput() {
           </div>
         </section>
         <aside className="guidelines">
+          {mode === "example" && <ReferenceImage className="tutorial-step-sheet" src="/assets/tutorial/purple-eye-steps.jpg" alt="紫色眼妆六步图解" caption="眼妆步骤参考" />}
           <h2>为了获得更清晰的拆解结果</h2>
           <ul>
             {[
