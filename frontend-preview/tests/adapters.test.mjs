@@ -9,7 +9,7 @@ const fixture = (name) =>
   JSON.parse(
     readFileSync(
       new URL(
-        `../backend-reference/data/fixtures/${name}.json`,
+        `./fixtures/${name}.json`,
         import.meta.url,
       ),
     ),

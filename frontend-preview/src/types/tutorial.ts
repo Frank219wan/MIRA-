@@ -22,6 +22,7 @@ export interface MakeupAction {
   endTime: number;
 }
 export interface TutorialInput {
+  uploadId?: string;
   kind: "video" | "link" | "image" | "example";
   name: string;
 }

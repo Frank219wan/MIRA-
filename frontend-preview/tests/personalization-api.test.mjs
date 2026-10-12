@@ -14,7 +14,7 @@ import { apiConfig } from "../src/lib/config.ts";
 const fixture = (path) =>
   JSON.parse(readFileSync(new URL(path, import.meta.url)));
 const recipe = fixture(
-  "../backend-reference/data/fixtures/standard_recipe_v1.json",
+  "./fixtures/standard_recipe_v1.json",
 );
 const face = fixture("./fixtures/face_profile_v0_3.json");
 const store = new Map();

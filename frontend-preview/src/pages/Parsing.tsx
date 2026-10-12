@@ -30,7 +30,7 @@ export default function Parsing() {
       {notice && <p role="status">{notice}</p>}
       {error ? (
         <Card>
-          <p role="alert">解析未完成，请重新开始。</p>
+          <p role="alert">{error}</p>
           <Button asChild variant="tertiary">
             <Link to="/tutorial">返回输入</Link>
           </Button>

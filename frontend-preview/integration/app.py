@@ -37,3 +37,9 @@ def special_area_guidance(payload: SpecialAreaRequest):
         return adapt_special_area_tutorial(payload.profile)
     except SpecialAreaProfileError as exc:
         raise APIError('invalid_request_payload', 'Special area validation failed.', str(exc)) from exc
+
+from integration.media_preview import router as preview_router
+app.include_router(preview_router)
+
+from integration.upload_parser import router as upload_parser_router
+app.include_router(upload_parser_router)

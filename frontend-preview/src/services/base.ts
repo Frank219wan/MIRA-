@@ -9,8 +9,9 @@ export async function withFallback<T>(
   name: string,
   live: () => Promise<T>,
   fallback: () => T | Promise<T>,
+  options: { required?: boolean } = {},
 ): Promise<T> {
-  if (apiConfig.demoMode) {
+  if (apiConfig.demoMode && !options.required) {
     statuses.set(name, { source: "demo" });
     return fallback();
   }
@@ -21,10 +22,10 @@ export async function withFallback<T>(
   } catch (e) {
     const error = e instanceof Error ? e.message : "服务不可用";
     statuses.set(name, {
-      source: apiConfig.mockFallback ? "mock-fallback" : "error",
+      source: apiConfig.mockFallback && !options.required ? "mock-fallback" : "error",
       error,
     });
-    if (!apiConfig.mockFallback) throw e;
+    if (!apiConfig.mockFallback || options.required) throw e;
     console.warn(`[MIRA ${name}] 使用参考方案：${error}`);
     return fallback();
   }

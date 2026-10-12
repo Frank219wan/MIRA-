@@ -44,6 +44,10 @@ export function getRecipeDTO(): Promise<StandardRecipeDTO> {
             sessionStorage.removeItem("mira-recipe-id");
           }
         }
+        const saved: TutorialInput | null = JSON.parse(sessionStorage.getItem("mira-input") || "null");
+        if (saved?.uploadId) return request<StandardRecipeDTO>("/tutorials/parse-upload", {
+          upload_id: saved.uploadId, title: saved.name,
+        });
         return request<StandardRecipeDTO>("/tutorials/parse", parseInput());
       })
       .then((dto) => {
@@ -64,6 +68,7 @@ export const getTutorial = () =>
     "getTutorial",
     async () => adaptRecipe(await getRecipeDTO()),
     () => demo(actions),
+    { required: !!JSON.parse(sessionStorage.getItem("mira-input") || "null")?.uploadId },
   );
 export const getParsingStages = () => demo(stages); // Visual sequence only, never backend progress.
 export async function getRecipe(id: string) {

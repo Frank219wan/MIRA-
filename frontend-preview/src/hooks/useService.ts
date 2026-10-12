@@ -21,8 +21,8 @@ export function useService<T>(service: () => Promise<T>) {
           );
         }
       })
-      .catch(() => {
-        if (alive) setError("暂时无法读取，请刷新重试。");
+      .catch((error) => {
+        if (alive) setError(error instanceof Error ? error.message : "暂时无法读取，请刷新重试。");
       });
     return () => {
       alive = false;

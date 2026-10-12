@@ -6,7 +6,7 @@ import { adaptRecipe } from "../src/services/adapters/tutorial.ts";
 const recipe = JSON.parse(
   readFileSync(
     new URL(
-      "../backend-reference/data/fixtures/standard_recipe_v1.json",
+      "./fixtures/standard_recipe_v1.json",
       import.meta.url,
     ),
   ),

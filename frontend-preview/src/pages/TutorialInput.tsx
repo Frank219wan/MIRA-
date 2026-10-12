@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Upload,
@@ -12,23 +12,44 @@ import { Page } from "../components/layout/Page";
 import { Button } from "../components/ui/button";
 import { ReferenceImage } from "../components/ui/ReferenceImage";
 import { saveTutorialInput } from "../services/tutorial";
+import { uploadMediaPreview } from "../services/mediaPreview";
 export default function TutorialInput() {
   const [mode, setMode] = useState("example");
   const [file, setFile] = useState<File>();
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
   const nav = useNavigate();
+  const uploadRevision = useRef(0);
+  const [uploading, setUploading] = useState(false);
+  const [preview, setPreview] = useState<{ uploadId: string; url: string; kind: "image" | "video" }>();
+  async function selectFile(selected?: File) {
+    const revision = ++uploadRevision.current;
+    setFile(selected);
+    setPreview(undefined);
+    setError("");
+    setUploading(!!selected);
+    if (!selected) return;
+    try {
+      const result = await uploadMediaPreview(selected);
+      if (revision === uploadRevision.current) setPreview(result);
+    } catch (error) {
+      if (revision === uploadRevision.current) setError(error instanceof Error ? error.message : "上传失败，请重试。");
+    } finally {
+      if (revision === uploadRevision.current) setUploading(false);
+    }
+  }
   async function go() {
     if (mode === "link" && !/^https?:\/\/\S+\.[^\s]+$/.test(url)) {
       setError("请输入完整的 http 或 https 教程链接。");
       return;
     }
-    if ((mode === "video" || mode === "image") && !file) {
-      setError("请先选择一个文件。");
+    if ((mode === "video" || mode === "image") && !preview) {
+      setError("请先上传文件并等待预览完成。");
       return;
     }
     await saveTutorialInput({
       kind: mode as "video" | "image" | "link" | "example",
+      uploadId: mode === "image" || mode === "video" ? preview?.uploadId : undefined,
       name: mode === "example" ? "柔棕日常眼妆" : file?.name || url,
     });
     nav("/tutorial/parsing");
@@ -55,7 +76,10 @@ export default function TutorialInput() {
                 className={mode === id ? "active" : ""}
                 onClick={() => {
                   setMode(String(id));
+                  uploadRevision.current++;
                   setFile(undefined);
+                  setPreview(undefined);
+                  setUploading(false);
                   setError("");
                 }}
               >
@@ -89,6 +113,10 @@ export default function TutorialInput() {
                 <small>链接仅作记录，本次将使用示例教程。</small>
               </label>
             ) : (
+              <>
+              {preview && <div className="uploaded-media-preview">
+                {preview.kind === "image" ? <img src={preview.url} alt="已上传的教程图片" onError={() => setError("图片无法预览，请重新选择。")} /> : <video src={preview.url} controls playsInline preload="metadata" onError={() => setError("浏览器无法播放此视频，请尝试 MP4 格式。")} />}
+              </div>}
               <label
                 className={`upload tutorial-upload ${file ? "has-file" : ""}`}
               >
@@ -123,16 +151,17 @@ export default function TutorialInput() {
                       : "image/jpeg,image/png,image/webp"
                   }
                   onChange={(e) => {
-                    setFile(e.target.files?.[0]);
-                    setError("");
+                    void selectFile(e.target.files?.[0]);
+                    e.target.value = "";
                   }}
                 />
                 <span className="file-choice">
                   {file ? "重新选择" : "选择文件"}
                   <ArrowRight size={14} />
                 </span>
-                <small>文件仅在本地选择，暂不上传；本次将使用示例教程。</small>
+                <small role="status">{uploading ? "正在上传…" : preview ? "已上传，可开始解析。素材保留 1 小时。" : "上传后可预览，文件不超过 100 MB。"}</small>
               </label>
+              </>
             )}
           </div>
           {error && (
@@ -141,7 +170,7 @@ export default function TutorialInput() {
             </p>
           )}
           <div className="action-row">
-            <Button onClick={go}>
+            <Button onClick={go} disabled={uploading}>
               开始解析教程
               <ArrowRight size={17} />
             </Button>
