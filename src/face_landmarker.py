@@ -71,6 +71,15 @@ class FaceLandmarkerDetector:
 
     def detect(self, bgr_image):
         """Return landmarks for the first detected face in an OpenCV BGR image."""
+        faces = self.detect_all(bgr_image)
+        if not faces:
+            raise FaceLandmarkerError(
+                "未检测到人脸。请使用光线充足、无遮挡、面部正对镜头的自拍图片。"
+            )
+        return faces[0]
+
+    def detect_all(self, bgr_image):
+        """Return every detected face up to ``max_faces`` without choosing one."""
         if bgr_image is None or bgr_image.size == 0:
             raise FaceLandmarkerError("输入图片为空，无法进行人脸检测。")
 
@@ -85,7 +94,7 @@ class FaceLandmarkerDetector:
         except (RuntimeError, ValueError) as exc:
             raise FaceLandmarkerError(f"人脸关键点检测失败：{exc}") from exc
 
-        return require_first_face_landmarks(result)
+        return list(result.face_landmarks)
 
 
 def require_first_face_landmarks(result):

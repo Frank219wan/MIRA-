@@ -861,7 +861,7 @@ renderer 位于 `tools/render_ar_guidance_debug.py`，所有图片输出仍只�
 MediaPipe 和 OpenCV：
 
 ```bash
-cd /Users/wansiyu/Documents/ChatGPT/欧莱雅/beauty-face-engine
+cd beauty-face-engine
 source .venv/bin/activate
 python tools/run_cat_eye_webcam_demo.py
 ```
@@ -888,6 +888,116 @@ Profile hash、personalization、Live Overlay 和保存结果。`data/output/` �
 保存目标，程序不会从中读取旧 personalization 作为 Live State。当前版本
 没有热键重新扫描；退出后再运行命令会建立一个全新 session，不保留上一轮
 profile、personalization、AR snapshot 或 overlay summary 的对象引用。
+
+## Special Area Preference v0.1
+
+Special Area Preference 允许用户手动圈选自己在意、希望保留或希望处理的区域，
+并自行选择 `KEEP`、`BLEND`、`COVER` 或 `HIGHLIGHT`。系统只保存用户选择的
+normalized polygon、位置、可选标签和 preference，再据此生成 complexion/base
+makeup 教程；不会自动检测或诊断区域类型，也不会自动推荐遮盖。
+
+`user_label` 完全来自用户输入，`preference` 完全来自用户选择。教程输出中的
+`decision_source` 固定为 `user_preference`。
+
+内部左右语义始终采用用户本人视角：
+
+- `subject_left_cheek`：被拍摄者／用户本人自己的左脸颊。
+- `subject_right_cheek`：被拍摄者／用户本人自己的右脸颊。
+
+`subject_left` 和 `subject_right` 永远不表示图片画面的左／右。对于正脸非镜像照片，
+image-left 通常对应 subject-right，image-right 通常对应 subject-left，但当前版本不依赖
+这一假设进行自动判断；location 仍由用户手动选择。不要使用 `image_left_cheek` 或
+`image_right_cheek` 表示用户本人的左右脸颊。旧的歧义值 `left_cheek` 和
+`right_cheek` 不属于 v0.1 合法枚举，也不会写入新输出。
+
+本地图片 Demo：
+
+```bash
+python tools/run_special_area_image_demo.py \
+  --image data/input/special_area_demo/subject01_front.jpg \
+  --output data/output/special_area_demo/
+```
+
+左键添加 polygon 点；`Backspace` 或 `U` 撤销；`C` 清空；至少三个点后按
+`Enter` 确认；`Q` 退出。输入图片、debug 图片和生成 JSON 都只保留在被 Git
+忽略的 `data/input/`、`data/output/`，不会进入 fixture。
+
+## Special Area Live Tracking v0.1
+
+Live Tracking 将静态照片中由用户圈选的 normalized polygon 绑定到同一张脸的
+MediaPipe landmarks。每个 polygon point 从附近 10 个 landmarks 中选择一个包含该点、
+面积大于 epsilon 的非退化 triangle，并保存三个 landmark index 和 barycentric
+weights。Webcam 每帧只需读取相同三个 landmarks，就可以重投影该 point。系统不检测
+胎记、痣、疤痕或皮肤问题，也不会改变用户原先选择的 label、location 或 preference。
+
+`SpecialAreaProfile v0.1` 继续表示“用户定义了什么”；独立的
+`SpecialAreaTrackingBinding v0.1` 只表示“polygon 如何绑定到脸部 geometry”。Binding
+保存 source profile SHA-256，Live Session 会拒绝来自其他或旧 Profile 的 binding。
+
+所有 tracking geometry 均在 raw、unmirrored frame coordinates 中计算。只有最终显示
+preview 和 polygon 时才水平镜像，因此 `subject_left`／`subject_right` 仍始终表示用户
+本人左右侧，不会因镜像预览而交换。
+
+使用已经输出新 `subject_*` location 的 Profile 运行：
+
+```bash
+python tools/run_special_area_webcam_demo.py \
+  --image data/input/special_area_demo/subject01_front.jpg \
+  --profile data/output/special_area_demo_blend/special_area_profile.json
+```
+
+Live UI：
+
+- `Q`：退出。
+- `S`：只保存当前 session JSON metadata；不保存 Webcam frame。
+- `D`：显示／隐藏绑定 triangle 使用的 landmark anchors。
+- `P`：显示／隐藏 preference guidance，不修改原始 preference。
+
+检测不到脸或当前投影不安全时，UI 显示 `Tracking: FACE LOST`，并立即清除上一帧
+polygon；重新检测到有效 landmarks 后恢复 `Tracking: ACTIVE`。v0.1 使用 raw
+landmark reprojection，不做 temporal smoothing。
+
+## Live Area Selection v0.1
+
+Live Area Selection 把静态圈选步骤放进同一个本地 Camera session：
+
+```text
+Camera -> F Freeze -> Draw Polygon -> Confirm -> Label -> Location
+       -> Preference -> Landmark Binding -> Live Tracking
+```
+
+启动时不需要 `--image` 或 `--profile`：
+
+```bash
+cd beauty-face-engine
+.venv/bin/python tools/run_live_area_selection_demo.py
+```
+
+初始画面显示 `Tracking: NOT CONFIGURED`。按 `F` 后，当前 raw frame 和检测到的
+478 landmarks 只保留在内存中；程序拒绝无脸或多脸冻结帧。圈选画面使用镜像 preview，
+但点击会通过 `raw_x = 1 - display_x` 转回 raw、unmirrored normalized coordinates，
+`y` 保持不变。因此 `subject_left_cheek` / `subject_right_cheek` 继续表示用户本人左右，
+不表示屏幕左右。
+
+确认 polygon 时，程序在 raw coordinates 中移除距离小于 `1e-4` 的重复点，再以点集
+centroid 为中心按 `atan2` 极角重排现有点。它不会移动点、增加点或使用 convex hull。
+重排后必须通过非相邻边相交检查和 shoelace 面积检查；自交、少于三个 unique points、
+近共线或面积过小的 polygon 会被拒绝并要求重新圈选。Metadata 输入前会显示最终 normalized
+polygon 和 `Polygon normalized: N points`。
+
+圈选操作：左键添加点，`U` / `Backspace` 撤销，`C` 清空，`Enter` / `Space`
+确认，`Esc` 取消，`Q` 退出。确认后必须显式选择 location 和
+`KEEP` / `BLEND` / `COVER` / `HIGHLIGHT`；系统不推断区域类型、location 或
+preference。Profile 和 TrackingBinding 直接由内存中的 freeze landmarks 与 raw polygon
+构建，并在开始 tracking 前通过 identity reprojection 检查。
+
+进入 Live 后：`F` 重新圈选，`S` 只保存 Profile、Binding 和 session JSON metadata，
+`D` 切换 triangle anchors，`P` 切换 guidance，`Q` 退出。重新圈选在新 binding 完整验证
+通过后才替换旧 selection；按 `Esc` 会恢复旧 selection。v0.1 每个 session 只支持一个
+active area，不保存 freeze frame、Webcam frame、截图或视频。
+
+该流程不做自动检测、诊断或 face identity verification。它假设圈选后继续出现在同一
+Camera session 中的人仍是当前用户；如果换人，landmark geometry 仍可能继续投影。
 
 ## 模块设计
 
