@@ -30,10 +30,10 @@ export function toSpecialAreaProfile(preferences: LocalAppearancePreference[]) {
         {
           area_id: p.id || p.region,
           source: "user_selected",
-          user_label: "",
+          user_label: p.userLabel?.trim() || "",
           label_source: "user_provided",
-          // Do not infer anatomical location from a click on an illustration.
-          location: "other",
+          // Location is explicitly chosen by the user, never inferred from the image.
+          location: ({ "左脸颊": "subject_left_cheek", "右脸颊": "subject_right_cheek", "额头": "forehead", "鼻部": "nose", "下巴": "chin", "上唇": "upper_lip", "眼周": "other", "局部区域": "other" } as const)[p.region],
           preference: preferenceMap[p.preference],
           polygon: Array.from({ length: 16 }, (_, i) => ({
             x_norm: Math.min(

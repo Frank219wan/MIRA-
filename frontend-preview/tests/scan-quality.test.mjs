@@ -23,14 +23,14 @@ test("motion guard rejects drift, zoom and rotation while tolerating tiny jitter
   assert.equal(
     motionIssue(
       face,
-      face.map((p) => ({ ...p, x: p.x + 0.015 })),
+      face.map((p) => ({ ...p, x: p.x + 0.04 })),
     ),
     null,
   );
   assert.match(
     motionIssue(
       face,
-      face.map((p) => ({ ...p, x: p.x + 0.05 })),
+      face.map((p) => ({ ...p, x: p.x + 0.075 })),
     ),
     /移动/,
   );

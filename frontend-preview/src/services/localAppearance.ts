@@ -4,6 +4,7 @@ export const regions = [
   "左脸颊",
   "右脸颊",
   "鼻部",
+  "上唇",
   "下巴",
   "眼周",
   "局部区域",
@@ -18,6 +19,7 @@ export interface SelectionRegion {
 }
 export interface LocalAppearancePreference {
   id?: string;
+  userLabel?: string;
   imageSource?: "illustration" | "user-photo";
   imageId?: string;
   selection?: SelectionRegion;
@@ -48,6 +50,7 @@ export function isLocalPreference(v: unknown): v is LocalAppearancePreference {
   return (
     !!p &&
     regions.includes(p.region) &&
+    (p.userLabel === undefined || (typeof p.userLabel === "string" && p.userLabel.length <= 80)) &&
     (!p.selection ||
       [
         p.selection.x,
@@ -123,6 +126,7 @@ export function compileLocalAppearance(
       左脸颊: /左脸颊|左颊|left cheek/i,
       右脸颊: /右脸颊|右颊|right cheek/i,
       鼻部: /鼻|nose/i,
+      上唇: /上唇|upper lip/i,
       下巴: /下巴|chin/i,
       眼周: /眼|睑|eye|lid/i,
     };

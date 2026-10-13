@@ -163,10 +163,10 @@ export function motionIssue(before: Point[], after: Point[]): string | null {
   );
   if (
     span <= 0 ||
-    movement / span > 0.1 ||
-    Math.abs(newSpan / span - 1) > 0.18 ||
-    Math.abs(newTilt - tilt) > 0.16 ||
-    turn / span > 0.16
+    movement / span > 0.2 ||
+    Math.abs(newSpan / span - 1) > 0.22 ||
+    Math.abs(newTilt - tilt) > 0.22 ||
+    turn / span > 0.22
   )
     return "检测到面部移动，本次采集已停止。请保持头部和手机不动，重新开始。";
   return null;
