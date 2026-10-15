@@ -233,6 +233,9 @@ export default function FaceScan() {
       backTo={productMode === "beauty-kit" ? "/matching" : "/tutorial/recipe"}
       progress={50}
     >
+      <p role="status">
+        {stream ? "摄像头已开启 · 画面正在本机预览" : busy ? "摄像头未开启 · 正在处理所选照片" : validFrames ? "扫描完成 · 摄像头已关闭" : started && !error ? "摄像头尚未就绪，请检查浏览器授权提示。" : "摄像头未开启"}
+      </p>
       <details className="face-scan-note">
         <summary>隐私与图片使用说明</summary>
         <p>
@@ -264,6 +267,31 @@ export default function FaceScan() {
       </p>
       {!started ? (
         <>
+          <div className="equal-actions">
+            {saved && (
+              <Button
+                disabled={!consented}
+                onClick={() => nav("/beauty-profile")}
+              >
+                使用本次面部档案
+              </Button>
+            )}
+            <Button
+              disabled={!consented}
+              variant={saved ? "outline" : "default"}
+              onClick={start}
+            >
+              {saved ? "重新扫描" : "开启摄像头，开始扫描"}
+            </Button>
+            {saved && (
+              <Button variant="tertiary" onClick={leave}>
+                清除面部档案
+              </Button>
+            )}
+            <Button variant="outline" onClick={skip}>
+              跳过扫描，使用基础教程
+            </Button>
+          </div>
           <div className="two-columns face-scan-intro">
             <Card className="scan-guide-card">
               <img
@@ -288,31 +316,7 @@ export default function FaceScan() {
             </Card>
           </div>
           {saved && <LocalAppearanceCard image={review || undefined} />}
-          <div className="equal-actions">
-            {saved && (
-              <Button
-                disabled={!consented}
-                onClick={() => nav("/beauty-profile")}
-              >
-                使用本次面部档案
-              </Button>
-            )}
-            <Button
-              disabled={!consented}
-              variant={saved ? "outline" : "default"}
-              onClick={start}
-            >
-              {saved ? "重新扫描" : "开始面部适配"}
-            </Button>
-            {saved && (
-              <Button variant="tertiary" onClick={leave}>
-                清除面部档案
-              </Button>
-            )}
-            <Button variant="outline" onClick={skip}>
-              暂时跳过
-            </Button>
-          </div>
+
         </>
       ) : (
         <>
@@ -369,14 +373,20 @@ export default function FaceScan() {
                         : "正在分析画面…"
                   : validFrames
                     ? "已完成扫描"
-                    : "对齐取景框，保持正面与自然表情"}
+                    : error ? "本次扫描未完成，请按提示重试。" : !stream ? "等待摄像头开启，也可选择上传照片。" : "对齐取景框，保持正面与自然表情"}
               </p>
               {!validFrames && !busy && (
                 <p className="face-scan-note">
                   先检查亮度、细节和人脸取景，通过后开始倒计时。请自行确认眼部无遮挡。
                 </p>
               )}
-              {error && <p role="alert">{error}</p>}
+              {error && <div>
+                <p role="alert">{error}</p>
+                {!stream && !busy && <>
+                  <p>若已拒绝访问，请在地址栏的网站权限中允许摄像头，再重试；也可上传照片或跳过。</p>
+                  <Button variant="outline" onClick={start}>重新开启摄像头</Button>
+                </>}
+              </div>}
               {validFrames ? (
                 <>
                   <p className="face-scan-note">
@@ -415,7 +425,7 @@ export default function FaceScan() {
                     disabled={busy || !stream || !ready}
                     onClick={capture}
                   >
-                    采集并分析
+                    {busy ? "正在处理，请稍候…" : error ? "重新采集并分析" : "开始倒计时并采集"}
                   </Button>
                   <p>
                     <label className="text-link">
@@ -452,7 +462,7 @@ export default function FaceScan() {
               返回扫描说明
             </Button>
             <Button variant="outline" onClick={skip}>
-              暂时跳过
+              跳过扫描，使用基础教程
             </Button>
           </div>
           <p className="face-scan-note">

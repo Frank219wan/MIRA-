@@ -68,8 +68,14 @@ export const getTutorial = () =>
     "getTutorial",
     async () => adaptRecipe(await getRecipeDTO()),
     () => demo(actions),
-    { required: !!JSON.parse(sessionStorage.getItem("mira-input") || "null")?.uploadId },
+    {
+      required: !!JSON.parse(sessionStorage.getItem("mira-input") || "null")?.uploadId,
+      demoOnly: isExampleTutorial(),
+    },
   );
+export function isExampleTutorial() {
+  return JSON.parse(sessionStorage.getItem("mira-input") || "null")?.preset === true;
+}
 export const getParsingStages = () => demo(stages); // Visual sequence only, never backend progress.
 export async function getRecipe(id: string) {
   return withFallback(

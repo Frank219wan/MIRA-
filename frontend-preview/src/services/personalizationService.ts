@@ -1,6 +1,6 @@
 import { withFallback } from "./base";
 import { getFaceProfileDTO } from "./face";
-import { getRecipeDTO } from "./tutorial";
+import { getRecipeDTO, isExampleTutorial } from "./tutorial";
 import { request, ApiError } from "./api/client";
 import { adaptFaceProfile } from "./adapters/face";
 import {
@@ -18,6 +18,7 @@ import type {
 export async function personalizeTutorialActions(
   actions: PersonalizedAction[],
 ) {
+  if (isExampleTutorial()) return actions; // The preset steps have no measured recipe to personalize.
   const measured = getFaceProfileDTO();
   const face = measured ?? structuredClone(mockFaceProfileV03);
   const faceSource = measured ? "scan" : "mock";

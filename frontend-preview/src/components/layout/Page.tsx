@@ -7,6 +7,7 @@ export function Page({
   description,
   backTo,
   progress,
+  backLabel,
   children,
 }: {
   eyebrow: string;
@@ -14,6 +15,7 @@ export function Page({
   description?: string;
   backTo?: string;
   progress?: number;
+  backLabel?: string;
   children: ReactNode;
 }) {
   const reduced = useReducedMotion();
@@ -25,9 +27,10 @@ export function Page({
       transition={{ duration: 0.35 }}
     >
       {backTo !== undefined && progress !== undefined && (
-        <JourneyNavigation backTo={backTo} progress={progress} />
+        <JourneyNavigation backTo={backTo} progress={progress} backLabel={backLabel} />
       )}
       <div className="page-title">
+        <span className="page-eyebrow">{eyebrow}</span>
         <h1>{title}</h1>
         {description && <p>{description}</p>}
       </div>

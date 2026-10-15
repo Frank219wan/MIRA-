@@ -7,7 +7,7 @@ import {
   getFaceProfileDTO,
   getFaceProfileContext,
 } from "./face";
-import { getTutorial, getRecipeDTO } from "./tutorial";
+import { getTutorial, getRecipeDTO, isExampleTutorial } from "./tutorial";
 import { request } from "./api/client";
 import { adaptFaceProfile } from "./adapters/face";
 import { adaptPersonalizedTutorial } from "./adapters/personalizedTutorial";
@@ -22,7 +22,7 @@ export { personalizeTutorialActions } from "./personalizationService";
 import type { CVAdaptationDTO } from "./api/dto";
 export async function getCVAdaptation(): Promise<CVAdaptationDTO | null> {
   const face_profile = getFaceProfileDTO();
-  if (!face_profile) return null; // Never submit a mock profile as a measured scan.
+  if (!face_profile || isExampleTutorial()) return null; // No backend recipe exists for the preset example.
   return withFallback(
     "getCVAdaptation",
     async () => {

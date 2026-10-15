@@ -23,6 +23,7 @@ export interface MakeupAction {
 }
 export interface TutorialInput {
   uploadId?: string;
+  preset?: boolean;
   kind: "video" | "link" | "image" | "example";
   name: string;
 }

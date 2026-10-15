@@ -9,9 +9,9 @@ export async function withFallback<T>(
   name: string,
   live: () => Promise<T>,
   fallback: () => T | Promise<T>,
-  options: { required?: boolean } = {},
+  options: { required?: boolean; demoOnly?: boolean } = {},
 ): Promise<T> {
-  if (apiConfig.demoMode && !options.required) {
+  if (options.demoOnly || (apiConfig.demoMode && !options.required)) {
     statuses.set(name, { source: "demo" });
     return fallback();
   }

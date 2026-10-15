@@ -50,6 +50,7 @@ export default function TutorialInput() {
     }
     await saveTutorialInput({
       kind: mode as "video" | "image" | "link" | "example",
+      preset: mode === "example",
       uploadId: mode === "image" || mode === "video" ? preview?.uploadId : undefined,
       name: mode === "example" ? "柔棕日常眼妆" : file?.name || url,
     });
@@ -100,6 +101,8 @@ export default function TutorialInput() {
                 <div>
                   <span className="eyebrow">5 个步骤</span>
                   <h2>柔棕日常眼妆</h2>
+                  <p>点击下方按钮查看示例拆解，再继续面部扫描。</p>
+                  <small>示例使用预设步骤，用于体验完整流程。</small>
                 </div>
               </div>
             ) : mode === "link" ? (
@@ -172,7 +175,7 @@ export default function TutorialInput() {
           )}
           <div className="action-row">
             <Button onClick={go} disabled={uploading}>
-              开始解析教程
+              {mode === "example" ? "开始拆解示例教程" : "开始解析教程"}
               <ArrowRight size={17} />
             </Button>
           </div>

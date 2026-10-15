@@ -8,6 +8,7 @@ import { getMatchResult } from "../services/matching";
 import { getTutorial } from "../services/tutorial";
 import { useService } from "../hooks/useService";
 import { setProductUseMode } from "../services/productMode";
+
 export default function Matching() {
   useEffect(() => setProductUseMode("beauty-kit"), []);
   const { data, error, notice } = useService(getMatchResult);

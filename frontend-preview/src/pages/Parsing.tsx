@@ -4,7 +4,7 @@ import { Check, ArrowRight, LoaderCircle } from "lucide-react";
 import { Card, Progress, Placeholder } from "../components/ui/primitives";
 import { Button } from "../components/ui/button";
 import { useService } from "../hooks/useService";
-import { getParsingStages, getTutorial } from "../services/tutorial";
+import { getParsingStages, getTutorial, isExampleTutorial } from "../services/tutorial";
 export default function Parsing() {
   const { data, error: stagesError } = useService(getParsingStages);
   const { data: recipe, error: recipeError, notice } = useService(getTutorial);
@@ -27,7 +27,7 @@ export default function Parsing() {
       <Link className="back parsing-breadcrumb" to="/tutorial">
         灵感之旅 <span>/</span> 01 / 拆解教程
       </Link>
-      {notice && <p role="status">{notice}</p>}
+      {notice && <p role="status">{isExampleTutorial() ? "示例教程展示预设步骤，并非视频解析结果。" : notice}</p>}
       {error ? (
         <Card>
           <p role="alert">{error}</p>

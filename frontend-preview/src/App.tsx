@@ -15,6 +15,7 @@ import MyTutorial from "./pages/MyTutorial";
 import LiveCoach from "./pages/LiveCoach";
 import Finish from "./pages/Finish";
 import NotFound from "./pages/NotFound";
+import ProductAlternatives from "./pages/ProductAlternatives";
 export default function App() {
   return (
     <BrowserRouter>
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/tutorial/recipe" element={<Recipe />} />
           <Route path="/beauty-kit" element={<BeautyKit />} />
           <Route path="/matching" element={<Matching />} />
+          <Route path="/product-alternatives" element={<ProductAlternatives />} />
           <Route path="/face-preferences" element={<LocalAppearance />} />
           <Route path="/face-scan" element={<FaceScan />} />
           <Route path="/beauty-profile" element={<BeautyProfile />} />

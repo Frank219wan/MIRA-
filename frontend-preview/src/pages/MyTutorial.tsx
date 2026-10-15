@@ -5,7 +5,7 @@ import { Page } from "../components/layout/Page";
 import { Button } from "../components/ui/button";
 import { Tag } from "../components/ui/primitives";
 import { getPersonalizedTutorialContext } from "../services/personalizedTutorial";
-import { getTutorial } from "../services/tutorial";
+import { getTutorial, isExampleTutorial } from "../services/tutorial";
 import { hasFaceProfile } from "../services/face";
 import { resetCoach } from "../services/coach";
 import { useService } from "../hooks/useService";
@@ -22,20 +22,20 @@ export default function MyTutorial() {
   return (
     <Page
       eyebrow="03 / 准备完成"
-      title="你的教程准备好了"
+      title={error ? "教程暂未准备好" : actions ? "你的教程准备好了" : "正在整理你的教程"}
       backTo={hasFaceProfile() ? "/beauty-profile" : "/face-scan"}
-      progress={100}
+      progress={actions ? 100 : 75}
     >
-      <p>
+      <p role="status">
         {actions
           ? `${actions.length} 个步骤已整理，可查看产品选择与面部设置。`
-          : "正在整理教程"}
+          : error ? "请重试，或返回拆解结果检查当前教程。" : "正在整理步骤、产品需求与面部设置，请稍候。"}
       </p>
       <Link className="text-link" to="/face-scan">
         调整面部设置 ↗
       </Link>
-      <div className="included">
-        <Tag>✓ 教程步骤已解析</Tag>
+      {actions && <div className="included">
+        <Tag>{isExampleTutorial() ? "示例步骤 · 预设指导" : "✓ 教程步骤已整理"}</Tag>
         <Tag>
           ✓{" "}
           {context?.productMode === "beauty-kit"
@@ -53,8 +53,15 @@ export default function MyTutorial() {
             <span>使用基础位置指导</span>
           </>
         )}
-      </div>
-      {error && <p role="alert">{error}</p>}
+      </div>}
+      {isExampleTutorial() && actions && <p>本示例使用基础画法，未根据扫描数值调整教程步骤。</p>}
+      {error && <div>
+        <p role="alert">{error}</p>
+        <div className="action-row">
+          <Button onClick={() => window.location.reload()}>重新加载教程</Button>
+          <Button asChild variant="outline"><Link to="/tutorial/recipe">返回拆解结果</Link></Button>
+        </div>
+      </div>}
       <section className="tutorial-overview" aria-label="教程步骤概览">
         <div className="section-topline">
           <span>开始前确认</span>
@@ -100,6 +107,21 @@ export default function MyTutorial() {
           </div>
         ))}
       </section>
+      {actions?.length ? (
+        <aside className="tutorial-supplement" aria-labelledby="product-alternative-title">
+          <div>
+            <span className="eyebrow">补充内容 · 演示案例</span>
+            <h2 id="product-alternative-title">需要用手边产品替代教程用色？</h2>
+            <p>单独查看五步替代思路。示例产品不会加入你的工具库，也不会产生匹配分数。</p>
+          </div>
+          <Button asChild variant="outline">
+            <Link to="/product-alternatives" state={{ returnTo: "/my-tutorial" }}>
+              查看产品替代方案
+              <ArrowRight size={17} />
+            </Link>
+          </Button>
+        </aside>
+      ) : null}
       <PreferenceGuidance guidance={context?.localAppearanceGuidance || []} />
       <Link className="text-link" to="/face-preferences">
         调整局部呈现偏好 ↗
@@ -109,12 +131,12 @@ export default function MyTutorial() {
           <h2>跟随步骤，确认位置、方向与完成效果。</h2>
           <p>随时可以重复当前步骤。</p>
         </div>
-        <Button asChild onClick={resetCoach}>
+        {actions?.length ? <Button asChild onClick={resetCoach}>
           <Link to="/live-coach">
             开始跟妆
             <ArrowRight size={17} />
           </Link>
-        </Button>
+        </Button> : <Button disabled>{error ? "教程尚未就绪" : "正在准备教程…"}</Button>}
       </div>
     </Page>
   );

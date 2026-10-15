@@ -5,7 +5,7 @@ import { StepCard } from "../components/tutorial/StepCard";
 import { Button } from "../components/ui/button";
 import { ReferenceImage } from "../components/ui/ReferenceImage";
 import { useService } from "../hooks/useService";
-import { getTutorial } from "../services/tutorial";
+import { getTutorial, isExampleTutorial } from "../services/tutorial";
 import { setProductUseMode } from "../services/productMode";
 export default function Recipe() {
   const { data, error, notice } = useService(getTutorial);
@@ -22,7 +22,7 @@ export default function Recipe() {
       progress={25}
     >
       {error && <p role="alert">{error}</p>}
-      {notice && <p role="status">{notice}</p>}
+      {notice && <p role="status">{isExampleTutorial() ? "示例教程展示预设步骤，并非视频解析结果。" : notice}</p>}
       <div className="recipe-layout">
         <section className="recipe-steps">
           <div className="section-topline">
@@ -46,9 +46,15 @@ export default function Recipe() {
         <div>
           <span className="eyebrow">选择产品方式</span>
           <h2>你想怎样准备这份教程？</h2>
-          <p>可以匹配已有产品，也可以直接使用步骤中的产品需求。</p>
+          <p>可以先匹配已有产品，也可以使用通用产品需求，直接进入面部扫描。</p>
         </div>
         <div className="product-path-actions">
+          <Button asChild variant="tertiary">
+            <Link to="/product-alternatives" state={{ returnTo: "/tutorial/recipe" }}>
+              查看产品替代方案
+              <ArrowRight size={17} />
+            </Link>
+          </Button>
           <Button asChild variant="outline">
             <Link
               to="/beauty-kit"
@@ -58,9 +64,9 @@ export default function Recipe() {
               <ArrowRight size={17} />
             </Link>
           </Button>
-          <Button asChild variant="outline">
+          <Button asChild>
             <Link to="/face-scan" onClick={() => setProductUseMode("generic")}>
-              暂时不录入
+              继续面部扫描
               <ArrowRight size={17} />
             </Link>
           </Button>
