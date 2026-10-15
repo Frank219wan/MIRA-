@@ -116,3 +116,9 @@ test("service uses backend and falls back diagnostically on failure", async () =
     Object.assign(apiConfig, config);
   }
 });
+
+test("user-selected location and label reach backend unchanged", () => {
+ const area = toSpecialAreaProfile([{...prefs[0], region: "左脸颊", userLabel: "我的标记"}]).areas[0];
+ assert.equal(area.location, "subject_left_cheek");
+ assert.equal(area.user_label, "我的标记");
+});

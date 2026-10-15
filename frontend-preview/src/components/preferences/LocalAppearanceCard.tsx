@@ -9,6 +9,8 @@ import {
   setLocalAppearancePreferences,
   type AppearancePreference,
   type SelectionRegion,
+  type LocalRegion,
+  regions,
   isPhotoSelectionCurrent,
 } from "../../services/localAppearance";
 const choices = [
@@ -36,12 +38,16 @@ export function LocalAppearanceCard({
     if (selecting) sectionRef.current?.scrollIntoView({ block: "start" });
   }, [selecting]);
   const [region, setRegion] = useState<SelectionRegion>();
+  const [location, setLocation] = useState<LocalRegion>("局部区域");
+  const [userLabel, setUserLabel] = useState("");
   const [preference, setPreference] = useState<AppearancePreference>();
   const [style, setStyle] = useState<"natural" | "highlight" | null>(null);
   const [error, setError] = useState("");
   function begin(id?: string) {
     const existing = saved.find((p) => (p.id || p.region) === id);
     setEditingId(id);
+    setLocation(existing?.region || "局部区域");
+    setUserLabel(existing?.userLabel || "");
     setError("");
     setRegion(existing && isPhotoSelectionCurrent(existing, currentFace?.id) ? existing.selection : undefined);
     setPreference(existing?.preference);
@@ -71,8 +77,8 @@ export function LocalAppearanceCard({
     setRegion({
       x: Math.min(0.9, Math.max(0.1, (e.clientX - r.left) / r.width)),
       y: Math.min(0.92, Math.max(0.08, (e.clientY - r.top) / r.height)),
-      width: 0.2,
-      height: 0.16,
+      width: 0.06,
+      height: 0.05,
     });
   }
   function finish() {
@@ -81,7 +87,8 @@ export function LocalAppearanceCard({
     try {
       const next = {
         id: editingId || crypto.randomUUID(),
-        region: "局部区域" as const,
+        region: location,
+        userLabel: userLabel.trim(),
         selection: region,
         imageSource: currentFace ? "user-photo" as const : "illustration" as const,
         imageId: currentFace?.id,
@@ -159,8 +166,8 @@ export function LocalAppearanceCard({
                             : 0),
                     ),
                   ),
-                  width: 0.2,
-                  height: 0.16,
+                  width: 0.06,
+                  height: 0.05,
                 }));
               }
             }}
@@ -222,7 +229,7 @@ export function LocalAppearanceCard({
           {saved.map((item, i) => (
             <div className="local-region-row" key={item.id || item.region}>
               <p>
-                区域 {i + 1} ·{" "}
+                区域 {i + 1} · {item.userLabel || item.region} ·{" "}
                 {choices.find((c) => c[0] === item.preference)?.[1]}
                 {item.integrateStyle &&
                   ` · ${item.integrateStyle === "natural" ? "自然保留" : "突出呈现"}`}
@@ -277,6 +284,14 @@ export function LocalAppearanceCard({
               <Dialog.Description>
                 选择今天更符合你想法的方式，之后也可以随时修改。
               </Dialog.Description>
+              <label>部位（左右以本人为准）
+                <select value={location} onChange={e => setLocation(e.target.value as LocalRegion)}>
+                  {regions.map(value => <option key={value} value={value}>{value}</option>)}
+                </select>
+              </label>
+              <label>区域标签（可选）
+                <input value={userLabel} maxLength={80} onChange={e => setUserLabel(e.target.value)} placeholder="自行描述这个区域" />
+              </label>
               <fieldset className="preference-options">
                 <legend className="sr-only">呈现方式</legend>
                 {choices.map(([id, title, description]) => (
