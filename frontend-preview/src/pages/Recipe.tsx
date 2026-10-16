@@ -49,12 +49,6 @@ export default function Recipe() {
           <p>可以先匹配已有产品，也可以使用通用产品需求，直接进入面部扫描。</p>
         </div>
         <div className="product-path-actions">
-          <Button asChild variant="tertiary">
-            <Link to="/product-alternatives" state={{ returnTo: "/tutorial/recipe" }}>
-              查看产品替代方案
-              <ArrowRight size={17} />
-            </Link>
-          </Button>
           <Button asChild variant="outline">
             <Link
               to="/beauty-kit"

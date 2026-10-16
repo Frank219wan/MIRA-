@@ -6,6 +6,9 @@
   --gold-strong: #806237;
   --gold-line: #cdb78f;
   --gold-soft: #f3eadb;
+  --action-primary: #514238;
+  --action-primary-hover: #665246;
+  --action-primary-text: #f2e3c8;
   --warm-gray: #71675f;
   --line: #e2d8ca;
   --surface: #f5f0e8;
@@ -152,11 +155,11 @@ main {
   letter-spacing: 0;
 }
 .button-dark {
-  background: var(--black);
-  color: #f0dfbd;
+  background: var(--action-primary);
+  color: var(--action-primary-text);
 }
 .button-dark:hover {
-  background: #40362f;
+  background: var(--action-primary-hover);
 }
 .button-outline {
   border-color: var(--gold-line);
@@ -433,7 +436,7 @@ input {
 .progress span {
   display: block;
   height: 100%;
-  background: var(--black);
+  background: var(--gold-strong);
   transition: width 0.4s;
 }
 @media (min-width: 1500px) {
@@ -557,7 +560,7 @@ input {
 .journey-progress > span {
   display: block;
   height: 100%;
-  background: var(--black);
+  background: var(--gold-strong);
   transition: width 0.35s ease;
 }
 .journey-back.button::after {
@@ -579,7 +582,7 @@ input {
   gap: 10px;
 }
 .product-path-actions .button {
-  background: var(--white);
+  background: var(--surface-raised);
 }
 
 .tutorial-overview {
@@ -1467,8 +1470,8 @@ button:disabled:hover {
   min-width: 0;
 }
 .parsing-meter {
-  background: var(--black);
-  color: var(--white);
+  background: #665548;
+  color: var(--action-primary-text);
   padding: 25px 30px 22px;
   position: relative;
   border-radius: 10px;
@@ -1879,8 +1882,8 @@ button:disabled:hover {
   background: var(--surface);
   margin-top: 38px;
   padding: 30px 34px;
-  display: flex;
-  justify-content: flex-end;
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) auto;
   align-items: center;
   gap: 24px;
   border-radius: 10px;
@@ -1892,6 +1895,12 @@ button:disabled:hover {
 .recipe-next p {
   font-size: 15px;
   margin: 0;
+}
+@media (max-width: 760px) {
+  .recipe-next {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
 }
 /* Unified interaction states for remaining pages. */
 .category > summary {
@@ -2813,13 +2822,13 @@ button:disabled:hover {
     transform 0.12s ease;
 }
 .button-dark {
-  background: var(--black);
-  color: #f0dfbd;
-  border-color: var(--black);
+  background: var(--action-primary);
+  color: var(--action-primary-text);
+  border-color: var(--action-primary);
 }
 .button-dark:hover {
-  background: #40362f;
-  border-color: #40362f;
+  background: var(--action-primary-hover);
+  border-color: var(--action-primary-hover);
 }
 .button-outline {
   color: var(--black);
@@ -3139,7 +3148,7 @@ button:disabled:hover {
   background: var(--surface);
 }
 .account-avatar:focus-visible {
-  outline: 2px solid #111;
+  outline: 3px solid var(--gold);
   outline-offset: 3px;
 }
 .demo-login {
@@ -3431,8 +3440,22 @@ button:disabled:hover {
   inset: 0 0 0 20%;
   z-index: -1;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 44%);
-  mask-image: linear-gradient(to right, transparent, #000 44%);
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.08) 12%,
+    rgba(0, 0, 0, 0.34) 27%,
+    rgba(0, 0, 0, 0.72) 42%,
+    #000 54%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(0, 0, 0, 0.08) 12%,
+    rgba(0, 0, 0, 0.34) 27%,
+    rgba(0, 0, 0, 0.72) 42%,
+    #000 54%
+  );
 }
 .hero-editorial .hero-image { height: 100%; border: 0; border-radius: 0; }
 .hero-editorial .hero-image > img {
@@ -3472,7 +3495,14 @@ button:disabled:hover {
 
 .hero-editorial .hero-visual::after {
   content: ""; position: absolute; inset: 0;
-  background: linear-gradient(to bottom, transparent 76%, var(--white));
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 253, 249, 0) 58%,
+    rgba(255, 253, 249, 0.08) 70%,
+    rgba(255, 253, 249, 0.28) 82%,
+    rgba(255, 253, 249, 0.68) 94%,
+    var(--white) 100%
+  );
 }
 
 .uploaded-media-preview { margin-bottom: 20px; background: var(--surface); border-radius: 8px; overflow: hidden; }
@@ -3487,7 +3517,7 @@ button:disabled:hover {
 .region-canvas.region-canvas-photo img { height: auto; object-fit: contain; }
 
 .local-preference-body > label { display: grid; gap: 8px; margin: 16px 0; font-size: 15px; }
-.local-preference-body > label input, .local-preference-body > label select { width: 100%; min-height: 44px; padding: 10px 12px; font: inherit; color: inherit; background: white; border: 1px solid var(--line); border-radius: 6px; }
+.local-preference-body > label input, .local-preference-body > label select { width: 100%; min-height: 44px; padding: 10px 12px; font: inherit; color: inherit; background: var(--surface-raised); border: 1px solid var(--line); border-radius: 6px; }
 
 /* Quiet hierarchy improvements across the existing tutorial journey. */
 .page-eyebrow {
@@ -3514,12 +3544,13 @@ button:disabled:hover {
   margin-bottom: 12px;
 }
 .product-path-actions .button-dark {
-  background: var(--black);
-  border-color: var(--black);
-  color: var(--white);
+  background: var(--action-primary);
+  border-color: var(--action-primary);
+  color: var(--action-primary-text);
 }
 .product-path-actions .button-dark:hover {
-  background: #2c2c2f;
+  background: var(--action-primary-hover);
+  border-color: var(--action-primary-hover);
 }
 .scan-guide-image {
   aspect-ratio: 2 / 1;
@@ -3988,5 +4019,16 @@ textarea:focus-visible {
   }
   .case-pagination .button {
     width: 100%;
+  }
+}
+
+/* Keep the homepage copy comfortably inset from the visual boundary. */
+.hero-editorial .hero-copy {
+  padding-left: clamp(20px, 2vw, 32px);
+}
+
+@media (max-width: 700px) {
+  .hero-editorial .hero-copy {
+    padding-inline: 20px;
   }
 }

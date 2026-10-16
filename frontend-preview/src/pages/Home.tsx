@@ -31,7 +31,7 @@ export default function Home() {
         </motion.div>
         <div className="hero-visual">
           <div className="hero-image">
-            <img src="/assets/hero/beauty-adaptation.png" alt="面部妆容位置与方向示意" />
+            <img src="/assets/hero/beauty-adaptation.webp" alt="面部妆容位置与方向示意" />
           </div>
         </div>
       </section>
