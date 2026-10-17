@@ -72,9 +72,9 @@ export default function BeautyKit() {
       </div>
       {error && <p role="alert">{error} 请刷新重试；下方陈列示例不代表已加载的产品。</p>}
       {notice && <p role="status">{notice}</p>}
-      <p className="demo-footnote">当前资料来自演示数据。品牌系列名称参考欧莱雅巴黎官网；陈列示例的色块并非官方色样，也不代表中国市场在售或官方合作。示例不参与匹配，步骤提示只按产品类别对应。</p>
+      <p className="demo-footnote">当前资料来自演示数据。品牌与系列信息参考品牌官网，部分图片使用你提供的商品参考图；仅用于界面陈列，不代表中国市场在售或官方合作。陈列示例不参与匹配，步骤提示只按产品类别对应。</p>
       <div className="kit-case-link">
-        <div><span className="eyebrow">FIVE ACTIONS / PRODUCT MATCHING</span><h2>从教程需求，看已有产品能否替代</h2><p>A01–A05 固定案例：查看近似产品、替代条件、差异与 Impact。</p></div>
+        <div><span className="eyebrow">FIVE ACTIONS / PRODUCT MATCHING</span><h2>从教程需求，看已有产品能否替代</h2><p>A01–A05 五步参考：查看近似产品、替代条件、差异与效果影响。</p></div>
         <Button asChild variant="outline"><Link to="/product-alternatives" state={{ returnTo: "/beauty-kit" }}>查看产品替代方案 →</Link></Button>
       </div>
       <div className="kit-search">
@@ -101,7 +101,7 @@ export default function BeautyKit() {
                   <img
                     className="product-image"
                     src={p.productImage}
-                    alt={p.productName}
+                    alt={`${p.productName}产品陈列示意图`}
                   />
                 ) : (
                   <div className="product-shade-preview" role="img" aria-label={`${p.productName}的色号示意`}>

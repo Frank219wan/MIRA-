@@ -24,7 +24,7 @@ export function MatchingCaseDemo() {
         </div>
         <p>下方是固定案例的前端演示判断。Impact 表示差异对妆效的影响程度，不是匹配分数。</p>
       </div>
-      <p className="case-demo-disclaimer">演示案例 · 不是真实匹配结果。欧莱雅巴黎名称仅作近似品类参考；S01、S06、S15、S20、S25 为案例概念色，不进入产品库或匹配请求。</p>
+      <p className="case-demo-disclaimer">教程色彩参考 · 不是真实匹配结果。品牌与产品名称仅作近似品类参考；S01、S06、S15、S20、S25 为教学用色彩编号，不进入产品库或匹配请求。</p>
       <StepNavigator index={index} count={matchingCase.length} onChange={setIndex} />
       <article className="case-step" key={step.id} aria-live="polite">
         <div className="case-step-header">
