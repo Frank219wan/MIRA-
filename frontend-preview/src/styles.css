@@ -72,15 +72,6 @@ header {
   align-items: center;
   justify-content: space-between;
 }
-.deployment-demo-banner {
-  padding: 9px 5%;
-  border-bottom: 1px solid #ddd6ea;
-  background: linear-gradient(90deg, #f8f4ff, #fcf9ff);
-  color: #604b75;
-  font-size: 12px;
-  line-height: 1.55;
-  text-align: center;
-}
 .logo {
   width: 128px;
   height: 55px;
