@@ -6,7 +6,7 @@ This checkout runs the current integrated review branch: React/Vite at
 ## First-time setup
 
 ```sh
-cd /Users/wansiyu/Documents/ChatGPT/欧莱雅/MIRA-latest
+cd /path/to/MIRA-latest
 python3 -m venv frontend-preview/.runtime/latest-backend-venv
 frontend-preview/.runtime/latest-backend-venv/bin/python -m pip install --upgrade pip
 frontend-preview/.runtime/latest-backend-venv/bin/python -m pip install \
@@ -23,7 +23,7 @@ provider yet. No API key is required for the implemented local flow.
 ## Start
 
 ```sh
-cd /Users/wansiyu/Documents/ChatGPT/欧莱雅/MIRA-latest
+cd /path/to/MIRA-latest
 ./scripts/start-local.sh
 ```
 
@@ -35,7 +35,7 @@ API health is available at
 ## Tests
 
 ```sh
-cd /Users/wansiyu/Documents/ChatGPT/欧莱雅/MIRA-latest
+cd /path/to/MIRA-latest
 frontend-preview/.runtime/latest-backend-venv/bin/python -m pytest -q tests
 PYTHONPATH="$PWD:$PWD/frontend-preview" \
   frontend-preview/.runtime/latest-backend-venv/bin/python -m pytest -q \
