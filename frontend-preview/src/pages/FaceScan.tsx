@@ -1,4 +1,5 @@
 import { retainStaticFace, clearStaticFace } from "../services/staticFace";
+import { clearLocalAppearancePreferences } from "../services/localAppearance";
 import { LocalAppearanceCard } from "../components/preferences/LocalAppearanceCard";
 import {
   checkScanImage,
@@ -23,6 +24,8 @@ import {
 } from "../services/face";
 
 import { getProductUseMode } from "../services/productMode";
+import { apiConfig } from "../lib/config";
+import { publicAsset } from "../lib/assets";
 export default function FaceScan() {
   const [consented, setConsented] = useState(false);
   const consentRef = useRef(false);
@@ -110,7 +113,9 @@ export default function FaceScan() {
       if (run !== generation.current) return;
       if (!result)
         throw new Error(
-          getServiceStatus("scanFaceImages")?.error ||
+          (apiConfig.demoMode
+            ? "GitHub Pages 演示版只在浏览器本机检查取景，不上传照片。Face Profile 生成需要本地 FastAPI 服务。"
+            : getServiceStatus("scanFaceImages")?.error) ||
             "未能完成扫描，请重试或跳过，继续基础教程。",
         );
       const validIndex =
@@ -124,6 +129,10 @@ export default function FaceScan() {
         if (run !== generation.current) return;
         await retainStaticFace(images[Math.max(0, validIndex)], landmarks);
         if (run !== generation.current) { clearStaticFace(); return; }
+        // A saved polygon belongs to the exact source face it was drawn on.
+        // Clear it only after a replacement scan succeeds so stale coordinates
+        // cannot be sent as preferences for a different face.
+        clearLocalAppearancePreferences();
       } finally { bitmap.close(); }
       setReview(reviewURL.current);
       setPhase("complete");
@@ -233,6 +242,11 @@ export default function FaceScan() {
       backTo={productMode === "beauty-kit" ? "/matching" : "/tutorial/recipe"}
       progress={50}
     >
+      {apiConfig.demoMode && (
+        <p className="demo-footnote" role="note">
+          静态演示限制：摄像头和照片可在浏览器本机做取景检查，但 Face Profile 数值生成需要本地 FastAPI 服务；本站不会将面部照片发往不存在的公网接口。
+        </p>
+      )}
       <p role="status">
         {stream ? "摄像头已开启 · 画面正在本机预览" : busy ? "摄像头未开启 · 正在处理所选照片" : validFrames ? "扫描完成 · 摄像头已关闭" : started && !error ? "摄像头尚未就绪，请检查浏览器授权提示。" : "摄像头未开启"}
       </p>
@@ -296,7 +310,7 @@ export default function FaceScan() {
             <Card className="scan-guide-card">
               <img
                 className="scan-guide-image"
-                src="/assets/face/scan-guide.png"
+                src={publicAsset("assets/face/scan-guide.png")}
                 alt="正对镜头、光线均匀且面部无遮挡的扫描姿势示意"
               />
               <p>面部信息仅用于调整教程中的位置、范围与方向。</p>

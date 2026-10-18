@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc -b && vite build",
+    "build:pages": "VITE_BASE_PATH=/MIRA-/ VITE_DEMO_MODE=true VITE_MOCK_FALLBACK=true npm run build",
     "preview": "vite preview --host 127.0.0.1",
+    "preview:pages": "VITE_BASE_PATH=/MIRA-/ vite preview --host 127.0.0.1",
     "format": "prettier --write src vite.config.ts",
     "test": "node --import ./tests/register.mjs --test tests/*.test.mjs",
     "test:live": "MIRA_LIVE_API=1 node --import ./tests/register.mjs --test tests/live-api.test.mjs"

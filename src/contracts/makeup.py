@@ -9,6 +9,18 @@ from pydantic import Field, field_validator, model_validator
 from .common import ContractModel
 
 
+class ProductCapabilityRequirement(ContractModel):
+    """Structured requirement used by matching; omitted when tutorial evidence is insufficient."""
+
+    product_category: str = Field(min_length=1)
+    color_families: list[str] = Field(min_length=1)
+    finishes: list[str] = Field(min_length=1)
+    depths: list[str] = Field(min_length=1)
+    pigmentations: list[str] = Field(min_length=1)
+    textures: list[str] = Field(min_length=1)
+    functions: list[str] = Field(min_length=1)
+
+
 class MakeupActionUnit(ContractModel):
     """One observable makeup action extracted from a tutorial."""
 
@@ -20,6 +32,7 @@ class MakeupActionUnit(ContractModel):
     motion: str = Field(min_length=1)
     intensity: str = Field(min_length=1)
     target_result: str = Field(min_length=1)
+    product_capability_requirement: ProductCapabilityRequirement | None = None
     time_range_seconds: tuple[float, float] | None = None
     confidence: float | None = Field(default=None, ge=0.0, le=1.0)
 

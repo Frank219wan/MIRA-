@@ -3,28 +3,44 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { X, Camera, Search, Plus } from "lucide-react";
 import { Button } from "../ui/button";
 import { Placeholder } from "../ui/primitives";
-export function AddProduct() {
-  const [mode, setMode] = useState("");
+import {
+  addCatalogProduct,
+  getAddedCatalogProductIds,
+  getCatalogProducts,
+  productMatchesQuery,
+} from "../../services/productLibrary";
+
+export function AddProduct({ onProductAdded }: { onProductAdded?: () => void }) {
+  const [mode, setMode] = useState("搜索产品库");
   const [file, setFile] = useState("");
+  const [query, setQuery] = useState("");
+  const [addedIds, setAddedIds] = useState(getAddedCatalogProductIds);
+  const catalogProducts = getCatalogProducts().filter((product) => productMatchesQuery(product, query));
+  function add(productId: string) {
+    const products = addCatalogProduct(productId);
+    setAddedIds(products.map((product) => product.id));
+    onProductAdded?.();
+  }
   return (
     <Dialog.Root
       onOpenChange={() => {
-        setMode("");
+        setMode("搜索产品库");
         setFile("");
+        setQuery("");
       }}
     >
       <Dialog.Trigger asChild>
         <Button variant="outline">
-          <Plus size={15} />
-          添加产品
+          <Search size={15} />
+          搜索产品库
         </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="modal-backdrop" />
         <Dialog.Content className="modal">
-          <Dialog.Title>把熟悉的产品，放进工具库</Dialog.Title>
+          <Dialog.Title>搜索产品库</Dialog.Title>
           <Dialog.Description>
-            产品录入功能准备中，可先查看入口与流程。
+            浏览当前系统已有目录，并将需要的产品加入 My Beauty Kit。当前未连接欧莱雅官方产品数据库。
           </Dialog.Description>
           <Dialog.Close className="modal-close" aria-label="关闭">
             <X size={18} />
@@ -63,11 +79,37 @@ export function AddProduct() {
           ) : mode === "搜索产品库" ? (
             <>
               <input
-                aria-label="搜索品牌或产品"
-                placeholder="搜索品牌或产品"
-                disabled
+                type="search"
+                aria-label="搜索产品库中的品牌、类型、名称或色号"
+                placeholder="品牌、类型、名称或色号"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
               />
-              <p>产品库搜索将在后续开放。</p>
+              <p className="catalog-disclaimer">当前结果来自项目内置演示目录，不代表官方合作、实时库存或市场在售状态。</p>
+              <div className="catalog-results" aria-live="polite">
+                {catalogProducts.map((product) => {
+                  const added = addedIds.includes(product.id);
+                  return (
+                    <article className="catalog-result" key={product.id}>
+                      {product.productImage ? <img src={product.productImage} alt="" /> : null}
+                      <div>
+                        <small>{product.brand} · {product.category}</small>
+                        <h3>{product.productName}</h3>
+                        <p>{product.shades.map((shade) => shade.shadeName).join(" · ")}</p>
+                      </div>
+                      <Button variant="outline" disabled={added} onClick={() => add(product.id)}>
+                        {added ? "已在我的产品库" : "加入 My Beauty Kit"}
+                      </Button>
+                    </article>
+                  );
+                })}
+                {!catalogProducts.length && (
+                  <div className="catalog-empty">
+                    <strong>没有找到相关产品</strong>
+                    <p>试试品牌、产品类型、名称或其他色号关键词。</p>
+                  </div>
+                )}
+              </div>
             </>
           ) : mode === "手动添加" ? (
             <>

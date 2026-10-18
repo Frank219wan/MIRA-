@@ -1017,7 +1017,7 @@ Camera session 中的人仍是当前用户；如果换人，landmark geometry �
 - 后端以 FastAPI + SQLite 提供教程解析、Recipe 查询、Beauty Kit、Matching、CV Adaptation 与 Explanation 的稳定接口。
 - 教程解析器当前使用离线 `MockTutorialVisionProvider`，将视频/帧目录引用转换为经校验的五步骤 `StandardRecipe`；真实视频理解 Provider 尚未接入。
 - CV 的 `Face Profile v0.1` 仍由 `src/face_profile.py` 维护；后端只校验并原样消费，不增加脸型或美学判断。
-- Matching、CV Adaptation 与 Explanation 当前均为结构性占位，不包含匹配算法、个性化或外部 LLM 调用。
+- Matching 已使用结构化 Product Capability 做确定性评分：Color 30%、Finish 25%、Depth 15%、Pigmentation 10%、Texture 10%、Functional 10%。品类及 Matte/Shimmer/Glitter 冲突先经过硬约束；未验证属性不生成分数。当前只有演示大地色眼影盘具备完整的已验证 fixture，目录中的品牌候选产品仍标记为能力数据未验证。CV Adaptation 与 Explanation 仍是结构性占位。
 - 详细的本地运行、接口、调试、Replay 与限制说明见 [Week 1 后端文档](docs/week1_backend.md)。
 
 ## Pipeline Architecture

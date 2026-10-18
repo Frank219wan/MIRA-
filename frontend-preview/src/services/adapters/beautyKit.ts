@@ -1,11 +1,12 @@
 import { chineseText } from "./chinese";
 import type { BeautyKitDTO } from "../api/dto";
 import type { Product } from "../../types/product";
-import { products } from "../../mocks/products";
+import { products, sampleProducts } from "../../mocks/products";
 // Explicit demo metadata mapping. Never associate unknown products by array position.
 const localMetadata: Record<string, Product> = {
   "product-neutral-palette": products[0],
   "palette-a": products[0],
+  ...Object.fromEntries(sampleProducts.map((product) => [product.id, product])),
 };
 export const productMetadataSource = (id: string) =>
   localMetadata[id] ? "local-demo-metadata" : "frontend-placeholder";

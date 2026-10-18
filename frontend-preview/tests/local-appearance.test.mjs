@@ -98,11 +98,13 @@ test("tutorial and saved snapshot retain preferences without changing action cou
 });
 
 test('manual selection coordinates survive storage and reject invalid positions', () => {
-  const p = {region:'局部区域',selection:{x:.45,y:.6,width:.2,height:.16},preference:'integrate',integrateStyle:'natural'};
+  const polygon=[{x:.35,y:.52},{x:.55,y:.5},{x:.56,y:.68},{x:.36,y:.69}];
+  const p = {region:'局部区域',selection:{x:.45,y:.6,width:.2,height:.19,polygon},preference:'integrate',integrateStyle:'natural'};
   setLocalAppearancePreferences([p]);
   assert.deepEqual(getLocalAppearancePreferences(), [p]);
   assert.throws(() => setLocalAppearancePreferences([{...p,selection:{...p.selection,x:NaN}}]));
   assert.throws(() => setLocalAppearancePreferences([{...p,selection:{...p.selection,width:2}}]));
+  assert.throws(() => setLocalAppearancePreferences([{...p,selection:{...p.selection,polygon:[polygon[0],polygon[2],polygon[1],polygon[3]]}}]));
   assert.deepEqual(compileLocalAppearance([p], [{id:'eye',name:'眼线',productRequirement:'眼线笔',area:'眼周'}])[0].actionIds, []);
 });
 

@@ -6,8 +6,8 @@ import { adaptRecipe } from "./tutorial";
 export type AdaptedMatch = MatchResult & {
   provenance: {
     status: "backend" | "frontend-fallback";
-    score: "frontend-fallback";
-    details: "frontend-fallback";
+    score: "backend" | "frontend-fallback";
+    details: "backend" | "frontend-fallback";
   };
 };
 export function adaptMatching(
@@ -40,17 +40,24 @@ export function adaptMatching(
       actionId: a.id,
       status: item ? statuses[item.status] : "missing",
       bestMatch: products.find((p) => p.id === item?.product_id) ?? null,
-      score: 0,
-      capabilityChecks: [], // Contract has no score or capability evaluation. UI displays “未提供”.
-      difference: item?.note
+      score: typeof item?.score === "number" && Number.isFinite(item.score) ? item.score : null,
+      capabilityChecks: (item?.capability_checks ?? []).map((check) => ({
+        label: `${check.label} · 权重 ${check.weight}%`,
+        passed: check.matched,
+      })),
+      reason: item?.reason || "尚无匹配原因",
+      difference: item?.difference || (item?.note
         ? `${chineseText(item.note, "匹配说明待补充中文")}`
-        : "尚无差异分析",
-      impact: "尚无妆效评估",
-      missingCapability: [],
+        : "尚无差异分析"),
+      impact: item?.impact || "尚无妆效评估",
+      missingCapability: item?.missing_capabilities ?? [],
+      hardConstraints: item?.hard_constraints ?? [],
       provenance: {
         status: item ? "backend" : "frontend-fallback",
-        score: "frontend-fallback",
-        details: "frontend-fallback",
+        score: item?.verification_status === "verified" && typeof item.score === "number" && Number.isFinite(item.score)
+          ? "backend"
+          : "frontend-fallback",
+        details: item ? "backend" : "frontend-fallback",
       },
     };
   });

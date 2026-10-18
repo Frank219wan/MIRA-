@@ -13,11 +13,11 @@ const prefs = ["keep", "soften", "cover", "integrate"].map((preference, i) => ({
   preference,
   integrateStyle: preference === "integrate" ? "highlight" : null,
 }));
-test("special area maps supported preferences and bounded ellipse without images or inferred labels", () => {
+test("special area maps all four preferences without images or inferred labels", () => {
   const p = toSpecialAreaProfile(prefs);
   assert.deepEqual(
     p.areas.map((a) => a.preference),
-    ["KEEP", "BLEND", "COVER"],
+    ["KEEP", "BLEND", "COVER", "HIGHLIGHT"],
   );
   assert.ok(
     p.areas.every(
@@ -30,8 +30,10 @@ test("special area maps supported preferences and bounded ellipse without images
         a.user_label === "",
     ),
   );
+  assert.equal(JSON.stringify(p).includes("data:image"), false);
+  assert.equal(JSON.stringify(p).includes("image_url"), false);
 });
-test("backend guidance replaces only matched instructions and retains integration fallback", () => {
+test("backend guidance replaces matched instructions for all four preferences", () => {
   const p = toSpecialAreaProfile(prefs),
     local = compileLocalAppearance(prefs, []);
   const dto = {
@@ -48,7 +50,8 @@ test("backend guidance replaces only matched instructions and retains integratio
   const result = normalizeSpecialAreaGuidance(dto, p, local);
   assert.equal(result[0].source, "backend-special-area");
   assert.equal(result[0].instruction, "后端指导");
-  assert.deepEqual(result[3], local[3]);
+  assert.equal(result[3].source, "backend-special-area");
+  assert.equal(result[3].instruction, "后端指导");
   assert.throws(() =>
     normalizeSpecialAreaGuidance(
       {
@@ -121,4 +124,18 @@ test("user-selected location and label reach backend unchanged", () => {
  const area = toSpecialAreaProfile([{...prefs[0], region: "左脸颊", userLabel: "我的标记"}]).areas[0];
  assert.equal(area.location, "subject_left_cheek");
  assert.equal(area.user_label, "我的标记");
+});
+
+test("authored polygon reaches backend unchanged instead of becoming an ellipse", () => {
+  const polygon = [
+    { x: 0.31, y: 0.42 },
+    { x: 0.47, y: 0.39 },
+    { x: 0.52, y: 0.57 },
+    { x: 0.35, y: 0.61 },
+  ];
+  const area = toSpecialAreaProfile([{
+    ...prefs[0],
+    selection: { x: 0.415, y: 0.5, width: 0.21, height: 0.22, polygon },
+  }]).areas[0];
+  assert.deepEqual(area.polygon, polygon.map(({ x, y }) => ({ x_norm: x, y_norm: y })));
 });

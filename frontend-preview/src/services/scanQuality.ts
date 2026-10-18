@@ -1,3 +1,5 @@
+import { publicAsset } from "../lib/assets";
+
 // Conservative input guards, not calibrated measures of scan accuracy.
 export function pixelIssue(
   width: number,
@@ -85,10 +87,10 @@ export async function checkScanImage(
     detector = import("@mediapipe/tasks-vision")
       .then(async ({ FaceLandmarker, FilesetResolver }) =>
         FaceLandmarker.createFromOptions(
-          await FilesetResolver.forVisionTasks("/models/face/wasm"),
+          await FilesetResolver.forVisionTasks(publicAsset("models/face/wasm")),
           {
             baseOptions: {
-              modelAssetPath: "/models/face/face_landmarker.task",
+              modelAssetPath: publicAsset("models/face/face_landmarker.task"),
               delegate: "CPU",
             },
             runningMode: "IMAGE",

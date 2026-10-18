@@ -6,19 +6,20 @@ import {
 } from "./localAppearance";
 import { request } from "./api/client";
 import { withFallback } from "./base";
+import { ellipsePolygon } from "./selectionGeometry";
 
 const preferenceMap = {
   keep: "KEEP",
   soften: "BLEND",
   cover: "COVER",
+  integrate: "HIGHLIGHT",
 } as const;
 export function toSpecialAreaProfile(preferences: LocalAppearancePreference[]) {
   return {
     schema_version: "0.1",
     image_sample_id: "current-tutorial-selection",
     areas: preferences.flatMap((p) => {
-      // The engine has no equivalent for our two integrate styles. Keep their authored guidance.
-      if (p.preference === "integrate" || !p.selection) return [];
+      if (!p.selection) return [];
       const { x, y, width, height } = p.selection;
       if (
         ![x, y, width, height].every(Number.isFinite) ||
@@ -35,16 +36,11 @@ export function toSpecialAreaProfile(preferences: LocalAppearancePreference[]) {
           // Location is explicitly chosen by the user, never inferred from the image.
           location: ({ "左脸颊": "subject_left_cheek", "右脸颊": "subject_right_cheek", "额头": "forehead", "鼻部": "nose", "下巴": "chin", "上唇": "upper_lip", "眼周": "other", "局部区域": "other" } as const)[p.region],
           preference: preferenceMap[p.preference],
-          polygon: Array.from({ length: 16 }, (_, i) => ({
-            x_norm: Math.min(
-              1,
-              Math.max(0, x + (width / 2) * Math.cos((i * Math.PI) / 8)),
-            ),
-            y_norm: Math.min(
-              1,
-              Math.max(0, y + (height / 2) * Math.sin((i * Math.PI) / 8)),
-            ),
-          })),
+          // Coordinates remain in the raw, unmirrored source-image space.
+          polygon: (p.selection.polygon?.length
+            ? p.selection.polygon
+            : ellipsePolygon(p.selection)
+          ).map(({ x, y }) => ({ x_norm: x, y_norm: y })),
         },
       ];
     }),

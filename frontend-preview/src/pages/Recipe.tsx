@@ -7,6 +7,7 @@ import { ReferenceImage } from "../components/ui/ReferenceImage";
 import { useService } from "../hooks/useService";
 import { getTutorial, isExampleTutorial } from "../services/tutorial";
 import { setProductUseMode } from "../services/productMode";
+import { publicAsset } from "../lib/assets";
 export default function Recipe() {
   const { data, error, notice } = useService(getTutorial);
   return (
@@ -35,11 +36,11 @@ export default function Recipe() {
         </section>
         <aside className="recipe-aside">
           <ReferenceImage
-            src="/assets/tutorial/purple-eye-look.jpg"
+            src={publicAsset("assets/tutorial/purple-eye-look.jpg")}
             alt="已有眼妆参考素材"
             caption="妆面参考 · 非解析画面"
           />
-        <ReferenceImage className="tutorial-step-sheet" src="/assets/tutorial/purple-eye-steps.jpg" alt="紫色眼妆六步图解" caption="眼妆步骤参考 · 非解析画面" />
+        <ReferenceImage className="tutorial-step-sheet" src={publicAsset("assets/tutorial/purple-eye-steps.jpg")} alt="紫色眼妆六步图解" caption="眼妆步骤参考 · 非解析画面" />
         </aside>
       </div>
       <div className="recipe-next">

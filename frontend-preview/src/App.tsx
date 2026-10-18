@@ -1,7 +1,7 @@
 import LocalAppearance from "./pages/LocalAppearance";
 import UserCenter from "./pages/UserCenter";
 import SavedTutorial from "./pages/SavedTutorial";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "./components/layout/Layout";
 import Home from "./pages/Home";
 import TutorialInput from "./pages/TutorialInput";
@@ -18,7 +18,7 @@ import NotFound from "./pages/NotFound";
 import ProductAlternatives from "./pages/ProductAlternatives";
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
@@ -39,6 +39,6 @@ export default function App() {
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
 }

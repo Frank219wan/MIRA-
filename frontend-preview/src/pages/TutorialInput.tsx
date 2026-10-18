@@ -14,6 +14,8 @@ import { Button } from "../components/ui/button";
 import { ReferenceImage } from "../components/ui/ReferenceImage";
 import { saveTutorialInput } from "../services/tutorial";
 import { uploadMediaPreview } from "../services/mediaPreview";
+import { apiConfig } from "../lib/config";
+import { publicAsset } from "../lib/assets";
 export default function TutorialInput() {
   const [mode, setMode] = useState("example");
   const [file, setFile] = useState<File>();
@@ -31,6 +33,10 @@ export default function TutorialInput() {
     setUploading(!!selected);
     if (!selected) return;
     try {
+      if (apiConfig.demoMode)
+        throw new Error(
+          "GitHub Pages 演示版不上传素材；请使用示例教程。自定义解析需要本地 FastAPI 服务。",
+        );
       const result = await uploadMediaPreview(selected);
       if (revision === uploadRevision.current) setPreview(result);
     } catch (error) {
@@ -94,7 +100,7 @@ export default function TutorialInput() {
             {mode === "example" ? (
               <div className="example">
                 <ReferenceImage
-                  src="/assets/tutorial/purple-eye-look.jpg"
+                  src={publicAsset("assets/tutorial/purple-eye-look.jpg")}
                   alt="紫色眼妆完整妆效参考"
                   caption="已有参考素材"
                 />
@@ -182,7 +188,7 @@ export default function TutorialInput() {
         </section>
         <aside className="guidelines">
           {mode === "example" && <StaticPhotoGuidance />}
-          {mode === "example" && <ReferenceImage className="tutorial-step-sheet" src="/assets/tutorial/purple-eye-steps.jpg" alt="紫色眼妆六步图解" caption="眼妆步骤参考" />}
+          {mode === "example" && <ReferenceImage className="tutorial-step-sheet" src={publicAsset("assets/tutorial/purple-eye-steps.jpg")} alt="紫色眼妆六步图解" caption="眼妆步骤参考" />}
           <h2>为了获得更清晰的拆解结果</h2>
           <ul>
             {[

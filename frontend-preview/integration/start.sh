@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 cd "$(dirname "$0")/.."
-backend_dir="${MIRA_BACKEND_DIR:-../MIRA--main-2}"
+backend_dir="${MIRA_BACKEND_DIR:-..}"
 export PYTHONPATH="$backend_dir:$PWD"
 export PYTHONDONTWRITEBYTECODE=1
 export MIRA_FACE_MODEL_PATH="${MIRA_FACE_MODEL_PATH:-$PWD/public/models/face/face_landmarker.task}"

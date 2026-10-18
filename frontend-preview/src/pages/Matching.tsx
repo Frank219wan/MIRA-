@@ -60,6 +60,8 @@ export default function Matching() {
                 </p>
                 <h3>产品选择</h3>
                 <p>{m.bestMatch?.productName || "暂无高度匹配的产品"}</p>
+                <h3>匹配原因</h3>
+                <p>{m.reason}</p>
                 <div className="checks">
                   {m.capabilityChecks.map((c) => (
                     <span key={c.label} data-passed={c.passed}>
@@ -86,6 +88,12 @@ export default function Matching() {
                 <p>{m.difference}</p>
                 <h3>对妆效的影响</h3>
                 <p>{m.impact}</p>
+                {m.hardConstraints.length > 0 && (
+                  <div className="matching-constraint" role="note">
+                    <strong>不可替代原因</strong>
+                    <p>{m.hardConstraints.join("；")}</p>
+                  </div>
+                )}
                 {m.missingCapability.length > 0 && (
                   <>
                     <p>缺少：{m.missingCapability.join(" / ")}</p>

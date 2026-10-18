@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from typing import Optional
+
 from sqlalchemy import String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -54,17 +56,17 @@ class ParserRunRecord(Base):
     __tablename__ = "parser_runs"
 
     run_id: Mapped[str] = mapped_column(String(128), primary_key=True)
-    request_id: Mapped[str | None] = mapped_column(String(128), nullable=True)
+    request_id: Mapped[Optional[str]] = mapped_column(String(128), nullable=True)
     provider_name: Mapped[str] = mapped_column(String(128))
-    model_name: Mapped[str | None] = mapped_column(String(256), nullable=True)
+    model_name: Mapped[Optional[str]] = mapped_column(String(256), nullable=True)
     prompt_version: Mapped[str] = mapped_column(String(64))
-    schema_version: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    schema_version: Mapped[Optional[str]] = mapped_column(String(32), nullable=True)
     input_media_path: Mapped[str] = mapped_column(String(512))
     input_media_kind: Mapped[str] = mapped_column(String(32))
     recipe_id: Mapped[str] = mapped_column(String(128))
     tutorial_title: Mapped[str] = mapped_column(String(512))
-    raw_output_json: Mapped[str | None] = mapped_column(Text, nullable=True)
-    validated_recipe_json: Mapped[str | None] = mapped_column(Text, nullable=True)
-    validation_error: Mapped[str | None] = mapped_column(Text, nullable=True)
-    error_traceback: Mapped[str | None] = mapped_column(Text, nullable=True)
-    duration_ms: Mapped[int | None] = mapped_column(nullable=True)
+    raw_output_json: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    validated_recipe_json: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    validation_error: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    error_traceback: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    duration_ms: Mapped[Optional[int]] = mapped_column(nullable=True)

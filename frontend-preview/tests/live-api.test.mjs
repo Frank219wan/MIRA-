@@ -45,7 +45,13 @@ test(
       matches.map((m) => m.actionId),
       actions.map((a) => a.id),
     );
-    assert.ok(matches.every((m) => m.status === "missing"));
+    assert.deepEqual(
+      matches.map((m) => m.status),
+      ["missing", "matched", "missing", "matched", "missing"],
+    );
+    assert.equal(matches[1].score, 100);
+    assert.equal(matches[1].provenance.score, "backend");
+    assert.ok(matches[2].hardConstraints.some((reason) => reason.includes("shimmer")));
     const face = JSON.parse(
       readFileSync(
         new URL("./fixtures/face_profile_v0_3.json", import.meta.url),
@@ -134,11 +140,15 @@ test(
         context.actions.filter(
           (a) => a.personalizationSource === "backend-personalization",
         ).length,
-        1,
+        2,
+      );
+      assert.deepEqual(
+        context.actions[3].backendPersonalization,
+        raw.personalized_actions[0],
       );
       assert.deepEqual(
         context.actions[4].backendPersonalization,
-        raw.personalized_actions[0],
+        raw.personalized_actions[1],
       );
       assert.match(context.actions[4].personalized.direction, /12.60°/);
       assert.equal(getServiceStatus("getPersonalization").source, "api");
@@ -267,25 +277,43 @@ test(
       mockFallback: false,
       baseUrl: "http://127.0.0.1:5173/api",
     });
-    setLocalAppearancePreferences([
-      {
-        id: "live-area",
+    const polygon = [
+      { x: 0.42, y: 0.42 },
+      { x: 0.58, y: 0.41 },
+      { x: 0.6, y: 0.57 },
+      { x: 0.43, y: 0.59 },
+    ];
+    setLocalAppearancePreferences(
+      ["keep", "soften", "cover", "integrate"].map((preference, index) => ({
+        id: `live-area-${preference}`,
         region: "局部区域",
-        selection: { x: 0.5, y: 0.5, width: 0.2, height: 0.16 },
-        preference: "soften",
-        integrateStyle: null,
-      },
-    ]);
+        selection: {
+          x: 0.51,
+          y: 0.5,
+          width: 0.18,
+          height: 0.18,
+          polygon: polygon.map((point) => ({ ...point, y: point.y + index * 0.01 })),
+        },
+        preference,
+        integrateStyle: preference === "integrate" ? "highlight" : null,
+      })),
+    );
     try {
       const context = await getPersonalizedTutorialContext();
-      assert.equal(
-        context.localAppearanceGuidance[0].source,
-        "backend-special-area",
+      assert.equal(context.localAppearanceGuidance.length, 4);
+      assert.ok(
+        context.localAppearanceGuidance.every(
+          (guidance) => guidance.source === "backend-special-area",
+        ),
       );
-      assert.match(
-        context.localAppearanceGuidance[0].instruction,
-        /轻度均匀和边缘过渡/,
+      assert.deepEqual(
+        context.localAppearanceGuidance.map((guidance) => guidance.preference),
+        ["keep", "soften", "cover", "integrate"],
       );
+      assert.match(context.localAppearanceGuidance[0].instruction, /保留该区域/);
+      assert.match(context.localAppearanceGuidance[1].instruction, /轻度均匀和边缘过渡/);
+      assert.match(context.localAppearanceGuidance[2].instruction, /局部遮盖/);
+      assert.match(context.localAppearanceGuidance[3].instruction, /避免使用高遮盖产品覆盖/);
       assert.equal(
         getServiceStatus("getLocalAppearanceGuidance").source,
         "api",

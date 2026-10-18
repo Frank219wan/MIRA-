@@ -8,6 +8,15 @@ export interface ActionUnitDTO {
   motion: string;
   intensity: string;
   target_result: string;
+  product_capability_requirement?: {
+    product_category: string;
+    color_families: string[];
+    finishes: string[];
+    depths: string[];
+    pigmentations: string[];
+    textures: string[];
+    functions: string[];
+  } | null;
   time_range_seconds?: [number, number] | null;
   confidence?: number | null;
 }
@@ -46,6 +55,22 @@ export interface MatchingResultDTO {
     product_id?: string | null;
     capability_id?: string | null;
     note?: string | null;
+    score?: number | null;
+    verification_status?: "verified" | "insufficient_data";
+    reason?: string;
+    difference?: string;
+    impact?: string;
+    missing_capabilities?: string[];
+    hard_constraints?: string[];
+    required_capabilities?: Record<string, unknown>;
+    capability_checks?: {
+      key: string;
+      label: string;
+      matched: boolean;
+      score: number;
+      weight: number;
+      verified: boolean;
+    }[];
   }[];
 }
 export interface FaceProfileDTO {

@@ -23,9 +23,10 @@ from src.contracts.beauty_kit import BeautyKit, ProductCapability
 from src.contracts.cv_adaptation import CVAdaptation
 from src.contracts.explanation import LLMExplanation
 from src.contracts.makeup import StandardRecipe
-from src.contracts.matching import MatchingItem, MatchingResult
+from src.contracts.matching import MatchingResult
 from src.db.repositories import (
     get_beauty_kit,
+    get_product_capabilities,
     get_recipe,
     save_parser_run,
     load_fixture,
@@ -48,6 +49,7 @@ from src.services.tutorial_parser import (
     TutorialParserError,
     TutorialParser,
 )
+from src.services.product_matching import match_recipe
 
 
 FIXTURES_DIR = PROJECT_ROOT / "data" / "fixtures"
@@ -60,12 +62,14 @@ def _seed_week1_fixtures(session: Session) -> None:
             session,
             BeautyKit.model_validate(load_fixture(FIXTURES_DIR / "beauty_kit_v1.json")),
         )
-        save_product_capability(
-            session,
-            ProductCapability.model_validate(
-                load_fixture(FIXTURES_DIR / "product_capability_v1.json")
-            ),
-        )
+    # Capability metadata is versioned fixture data. Upsert it even when an
+    # existing local database already contains the Beauty Kit record.
+    save_product_capability(
+        session,
+        ProductCapability.model_validate(
+            load_fixture(FIXTURES_DIR / "product_capability_v1.json")
+        ),
+    )
 
 
 def create_app(
@@ -193,14 +197,14 @@ def create_app(
         return beauty_kit
 
     @app.post("/matching", response_model=MatchingResult)
-    def matching_placeholder(payload: MatchingRequest, request: Request):
+    def match_products(payload: MatchingRequest, request: Request):
         session = session_for(request)
         try:
             recipe = payload.recipe or get_recipe(session, payload.recipe_id or "")
             if recipe is None:
                 raise APIError("recipe_not_found", "Recipe was not found.", {"recipe_id": payload.recipe_id}, 404)
             log_event(
-                "matching_placeholder_invoked",
+                "product_matching_invoked",
                 module="api",
                 request_id=request.state.request_id,
                 recipe_id=recipe.recipe_id,
@@ -210,14 +214,7 @@ def create_app(
                 matching_id=f"match-{uuid4()}",
                 recipe_id=recipe.recipe_id,
                 beauty_kit_id=payload.beauty_kit.kit_id,
-                items=[
-                    MatchingItem(
-                        step_index=unit.step_index,
-                        status="unmatched",
-                        note="Week 1 structural placeholder; no matching algorithm executed.",
-                    )
-                    for unit in recipe.action_units
-                ],
+                items=match_recipe(recipe, payload.beauty_kit, get_product_capabilities(session)),
             )
             save_matching_result(session, result)
             return result

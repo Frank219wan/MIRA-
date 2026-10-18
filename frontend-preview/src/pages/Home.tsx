@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "../components/ui/button";
+import { publicAsset } from "../lib/assets";
 export default function Home() {
   const reduced = useReducedMotion();
   return (
@@ -31,7 +32,7 @@ export default function Home() {
         </motion.div>
         <div className="hero-visual">
           <div className="hero-image">
-            <img src="/assets/hero/beauty-adaptation.webp" alt="面部妆容位置与方向示意" />
+            <img src={publicAsset("assets/hero/beauty-adaptation.webp")} alt="面部妆容位置与方向示意" />
           </div>
         </div>
       </section>
@@ -55,7 +56,7 @@ export default function Home() {
           ))}
         </div>
         <div className="home-feature-image">
-          <img src="/assets/hero/beauty-scan.jpg" alt="面部适配与局部区域呈现示意" loading="lazy" />
+          <img src={publicAsset("assets/hero/beauty-scan.jpg")} alt="面部适配与局部区域呈现示意" loading="lazy" />
         </div>
         <p className="home-difference">
           从参考妆容到实际完成，让每一步都有清晰的画法。

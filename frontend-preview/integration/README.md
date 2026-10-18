@@ -1,13 +1,13 @@
 # 最新本地后端兼容入口
 
-此目录仅提供 HTTP transport。通过 PYTHONPATH 直接调用 MIRA--main-2 的模块，不修改后端算法或桌面原始源码。face_scan_transport.py 保留此前已验证的上传包装器。
+此目录仅提供 HTTP transport。默认通过 PYTHONPATH 调用当前仓库根目录的模块，不修改后端算法。face_scan_transport.py 保留此前已验证的上传包装器。
 
 安装（项目根目录）：
 
 ```sh
-python3.11 -m venv .runtime/latest-backend-venv
-.runtime/latest-backend-venv/bin/pip install -r /path/to/MIRA--main-2/requirements.txt -r integration/requirements.txt -c integration/constraints.txt
-MIRA_BACKEND_DIR=/path/to/MIRA--main-2 sh integration/start.sh
+python3 -m venv .runtime/latest-backend-venv
+.runtime/latest-backend-venv/bin/pip install -r ../requirements.txt -r integration/requirements.txt -c integration/constraints.txt
+sh integration/start.sh
 ```
 
 数据库仍为 `.runtime/mira_week1.db`。默认地址 127.0.0.1:8000；前端 `/api` 代理保持不变。

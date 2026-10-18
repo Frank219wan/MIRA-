@@ -1,7 +1,7 @@
 import { matches } from "../mocks/matching";
 import { demo, withFallback } from "./base";
 import { request } from "./api/client";
-import { getRecipeDTO, getTutorial } from "./tutorial";
+import { getRecipeDTO, getTutorial, isExampleTutorial } from "./tutorial";
 import { getBeautyKitDTO } from "./products";
 import { adaptBeautyKit } from "./adapters/beautyKit";
 import { adaptMatching } from "./adapters/matching";
@@ -24,7 +24,16 @@ export const getMatchResult = (): Promise<ServiceMatch[]> =>
       });
       if (dto.beauty_kit_id !== beauty_kit.kit_id)
         throw new Error("Mismatched beauty kit");
-      return adaptMatching(dto, recipe, adaptBeautyKit(beauty_kit));
+      const adapted = adaptMatching(dto, recipe, adaptBeautyKit(beauty_kit));
+      if (!isExampleTutorial()) return adapted;
+      // The authored example is deliberately rendered from the local five-step
+      // preset. Its canonical order mirrors the backend demo recipe, so align
+      // identities here to let verified product matches reach the preset UI.
+      const preset = await getTutorial();
+      return adapted.map((match, index) => ({
+        ...match,
+        actionId: preset[index]?.id ?? match.actionId,
+      }));
     },
     async () => {
       const actions = await getTutorial();
@@ -37,11 +46,13 @@ export const getMatchResult = (): Promise<ServiceMatch[]> =>
             actionId: a.id,
             status: "missing" as const,
             bestMatch: null,
-            score: 0,
+            score: null,
             capabilityChecks: [],
+            reason: "尚无匹配结果",
             difference: "尚无匹配结果",
             impact: "尚未评估",
             missingCapability: [],
+            hardConstraints: [],
           }),
           provenance: {
             status: "mock",

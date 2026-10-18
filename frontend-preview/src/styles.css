@@ -72,6 +72,15 @@ header {
   align-items: center;
   justify-content: space-between;
 }
+.deployment-demo-banner {
+  padding: 9px 5%;
+  border-bottom: 1px solid #ddd6ea;
+  background: linear-gradient(90deg, #f8f4ff, #fcf9ff);
+  color: #604b75;
+  font-size: 12px;
+  line-height: 1.55;
+  text-align: center;
+}
 .logo {
   width: 128px;
   height: 55px;
@@ -3128,6 +3137,125 @@ button:disabled:hover {
   max-height: 460px;
   margin: 24px auto;
 }
+.step-illustration {
+  background:
+    radial-gradient(circle at 70% 22%, rgba(221, 190, 184, 0.18), transparent 34%),
+    linear-gradient(145deg, #faf7f5, #f4efed);
+  box-shadow: inset 0 0 0 1px rgba(125, 91, 84, 0.08);
+}
+.eye-tech-guide {
+  overflow: visible;
+}
+.eye-tech-guide .eye-guide-brow {
+  fill: none;
+  stroke: #57443f;
+  stroke-width: 8;
+  stroke-linecap: round;
+  opacity: 0.76;
+}
+.eye-tech-guide .eye-guide-crease {
+  fill: none;
+  stroke: #9f7e77;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 5 6;
+  opacity: 0.76;
+}
+.eye-tech-guide .eye-guide-skin {
+  fill: #f5e8e3;
+  opacity: 0.58;
+}
+.eye-tech-guide .guide-base-zone {
+  stroke: rgba(143, 91, 83, 0.54);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 5;
+}
+.eye-tech-guide .guide-transition-band {
+  fill: none;
+  stroke: rgba(175, 122, 111, 0.28);
+  stroke-width: 23;
+  stroke-linecap: round;
+}
+.eye-tech-guide .eye-guide-upper,
+.eye-tech-guide .eye-guide-lower {
+  fill: none;
+  stroke-linecap: round;
+}
+.eye-tech-guide .eye-guide-upper {
+  stroke: #3c2c29;
+  stroke-width: 5;
+}
+.eye-tech-guide .eye-guide-lower {
+  stroke: #826b65;
+  stroke-width: 2;
+}
+.eye-tech-guide .eye-guide-corner {
+  fill: #6f4e49;
+}
+.eye-tech-guide .guide-arrows path,
+.eye-tech-guide .guide-blend-loops path {
+  fill: none;
+  stroke: #76515e;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+.eye-tech-guide .guide-soft-base,
+.eye-tech-guide .guide-matte-base {
+  fill: rgba(190, 137, 126, 0.2);
+  stroke: rgba(143, 91, 83, 0.2);
+  stroke-width: 1;
+}
+.eye-tech-guide .guide-outer-v {
+  fill: none;
+  stroke: rgba(100, 67, 63, 0.6);
+  stroke-width: 1.3;
+  stroke-dasharray: 4 4;
+}
+.eye-tech-guide .guide-sparkles path {
+  fill: none;
+  stroke: #b38a58;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.eye-tech-guide .guide-tap-marks circle {
+  fill: #a47a55;
+  opacity: 0.58;
+}
+.eye-tech-guide .guide-lower-boundary {
+  fill: none;
+  stroke: rgba(116, 82, 78, 0.32);
+  stroke-width: 14;
+  stroke-dasharray: 3 6;
+  stroke-linecap: round;
+}
+.eye-tech-guide .guide-lower-zone {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+.eye-tech-guide .guide-liner {
+  fill: #3f302f;
+  opacity: 0.92;
+}
+.eye-tech-guide .guide-liner-start {
+  fill: #f4e7e2;
+  stroke: #76515e;
+  stroke-width: 2;
+}
+.eye-tech-guide .guide-liner-arrows {
+  opacity: 0.75;
+}
+.eye-tech-guide .guide-blend-band {
+  fill: none;
+  stroke: rgba(151, 99, 91, 0.32);
+  stroke-width: 25;
+  stroke-linecap: round;
+  stroke-dasharray: 2 7;
+}
+.eye-tech-guide .eye-guide-labels text {
+  fill: #665955;
+  font: 500 12px/1.2 "PingFang SC", sans-serif;
+}
 .step-illustration p {
   line-height: 1.7;
 }
@@ -3136,6 +3264,17 @@ button:disabled:hover {
   margin-top: 16px;
   color: var(--warm-gray);
   line-height: 1.6;
+}
+@media (max-width: 700px) {
+  .step-illustration {
+    padding: 20px 16px;
+  }
+  .step-illustration svg {
+    margin: 14px auto;
+  }
+  .eye-tech-guide .eye-guide-labels text {
+    font-size: 13px;
+  }
 }
 
 .account-avatar {
@@ -3319,12 +3458,16 @@ button:disabled:hover {
 }
 .region-canvas {
   position: relative;
-  width: min(100%, 340px);
+  width: min(100%, 520px);
   margin: 16px 0 8px;
   touch-action: none;
   cursor: crosshair;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 14px;
+  background: #f3f0f7;
+  box-shadow:
+    0 18px 48px rgba(47, 30, 67, 0.1),
+    inset 0 0 0 1px rgba(117, 91, 147, 0.16);
 }
 .region-canvas img {
   width: 100%;
@@ -3332,17 +3475,90 @@ button:disabled:hover {
   object-fit: cover;
   display: block;
   pointer-events: none;
+  user-select: none;
 }
-.local-selection {
+.selection-overlay {
   position: absolute;
-  border: 1px solid rgba(30, 30, 30, 0.65);
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.24);
-  transform: translate(-50%, -50%);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
+.draft-area-shape,
+.saved-area-shape polygon {
+  fill: rgba(166, 126, 211, 0.22);
+  stroke: rgba(116, 73, 164, 0.92);
+  stroke-width: 1.1;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 7px rgba(176, 124, 226, 0.42));
+}
+.saved-area-shape polygon {
+  fill: rgba(180, 148, 216, 0.15);
+  stroke: rgba(124, 86, 165, 0.62);
+}
+.saved-area-shape text {
+  fill: #5e3d7d;
+  font: 600 12px/1 "PingFang SC", sans-serif;
+  paint-order: stroke;
+  stroke: rgba(255, 255, 255, 0.9);
+  stroke-width: 3px;
+  transform: translate(6px, -6px);
+}
+.draft-area-line {
+  fill: none;
+  stroke: rgba(116, 73, 164, 0.82);
+  stroke-width: 1.1;
+  stroke-dasharray: 5 4;
+  vector-effect: non-scaling-stroke;
+}
+.selection-handle {
+  position: absolute;
+  z-index: 3;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  transform: translate(-50%, -50%);
+  cursor: grab;
+  touch-action: none;
+}
+.selection-handle::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgba(255, 255, 255, 0.96);
+  border-radius: 50%;
+  background: #9560c1;
+  box-shadow:
+    0 0 0 1px rgba(89, 52, 122, 0.72),
+    0 2px 8px rgba(82, 45, 116, 0.28);
+  transform: translate(-50%, -50%);
+}
+.selection-handle:active {
+  cursor: grabbing;
+}
+.selection-handle:active::before {
+  transform: translate(-50%, -50%) scale(1.15);
+}
+.selection-handle:focus-visible {
+  outline: 1.5px solid #7c4aa6;
+  outline-offset: -5px;
+}
+.selection-kicker {
+  display: block;
+  margin-bottom: 4px;
+  color: #8153a8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+}
 .region-canvas:focus-visible {
-  outline: 2px solid var(--black);
+  outline: 2px solid #8c5bb4;
   outline-offset: 4px;
 }
 .local-actions {
@@ -3666,6 +3882,65 @@ button:disabled:hover {
   background: var(--surface);
   font-size: 11px;
 }
+.catalog-disclaimer {
+  margin: 12px 0 16px;
+  color: var(--warm-gray);
+  font-size: 13px;
+  line-height: 1.65;
+}
+.catalog-results {
+  display: grid;
+  gap: 10px;
+  max-height: min(56vh, 520px);
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.catalog-result {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+.catalog-result img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 6px;
+  background: var(--surface);
+}
+.catalog-result h3,
+.catalog-result p {
+  margin: 3px 0;
+}
+.catalog-result h3 {
+  font-size: 15px;
+  line-height: 1.4;
+}
+.catalog-result p,
+.catalog-result small {
+  color: var(--warm-gray);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.catalog-result .button {
+  white-space: nowrap;
+}
+.catalog-empty,
+.kit-empty {
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.catalog-empty p,
+.kit-empty p {
+  margin: 7px 0 0;
+  color: var(--warm-gray);
+}
 .kit-step-reference {
   margin: 6px 0 14px;
   color: var(--warm-gray);
@@ -3693,6 +3968,17 @@ button:disabled:hover {
   }
   .product-image {
     height: 240px;
+  }
+  .catalog-result {
+    grid-template-columns: 52px minmax(0, 1fr);
+  }
+  .catalog-result img {
+    width: 52px;
+    height: 52px;
+  }
+  .catalog-result .button {
+    grid-column: 1 / -1;
+    width: 100%;
   }
 }
 

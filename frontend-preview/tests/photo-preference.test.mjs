@@ -8,5 +8,8 @@ test('illustration and older photos are never current photo bindings',()=>{
  assert.equal(isPhotoSelectionCurrent({...base,imageSource:'illustration'},'one'),false);
  assert.equal(isPhotoSelectionCurrent({...base,imageSource:'user-photo',imageId:'old'},'one'),false);
  assert.equal(isPhotoSelectionCurrent({...base,imageSource:'user-photo',imageId:'one'},'one'),true);
- for(const integrateStyle of ['natural','highlight']) assert.equal(toSpecialAreaProfile([{...base,integrateStyle,selection:{x:.5,y:.5,width:.2,height:.2}}]).areas.length,0);
+ for(const integrateStyle of ['natural','highlight']) {
+  const area=toSpecialAreaProfile([{...base,integrateStyle,selection:{x:.5,y:.5,width:.2,height:.2}}]).areas[0];
+  assert.equal(area.preference,'HIGHLIGHT');
+ }
 });

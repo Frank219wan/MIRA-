@@ -76,7 +76,7 @@ export default function LiveCoach() {
             </Tag>
           </div>
           <div className="coach-grid">
-            <StepIllustration action={actions?.[index]} />
+            <StepIllustration action={actions?.[index]} personalization={a} />
             <aside className="coach-instructions">
               <span className="eyebrow">
                 STEP {String(index + 1).padStart(2, "0")} /{" "}

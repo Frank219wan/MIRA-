@@ -1,4 +1,9 @@
 import type { MakeupAction } from "../types/tutorial";
+import {
+  isSimplePolygon,
+  polygonArea,
+  type NormalizedPoint,
+} from "./selectionGeometry";
 export const regions = [
   "额头",
   "左脸颊",
@@ -16,6 +21,7 @@ export interface SelectionRegion {
   y: number;
   width: number;
   height: number;
+  polygon?: NormalizedPoint[];
 }
 export interface LocalAppearancePreference {
   id?: string;
@@ -52,12 +58,25 @@ export function isLocalPreference(v: unknown): v is LocalAppearancePreference {
     regions.includes(p.region) &&
     (p.userLabel === undefined || (typeof p.userLabel === "string" && p.userLabel.length <= 80)) &&
     (!p.selection ||
-      [
-        p.selection.x,
-        p.selection.y,
-        p.selection.width,
-        p.selection.height,
-      ].every((n) => Number.isFinite(n) && n > 0 && n < 1)) &&
+      ([p.selection.x, p.selection.y].every(
+        (n) => Number.isFinite(n) && n >= 0 && n <= 1,
+      ) &&
+        [p.selection.width, p.selection.height].every(
+          (n) => Number.isFinite(n) && n > 0 && n <= 1,
+        ) &&
+        (!p.selection.polygon ||
+          (p.selection.polygon.length >= 3 &&
+            isSimplePolygon(p.selection.polygon) &&
+            polygonArea(p.selection.polygon) >= 0.00005 &&
+            p.selection.polygon.every(
+              (point) =>
+                Number.isFinite(point.x) &&
+                Number.isFinite(point.y) &&
+                point.x >= 0 &&
+                point.x <= 1 &&
+                point.y >= 0 &&
+                point.y <= 1,
+            ))))) &&
     preferenceOptions.some((o) => o[0] === p.preference) &&
     (p.preference === "integrate"
       ? ["natural", "highlight"].includes(p.integrateStyle || "")

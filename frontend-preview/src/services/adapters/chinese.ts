@@ -5,6 +5,7 @@ const terms: Record<string, string> = {
   "outer corner": "外眼角",
   "center lid": "上眼睑中央",
   "upper lash line": "上睫毛根部",
+  "lower eyelid": "下睫毛根部",
   prime: "均匀眼睑底色",
   "add depth": "增加眼窝层次",
   define: "勾勒轮廓",
@@ -13,6 +14,7 @@ const terms: Record<string, string> = {
   "matte transition shadow": "哑光过渡色眼影",
   "matte deep shadow": "哑光深色眼影",
   "shimmer shadow": "珠光眼影",
+  "matte lower shadow": "哑光下眼影",
   eyeliner: "眼线产品",
   fingertip: "指腹",
   "blending brush": "晕染刷",
@@ -22,6 +24,8 @@ const terms: Record<string, string> = {
   pat: "少量轻拍，均匀按压",
   "windshield-wiper blend": "沿眼窝来回轻扫，柔和晕染",
   "press and blend": "轻按上色，再晕开边缘",
+  "press and blend upward": "轻按外眼角，并向外上方晕开",
+  "blend from outer to inner": "贴近下睫毛根部，由外向内轻扫",
   "short stroke": "沿睫毛根部以短笔触描画",
   light: "轻柔",
   sheer: "轻薄",
@@ -49,6 +53,7 @@ export function chineseActionName(goal: string, area: string): string {
     "define|outer corner": "加深眼尾",
     "brighten|center lid": "中央提亮",
     "define|upper lash line": "描画眼线",
+    "define|lower eyelid": "下眼影",
   };
   return (
     names[`${goal.toLowerCase()}|${area.toLowerCase()}`] ??
