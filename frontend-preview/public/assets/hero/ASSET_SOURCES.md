@@ -9,7 +9,7 @@
 
 ## Tutorial references
 
-- `/assets/tutorial/cat-smokey-synthetic-front.jpg` and `/assets/tutorial/cat-smokey-synthetic-steps.jpg` — original synthetic demo assets generated with OpenAI ImageGen on 2026-10-18 for the preset “猫系冷调小烟熏” tutorial. They depict a generated person and generated eye-makeup sequence, contain no source-platform content, and are labelled in the UI as AI-generated reference material rather than extracted tutorial frames or real analysis results.
+- `/assets/tutorial/cat-smokey-front.jpg` and `/assets/tutorial/cat-smokey-steps.jpg` — real-person tutorial reference images supplied by the project team and confirmed for use in the current public demo. They are labelled as reference material for the preset “猫系冷调小烟熏” tutorial, not as frames produced by real-time tutorial parsing.
 
 ## Beauty Kit product illustrations
 

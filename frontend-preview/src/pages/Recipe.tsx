@@ -36,15 +36,15 @@ export default function Recipe() {
         </section>
         <aside className="recipe-aside">
           <ReferenceImage
-            src={publicAsset("assets/tutorial/cat-smokey-synthetic-front.jpg")}
-            alt="猫系冷调小烟熏正脸妆效参考"
-            caption="合成妆面参考 · 非解析画面"
+            src={publicAsset("assets/tutorial/cat-smokey-front.jpg")}
+            alt="猫系冷调小烟熏已授权真人妆效参考"
+            caption="已授权真人教程参考图 · 非解析画面"
           />
           <ReferenceImage
             className="tutorial-step-sheet"
-            src={publicAsset("assets/tutorial/cat-smokey-synthetic-steps.jpg")}
-            alt="猫系冷调小烟熏六步合成图解"
-            caption="合成眼妆步骤参考 · 非解析画面"
+            src={publicAsset("assets/tutorial/cat-smokey-steps.jpg")}
+            alt="猫系冷调小烟熏真人眼妆步骤参考图"
+            caption="真人眼妆步骤参考图 · 非解析画面"
           />
         </aside>
       </div>

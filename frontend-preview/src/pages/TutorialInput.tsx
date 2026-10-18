@@ -100,9 +100,9 @@ export default function TutorialInput() {
             {mode === "example" ? (
               <div className="example">
                 <ReferenceImage
-                  src={publicAsset("assets/tutorial/cat-smokey-synthetic-front.jpg")}
-                  alt="猫系冷调小烟熏正脸妆效参考"
-                  caption="AI 合成演示素材"
+                  src={publicAsset("assets/tutorial/cat-smokey-front.jpg")}
+                  alt="猫系冷调小烟熏已授权真人妆效参考"
+                  caption="已授权真人教程参考图"
                 />
                 <div>
                   <span className="eyebrow">5 个步骤</span>
@@ -188,7 +188,7 @@ export default function TutorialInput() {
         </section>
         <aside className="guidelines">
           {mode === "example" && <StaticPhotoGuidance />}
-          {mode === "example" && <ReferenceImage className="tutorial-step-sheet" src={publicAsset("assets/tutorial/cat-smokey-synthetic-steps.jpg")} alt="猫系冷调小烟熏六步合成图解" caption="AI 合成眼妆步骤参考" />}
+          {mode === "example" && <ReferenceImage className="tutorial-step-sheet" src={publicAsset("assets/tutorial/cat-smokey-steps.jpg")} alt="猫系冷调小烟熏真人眼妆步骤参考图" caption="真人眼妆步骤参考图" />}
           <h2>为了获得更清晰的拆解结果</h2>
           <ul>
             {[
