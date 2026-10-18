@@ -115,7 +115,15 @@ export default function Parsing() {
               <span>画面与动作</span>
             </div>
             <div className="technical-frame">
-              <Placeholder label="关键画面预览" />
+              {isExampleTutorial() ? (
+                <img
+                  className="parsing-keyframes"
+                  src="/assets/tutorial/cat-smokey-steps.jpg"
+                  alt="猫系冷调小烟熏六宫格关键画面"
+                />
+              ) : (
+                <Placeholder label="关键画面预览" />
+              )}
               <span className="frame-corner top-left" />
               <span className="frame-corner bottom-right" />
             </div>
@@ -125,7 +133,9 @@ export default function Parsing() {
               </p>
             </div>
             <p className="demo-footnote">
-              进度为流程展示，关键画面尚未提供。
+              {isExampleTutorial()
+                ? "示例关键画面用于说明拆解结构，并非实时解析结果。"
+                : "进度为流程展示，关键画面尚未提供。"}
             </p>
           </section>
           <div className="parsing-bottom">

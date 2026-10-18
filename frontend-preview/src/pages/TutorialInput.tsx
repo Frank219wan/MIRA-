@@ -52,7 +52,7 @@ export default function TutorialInput() {
       kind: mode as "video" | "image" | "link" | "example",
       preset: mode === "example",
       uploadId: mode === "image" || mode === "video" ? preview?.uploadId : undefined,
-      name: mode === "example" ? "柔棕日常眼妆" : file?.name || url,
+      name: mode === "example" ? "猫系冷调小烟熏" : file?.name || url,
     });
     nav("/tutorial/parsing");
   }
@@ -94,13 +94,13 @@ export default function TutorialInput() {
             {mode === "example" ? (
               <div className="example">
                 <ReferenceImage
-                  src="/assets/tutorial/purple-eye-look.jpg"
-                  alt="紫色眼妆完整妆效参考"
+                  src="/assets/tutorial/cat-smokey-front.jpg"
+                  alt="猫系冷调小烟熏正脸妆效参考"
                   caption="已有参考素材"
                 />
                 <div>
                   <span className="eyebrow">5 个步骤</span>
-                  <h2>柔棕日常眼妆</h2>
+                  <h2>猫系冷调小烟熏</h2>
                   <p>点击下方按钮查看示例拆解，再继续面部扫描。</p>
                   <small>示例使用预设步骤，用于体验完整流程。</small>
                 </div>
@@ -182,7 +182,7 @@ export default function TutorialInput() {
         </section>
         <aside className="guidelines">
           {mode === "example" && <StaticPhotoGuidance />}
-          {mode === "example" && <ReferenceImage className="tutorial-step-sheet" src="/assets/tutorial/purple-eye-steps.jpg" alt="紫色眼妆六步图解" caption="眼妆步骤参考" />}
+          {mode === "example" && <ReferenceImage className="tutorial-step-sheet" src="/assets/tutorial/cat-smokey-steps.jpg" alt="猫系冷调小烟熏六步图解" caption="眼妆步骤参考" />}
           <h2>为了获得更清晰的拆解结果</h2>
           <ul>
             {[

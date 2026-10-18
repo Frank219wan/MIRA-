@@ -7,6 +7,10 @@
 
 - `beauty-adaptation.webp` — performance-optimized WebP derivative of the existing `beauty-adaptation.png` homepage hero. The visual content is unchanged; the original PNG remains available as the source asset.
 
+## Tutorial references
+
+- `/assets/tutorial/cat-smokey-front.jpg` and `/assets/tutorial/cat-smokey-steps.jpg` — front-face makeup reference and six-panel tutorial image supplied by the project owner on 2026-10-18. Used only for the preset “猫系冷调小烟熏” tutorial; they are labelled as reference material rather than extracted frames.
+
 ## Beauty Kit product illustrations
 
 - `/assets/products/*.webp` — generic, logo-free cosmetics still lifes generated with OpenAI ImageGen on 2026-10-16, then converted locally to WebP. They are illustrative product-card images, not official brand photography or exact packaging.

@@ -35,11 +35,11 @@ export default function Recipe() {
         </section>
         <aside className="recipe-aside">
           <ReferenceImage
-            src="/assets/tutorial/purple-eye-look.jpg"
-            alt="已有眼妆参考素材"
+            src="/assets/tutorial/cat-smokey-front.jpg"
+            alt="猫系冷调小烟熏正脸妆效参考"
             caption="妆面参考 · 非解析画面"
           />
-        <ReferenceImage className="tutorial-step-sheet" src="/assets/tutorial/purple-eye-steps.jpg" alt="紫色眼妆六步图解" caption="眼妆步骤参考 · 非解析画面" />
+        <ReferenceImage className="tutorial-step-sheet" src="/assets/tutorial/cat-smokey-steps.jpg" alt="猫系冷调小烟熏六步图解" caption="眼妆步骤参考 · 非解析画面" />
         </aside>
       </div>
       <div className="recipe-next">

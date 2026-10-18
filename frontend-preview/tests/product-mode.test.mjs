@@ -110,7 +110,7 @@ test("generic mode builds tutorial products without requesting a beauty kit or m
   try {
     const context = await getPersonalizedTutorialContext();
     assert.equal(context.productMode, "generic");
-    assert.equal(context.actions[1].product, "大地色眼影盘中的深棕色 / 加深色");
+    assert.equal(context.actions[1].product, "冷调紫灰眼影中的深色 / 加深色");
     assert.equal(context.actions[1].productSource, "generic");
     assert.equal(calls, 0);
   } finally {
