@@ -14,10 +14,10 @@ export const guideNotes: Record<GuideKind, string> = {
 
 export function guideKindFor(action?: MakeupAction): GuideKind {
   const text = `${action?.name} ${action?.area} ${action?.goal} ${action?.productRequirement}`;
-  return /眼线|睫毛根部/.test(text) && !/下眼|下睫毛/.test(text) ? "liner"
-    : /下眼|下睫毛/.test(text) ? "lower"
+  return /眼线/.test(text) ? "liner"
+    : /眼尾|加深|outer corner/i.test(text) ? "outer"
+      : /下眼|下睫毛/.test(text) ? "lower"
       : /提亮|珠光|中央/.test(text) ? "highlight"
         : /衔接|过渡|晕染/.test(action?.name || "") ? "blend"
-          : /眼尾|加深|outer corner/i.test(text) ? "outer"
-            : /打底|上眼睑|眼皮|prime/i.test(text) ? "base" : "neutral";
+          : /打底|上眼睑|眼皮|prime/i.test(text) ? "base" : "neutral";
 }

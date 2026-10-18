@@ -34,7 +34,14 @@ export function resolveGenericProduct(
   const text = `${action.name} ${action.goal} ${action.productRequirement}`;
   let label = action.productRequirement;
 
-  if (/深棕/.test(text) || (/眼影/.test(text) && /深色|加深/.test(text)))
+  if (/黑色眼线/.test(text) && /睫毛膏|睫毛/.test(text))
+    label = "黑色眼线笔与黑色睫毛膏";
+  else if (/粉紫细闪/.test(text) && /眼线/.test(text))
+    label = "粉紫细闪眼影与黑色眼线笔";
+  else if (/深紫灰/.test(text)) label = "冷调紫灰眼影中的深色 / 加深色";
+  else if (/浅紫灰/.test(text)) label = "浅紫灰哑光眼影 / 打底色";
+  else if (/冷棕/.test(text)) label = "冷棕色哑光眼影 / 卧蚕阴影";
+  else if (/深棕/.test(text) || (/眼影/.test(text) && /深色|加深/.test(text)))
     label = "大地色眼影盘中的深棕色 / 加深色";
   else if (/暖棕/.test(text)) label = "大地色眼影盘中的暖棕色 / 过渡色";
   else if (/眼影/.test(text) && /过渡|衔接/.test(text))

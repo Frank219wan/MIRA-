@@ -58,9 +58,27 @@ export default function Home() {
         <div className="home-feature-image">
           <img src={publicAsset("assets/hero/beauty-scan.jpg")} alt="面部适配与局部区域呈现示意" loading="lazy" />
         </div>
-        <p className="home-difference">
-          从参考妆容到实际完成，让每一步都有清晰的画法。
-        </p>
+        <section className="home-human-value" aria-labelledby="home-human-value-title">
+          <span className="eyebrow">WHY MIRA</span>
+          <div className="home-human-value-heading">
+            <h2 id="home-human-value-title">同一份灵感，也应该有适合你的画法。</h2>
+            <p>
+              教程展示别人如何完成妆容，MIRA 把关键步骤、产品需求与面部特点重新整理成你能跟随的方法。从参考妆容到实际完成，让每一步都有清晰的画法。
+            </p>
+          </div>
+          <div className="home-human-value-points">
+            <article>
+              <span>01</span>
+              <h3>保留自己的表达</h3>
+              <p>一条妆教可以生长出不同的美学表达。你可以借鉴妆容，也能保留自己的五官特点和审美选择。</p>
+            </article>
+            <article>
+              <span>02</span>
+              <h3>分享由你决定</h3>
+              <p>完成妆容后是否分享，由你主动选择。面部数据不会默认公开。</p>
+            </article>
+          </div>
+        </section>
         <aside className="home-support">
           <span>使用帮助</span>
           <p>暂不添加产品或面部信息，也可以使用基础指导开始跟妆。</p>

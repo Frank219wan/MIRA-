@@ -14,7 +14,7 @@ function parseInput(): TutorialMediaInputDTO {
   if (mediaInput) return mediaInput;
   const input: TutorialInput = JSON.parse(
     sessionStorage.getItem("mira-input") ||
-      '{"kind":"example","name":"柔棕日常眼妆"}',
+      '{"kind":"example","name":"猫系冷调小烟熏"}',
   );
   if (input.kind !== "example" || !apiConfig.exampleMediaPath)
     throw new Error("当前后端仅支持服务器媒体路径；上传文件和链接暂用参考方案");
