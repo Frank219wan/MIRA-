@@ -1,8 +1,6 @@
 import type { MakeupAction } from "../../types/tutorial";
 import { ChevronDown, MapPin, MoveUpRight } from "lucide-react";
 import { CapabilityTags } from "./CapabilityTags";
-const time = (seconds: number) =>
-  `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, "0")}`;
 export function StepCard({ action: a }: { action: MakeupAction }) {
   return (
     <article className="step-card">
@@ -10,9 +8,6 @@ export function StepCard({ action: a }: { action: MakeupAction }) {
       <div className="step-body">
         <div className="step-title">
           <h2>{a.name}</h2>
-          <span className="step-time">
-            {time(a.startTime)} — {time(a.endTime)}
-          </span>
         </div>
         <dl className="step-facts">
           <div>
