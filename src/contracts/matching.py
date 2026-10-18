@@ -1,6 +1,8 @@
-"""Structural matching result contract; no matching algorithm is included."""
+"""Explainable product matching result contract."""
 
-from typing import Literal
+from __future__ import annotations
+
+from typing import Literal, Optional
 
 from pydantic import Field
 
@@ -10,9 +12,18 @@ from .common import ContractModel
 class MatchingItem(ContractModel):
     step_index: int = Field(ge=1)
     status: Literal["matched", "unmatched", "substitution_candidate"]
-    product_id: str | None = None
-    capability_id: str | None = None
-    note: str | None = None
+    product_id: Optional[str] = None
+    capability_id: Optional[str] = None
+    note: Optional[str] = None
+    score: float | None = Field(default=None, ge=0.0, le=100.0)
+    verification_status: Literal["verified", "insufficient_data"] = "insufficient_data"
+    reason: str = ""
+    difference: str = ""
+    impact: str = ""
+    missing_capabilities: list[str] = Field(default_factory=list)
+    hard_constraints: list[str] = Field(default_factory=list)
+    required_capabilities: dict[str, object] = Field(default_factory=dict)
+    capability_checks: list[dict[str, object]] = Field(default_factory=list)
 
 
 class MatchingResult(ContractModel):

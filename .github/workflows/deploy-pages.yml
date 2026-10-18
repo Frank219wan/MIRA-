@@ -1,0 +1,70 @@
+name: Build and deploy frontend to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "frontend-preview/**"
+      - ".github/workflows/deploy-pages.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "frontend-preview/**"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: "pages-${{ github.ref }}"
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend-preview
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend-preview/package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Run frontend tests
+        run: npm test
+      - name: Type-check and build the Pages bundle
+        run: npm run build
+        env:
+          VITE_BASE_PATH: /MIRA-/
+          VITE_DEMO_MODE: "true"
+          VITE_MOCK_FALLBACK: "true"
+      - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend-preview/dist
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      pages: write
+      id-token: write
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

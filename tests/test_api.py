@@ -88,14 +88,19 @@ class WeekOneAPITests(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["kit_id"], self.beauty_kit["kit_id"])
 
-    def test_matching_returns_structural_placeholder(self):
+    def test_matching_returns_verified_scores_and_hard_constraints(self):
         response = self.client.post(
             "/matching", json={"recipe": self.recipe, "beauty_kit": self.beauty_kit}
         )
         self.assertEqual(response.status_code, 200)
         result = response.json()
         self.assertEqual(result["recipe_id"], self.recipe["recipe_id"])
-        self.assertTrue(all(item["status"] == "unmatched" for item in result["items"]))
+        self.assertEqual([item["status"] for item in result["items"]], [
+            "unmatched", "matched", "unmatched", "matched", "unmatched"
+        ])
+        self.assertEqual(result["items"][1]["score"], 100.0)
+        self.assertEqual(result["items"][3]["score"], 100.0)
+        self.assertTrue(result["items"][2]["hard_constraints"])
 
     def test_cv_adaptation_accepts_cv_face_profile(self):
         response = self.client.post(

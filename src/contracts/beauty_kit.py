@@ -1,4 +1,6 @@
-"""Week 1 Beauty Kit and product-capability contracts."""
+"""Beauty Kit and structured product-capability contracts."""
+
+from typing import Literal
 
 from pydantic import Field
 
@@ -11,6 +13,13 @@ class ProductCapability(ContractModel):
     product_category: str = Field(min_length=1)
     supported_areas: list[str] = Field(min_length=1)
     supported_goals: list[str] = Field(min_length=1)
+    color_families: list[str] = Field(default_factory=list)
+    finishes: list[str] = Field(default_factory=list)
+    depths: list[str] = Field(default_factory=list)
+    pigmentations: list[str] = Field(default_factory=list)
+    textures: list[str] = Field(default_factory=list)
+    functions: list[str] = Field(default_factory=list)
+    verification_status: Literal["verified", "unverified"] = "unverified"
 
 
 class BeautyKitProduct(ContractModel):

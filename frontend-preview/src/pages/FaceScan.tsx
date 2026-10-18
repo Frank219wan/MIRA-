@@ -1,0 +1,489 @@
+import { retainStaticFace, clearStaticFace } from "../services/staticFace";
+import { clearLocalAppearancePreferences } from "../services/localAppearance";
+import { LocalAppearanceCard } from "../components/preferences/LocalAppearanceCard";
+import {
+  checkScanImage,
+  checkScanUploads,
+  motionIssue,
+  tolerateBriefScanChange,
+} from "../services/scanQuality";
+import { getServiceStatus } from "../services/base";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Page } from "../components/layout/Page";
+import { Button } from "../components/ui/button";
+import { Card } from "../components/ui/primitives";
+import { FaceViewport } from "../components/face/FaceViewport";
+import {
+  scanFaceImages,
+  setFaceConsent,
+  cancelPendingFaceScan,
+  getFaceProfileDTO,
+  setRememberFaceProfile,
+  isRememberingFaceProfile,
+} from "../services/face";
+
+import { getProductUseMode } from "../services/productMode";
+import { apiConfig } from "../lib/config";
+import { publicAsset } from "../lib/assets";
+export default function FaceScan() {
+  const [consented, setConsented] = useState(false);
+  const consentRef = useRef(false);
+  const [saved, setSaved] = useState(() => Boolean(getFaceProfileDTO()));
+  const [remember, setRemember] = useState(isRememberingFaceProfile);
+  const [phase, setPhase] = useState("ready");
+  const [countdown, setCountdown] = useState(0);
+  const [review, setReview] = useState("");
+  const reviewURL = useRef("");
+  function clearReview() {
+    if (reviewURL.current) URL.revokeObjectURL(reviewURL.current);
+    reviewURL.current = "";
+    setReview("");
+  }
+  const [started, setStarted] = useState(false);
+  const [stream, setStream] = useState<MediaStream>();
+  const [busy, setBusy] = useState(false);
+  const [ready, setReady] = useState(false);
+  const [validFrames, setValidFrames] = useState(0);
+  const video = useRef<HTMLVideoElement>(null);
+  const camera = useRef<MediaStream | undefined>(undefined);
+  const generation = useRef(0);
+  function stopCamera() {
+    camera.current?.getTracks().forEach((track) => track.stop());
+    camera.current = undefined;
+    setStream(undefined);
+  }
+  useEffect(
+    () => () => {
+      generation.current++;
+      camera.current?.getTracks().forEach((track) => track.stop());
+      cancelPendingFaceScan();
+      if (reviewURL.current) URL.revokeObjectURL(reviewURL.current);
+    },
+    [],
+  );
+  useEffect(() => {
+    if (video.current) video.current.srcObject = stream ?? null;
+  }, [stream, started]);
+  const [error, setError] = useState("");
+  const nav = useNavigate();
+  const productMode = getProductUseMode();
+  async function start() {
+    if (!consentRef.current) return;
+    const run = ++generation.current;
+    stopCamera();
+    clearReview();
+    setReady(false);
+    setSaved(false);
+    setRemember(false);
+    setPhase("ready");
+    setFaceConsent(false);
+    setFaceConsent(true);
+    setStarted(true);
+    setError("");
+    setValidFrames(0);
+    try {
+      const media = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" },
+        audio: false,
+      });
+      if (run !== generation.current) {
+        media.getTracks().forEach((track) => track.stop());
+        return;
+      }
+      camera.current = media;
+      setStream(media);
+    } catch {
+      if (run === generation.current)
+        setError("无法开启摄像头，请允许访问或上传 3–20 张正面照片。");
+    }
+  }
+  async function submit(images: Blob[]) {
+    if (!consentRef.current) return;
+    const run = generation.current;
+    setBusy(true);
+    setPhase("analyzing");
+    setError("");
+    try {
+      setPhase("checking");
+      await checkScanUploads(images);
+      if (run !== generation.current) return;
+      setPhase("analyzing");
+      const result = await scanFaceImages(images);
+      if (run !== generation.current) return;
+      if (!result)
+        throw new Error(
+          (apiConfig.demoMode
+            ? "GitHub Pages 演示版只在浏览器本机检查取景，不上传照片。Face Profile 生成需要本地 FastAPI 服务。"
+            : getServiceStatus("scanFaceImages")?.error) ||
+            "未能完成扫描，请重试或跳过，继续基础教程。",
+        );
+      const validIndex =
+        result.quality_information?.frames?.findIndex((frame) => frame.valid) ??
+        0;
+      clearReview();
+      reviewURL.current = URL.createObjectURL(images[Math.max(0, validIndex)]);
+      const bitmap = await createImageBitmap(images[Math.max(0, validIndex)]);
+      try {
+        const landmarks = await checkScanImage(bitmap, 1024);
+        if (run !== generation.current) return;
+        await retainStaticFace(images[Math.max(0, validIndex)], landmarks);
+        if (run !== generation.current) { clearStaticFace(); return; }
+        // A saved polygon belongs to the exact source face it was drawn on.
+        // Clear it only after a replacement scan succeeds so stale coordinates
+        // cannot be sent as preferences for a different face.
+        clearLocalAppearancePreferences();
+      } finally { bitmap.close(); }
+      setReview(reviewURL.current);
+      setPhase("complete");
+      setValidFrames(result.valid_frame_count);
+      stopCamera();
+    } catch (e) {
+      if (run === generation.current)
+        setError(e instanceof Error ? e.message : "扫描失败，请重试。");
+    } finally {
+      if (run === generation.current) setBusy(false);
+    }
+  }
+  async function capture() {
+    if (!consentRef.current) return;
+    const run = generation.current;
+    setBusy(true);
+    setError("");
+    try {
+      setPhase("checking");
+      if (!video.current) throw new Error("请等待摄像头准备好。");
+      const baseline = await tolerateBriefScanChange(async () => {
+        if (run !== generation.current || !video.current)
+          throw new Error("采集已取消");
+        return checkScanImage(video.current);
+      });
+      let previous = baseline;
+      async function checkStability() {
+        if (run !== generation.current || !video.current) return;
+        await tolerateBriefScanChange(async () => {
+          if (run !== generation.current || !video.current)
+            throw new Error("采集已取消");
+          const current = await checkScanImage(video.current);
+          const issue =
+            motionIssue(baseline, current) || motionIssue(previous, current);
+          if (issue) throw new Error(issue);
+          previous = current;
+        });
+      }
+      async function stableWait(milliseconds: number) {
+        for (let elapsed = 0; elapsed < milliseconds; elapsed += 200) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, Math.min(200, milliseconds - elapsed)),
+          );
+          if (run !== generation.current) return;
+          await checkStability();
+        }
+      }
+      if (run !== generation.current) return;
+      setPhase("countdown");
+      for (let i = 3; i > 0; i--) {
+        if (run !== generation.current) return;
+        setCountdown(i);
+        await stableWait(1000);
+      }
+      setPhase("capturing");
+      const frames: Blob[] = [];
+      const canvas = document.createElement("canvas");
+      for (let i = 0; i < 5; i++) {
+        if (run !== generation.current) return;
+        const element = video.current;
+        if (!element?.videoWidth)
+          throw new Error("摄像头尚未准备好，请稍后重试。");
+        await checkStability();
+        if (run !== generation.current) return;
+        canvas.width = element.videoWidth;
+        canvas.height = element.videoHeight;
+        canvas.getContext("2d")!.drawImage(element, 0, 0);
+        frames.push(
+          await new Promise<Blob>((resolve, reject) =>
+            canvas.toBlob(
+              (blob) =>
+                blob ? resolve(blob) : reject(new Error("无法采集画面")),
+              "image/jpeg",
+              0.9,
+            ),
+          ),
+        );
+        if (i < 4) await stableWait(500);
+      }
+      if (run === generation.current) await submit(frames);
+    } catch (e) {
+      if (run === generation.current)
+        setError(e instanceof Error ? e.message : "采集失败，请重试。");
+    } finally {
+      if (run === generation.current) setBusy(false);
+    }
+  }
+  function leave() {
+    generation.current++;
+    stopCamera();
+    clearReview();
+    setSaved(false);
+    setRemember(false);
+    setValidFrames(0);
+    setFaceConsent(false);
+    setBusy(false);
+    setReady(false);
+  }
+  function skip() {
+    leave();
+    nav("/my-tutorial");
+  }
+  return (
+    <Page
+      eyebrow="03 / 专属教程"
+      title={started ? "找到舒适的镜头位置" : "让教程更贴合你的面部"}
+      backTo={productMode === "beauty-kit" ? "/matching" : "/tutorial/recipe"}
+      progress={50}
+    >
+      {apiConfig.demoMode && (
+        <p className="demo-footnote" role="note">
+          静态演示限制：摄像头和照片可在浏览器本机做取景检查，但 Face Profile 数值生成需要本地 FastAPI 服务；本站不会将面部照片发往不存在的公网接口。
+        </p>
+      )}
+      <p role="status">
+        {stream ? "摄像头已开启 · 画面正在本机预览" : busy ? "摄像头未开启 · 正在处理所选照片" : validFrames ? "扫描完成 · 摄像头已关闭" : started && !error ? "摄像头尚未就绪，请检查浏览器授权提示。" : "摄像头未开启"}
+      </p>
+      <details className="face-scan-note">
+        <summary>隐私与图片使用说明</summary>
+        <p>
+          同意后才会开启摄像头或处理你选择的照片。画面先在浏览器检查，再发送到扫描服务计算面部数值；服务处理结束后清理原图，本次图片仅在回看、区域标记和静态上妆指导时临时保留。面部数值仅用于调整教程的位置、范围与方向，不用于身份识别。只有另行勾选保留，数值档案才会在当前浏览器会话中保存。
+        </p>
+        <p>
+          取消同意将停止采集并清除本地面部数据；已发送的请求可能仍会完成服务器临时处理，但返回结果不会继续使用。不扫描也可使用基础教程。
+        </p>
+      </details>
+      <p>
+        <label className="scan-consent">
+          <input
+            type="checkbox"
+            checked={consented}
+            onChange={(event) => {
+              const accepted = event.target.checked;
+              consentRef.current = accepted;
+              setConsented(accepted);
+              if (!accepted) {
+                leave();
+                setStarted(false);
+              }
+            }}
+          />
+          <span>
+            我已阅读并同意隐私与图片使用说明，允许本次采集和分析面部画面，用于调整教程。
+          </span>
+        </label>
+      </p>
+      {!started ? (
+        <>
+          <div className="equal-actions">
+            {saved && (
+              <Button
+                disabled={!consented}
+                onClick={() => nav("/beauty-profile")}
+              >
+                使用本次面部档案
+              </Button>
+            )}
+            <Button
+              disabled={!consented}
+              variant={saved ? "outline" : "default"}
+              onClick={start}
+            >
+              {saved ? "重新扫描" : "开启摄像头，开始扫描"}
+            </Button>
+            {saved && (
+              <Button variant="tertiary" onClick={leave}>
+                清除面部档案
+              </Button>
+            )}
+            <Button variant="outline" onClick={skip}>
+              跳过扫描，使用基础教程
+            </Button>
+          </div>
+          <div className="two-columns face-scan-intro">
+            <Card className="scan-guide-card">
+              <img
+                className="scan-guide-image"
+                src={publicAsset("assets/face/scan-guide.png")}
+                alt="正对镜头、光线均匀且面部无遮挡的扫描姿势示意"
+              />
+              <p>面部信息仅用于调整教程中的位置、范围与方向。</p>
+            </Card>
+            <Card>
+              <h2>取景建议</h2>
+              <ul className="scan-rules">
+                {[
+                  "正对镜头",
+                  "面部无遮挡",
+                  "均匀自然光",
+                  "距离约 40–70 cm",
+                ].map((x) => (
+                  <li key={x}>{x}</li>
+                ))}
+              </ul>
+            </Card>
+          </div>
+          {saved && <LocalAppearanceCard image={review || undefined} />}
+
+        </>
+      ) : (
+        <>
+          <div className="two-columns face-scan-active">
+            <div>
+              {busy && phase === "countdown" && (
+                <div
+                  className="scan-countdown"
+                  role="status"
+                  aria-live="polite"
+                >
+                  {countdown}
+                </div>
+              )}
+              <FaceViewport label="面部取景" live>
+                {review ? (
+                  <img
+                    className="scan-review"
+                    src={review}
+                    alt="本次有效画面回看"
+                  />
+                ) : (
+                  <>
+                    <video
+                      ref={video}
+                      autoPlay
+                      playsInline
+                      muted
+                      onLoadedData={() => setReady(true)}
+                      style={{
+                        width: "100%",
+                        maxHeight: 420,
+                        objectFit: "contain",
+                        transform: "scaleX(-1)",
+                      }}
+                    />
+                    {stream && (
+                      <div className="scan-position-guide" aria-hidden="true" />
+                    )}
+                  </>
+                )}
+              </FaceViewport>
+            </div>
+            <Card>
+              <h2>取景状态</h2>
+              <p role="status">
+                {busy
+                  ? phase === "countdown"
+                    ? "保持正面，即将拍摄"
+                    : phase === "capturing"
+                      ? "正在拍摄，请保持不动"
+                      : phase === "checking"
+                        ? "正在检查取景…"
+                        : "正在分析画面…"
+                  : validFrames
+                    ? "已完成扫描"
+                    : error ? "本次扫描未完成，请按提示重试。" : !stream ? "等待摄像头开启，也可选择上传照片。" : "对齐取景框，保持正面与自然表情"}
+              </p>
+              {!validFrames && !busy && (
+                <p className="face-scan-note">
+                  先检查亮度、细节和人脸取景，通过后开始倒计时。请自行确认眼部无遮挡。
+                </p>
+              )}
+              {error && <div>
+                <p role="alert">{error}</p>
+                {!stream && !busy && <>
+                  <p>若已拒绝访问，请在地址栏的网站权限中允许摄像头，再重试；也可上传照片或跳过。</p>
+                  <Button variant="outline" onClick={start}>重新开启摄像头</Button>
+                </>}
+              </div>}
+              {validFrames ? (
+                <>
+                  <p className="face-scan-note">
+                    照片用于计算眼部位置与比例，可用于回看和手动标记区域，结束后释放。后续教程不展示照片，只使用计算出的数值调整眼线方向等操作。
+                  </p>
+                  <p>
+                    <label className="scan-consent">
+                      <input
+                        type="checkbox"
+                        checked={remember}
+                        onChange={(event) => {
+                          setRememberFaceProfile(event.target.checked);
+                          setRemember(event.target.checked);
+                        }}
+                      />
+                      <span>
+                        可选：在当前浏览器会话保留面部数值，便于换教程时复用；不保存照片。
+                      </span>
+                    </label>
+                  </p>
+                  <div className="action-row">
+                    <Button
+                      disabled={!consented}
+                      onClick={() => nav("/beauty-profile")}
+                    >
+                      查看面部档案
+                    </Button>
+                    <Button variant="outline" onClick={start}>
+                      重新扫描
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Button
+                    disabled={busy || !stream || !ready}
+                    onClick={capture}
+                  >
+                    {busy ? "正在处理，请稍候…" : error ? "重新采集并分析" : "开始倒计时并采集"}
+                  </Button>
+                  <p>
+                    <label className="text-link">
+                      上传 3–20 张照片
+                      <input
+                        aria-label="上传面部照片"
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        disabled={busy}
+                        onChange={(event) => {
+                          const files = Array.from(event.target.files ?? []);
+                          event.target.value = "";
+                          if (files.length) void submit(files);
+                        }}
+                      />
+                    </label>
+                  </p>
+                </>
+              )}
+            </Card>
+          </div>
+          {validFrames > 0 && (
+            <LocalAppearanceCard image={review || undefined} />
+          )}
+          <div className="action-row">
+            <Button
+              variant="tertiary"
+              onClick={() => {
+                leave();
+                setStarted(false);
+              }}
+            >
+              返回扫描说明
+            </Button>
+            <Button variant="outline" onClick={skip}>
+              跳过扫描，使用基础教程
+            </Button>
+          </div>
+          <p className="face-scan-note">
+            原始图片不长期保存；仅在你选择后保留本次会话的数值档案。
+          </p>
+        </>
+      )}
+    </Page>
+  );
+}

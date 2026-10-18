@@ -2,6 +2,13 @@
   "schema_version": "1.0",
   "capability_id": "capability-neutral-shadow",
   "product_category": "eye shadow palette",
-  "supported_areas": ["crease", "outer corner", "center lid"],
-  "supported_goals": ["add depth", "define", "brighten"]
+  "supported_areas": ["crease", "outer corner", "center lid", "lower eyelid"],
+  "supported_goals": ["add depth", "define", "brighten"],
+  "color_families": ["neutral"],
+  "finishes": ["matte"],
+  "depths": ["light", "medium", "deep"],
+  "pigmentations": ["medium"],
+  "textures": ["powder"],
+  "functions": ["blend", "add depth", "define", "brighten"],
+  "verification_status": "verified"
 }

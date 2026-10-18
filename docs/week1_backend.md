@@ -56,8 +56,9 @@ curl http://127.0.0.1:8000/beauty-kit
 已实现：健康检查、mock 教程解析、五步骤 Recipe 校验、Recipe 持久化/查询、示例 Beauty Kit
 查询，以及 Face Profile 兼容性校验。
 
-结构性占位：`POST /matching` 仅输出 `unmatched` 条目；`POST /cv-adaptation` 不执行
-个性化；`POST /explanations` 不调用 LLM。
+`POST /matching` 使用 Recipe 中的结构化需求与 Beauty Kit 的已验证 Product Capability
+执行确定性评分，并返回理由、差异、妆效影响、缺失能力和硬约束。未验证产品不生成百分比。
+`POST /cv-adaptation` 不执行个性化；`POST /explanations` 不调用 LLM。
 
 ## 调试与可观测性
 
@@ -87,7 +88,7 @@ Pydantic Recipe 校验。
 
 - 教程解析器当前使用 `MockTutorialVisionProvider`；尚未接入真实视频/帧理解模型，也未提交主演示视频。
 - Week 1 教程解析路径固定要求五个步骤；`StandardRecipe` 契约本身允许任意非空的有序步骤。
-- Matching 仅输出结构性 `unmatched` 占位结果，不包含产品能力匹配、排序或替代推荐。
+- Matching 当前只有演示大地色眼影盘具备完整的已验证能力 fixture；目录中的其他展示产品仍为 `capability-unverified`，不会按品牌或名称推断能力。当前评分用于 Demo 决策解释，不代表官方产品 Ground Truth。
 - CV Adaptation 只校验并透传 CV 的 `Face Profile v0.1`，不调用 CV 推理，也不做个性化调整。
 - Explanation 为固定占位文案，未接入外部 LLM。
 - SQLite 与 `create_all` 仅适合本地 Week 1 演示；没有迁移、鉴权、多用户隔离或生产级并发保障。

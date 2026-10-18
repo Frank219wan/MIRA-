@@ -71,6 +71,11 @@ def save_product_capability(session: Session, capability: ProductCapability) -> 
     session.commit()
 
 
+def get_product_capabilities(session: Session) -> list[ProductCapability]:
+    records = session.query(ProductCapabilityRecord).order_by(ProductCapabilityRecord.capability_id).all()
+    return [ProductCapability.model_validate_json(record.payload_json) for record in records]
+
+
 def save_matching_result(session: Session, result: MatchingResult) -> None:
     session.merge(
         MatchingRecord(
