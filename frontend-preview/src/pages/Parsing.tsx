@@ -119,8 +119,8 @@ export default function Parsing() {
               {isExampleTutorial() ? (
                 <img
                   className="parsing-keyframes"
-                  src={publicAsset("assets/tutorial/cat-smokey-synthetic-steps.jpg")}
-                  alt="猫系冷调小烟熏六宫格合成关键画面"
+                  src={publicAsset("assets/tutorial/cat-smokey-steps.jpg")}
+                  alt="猫系冷调小烟熏真人教程参考素材"
                 />
               ) : (
                 <Placeholder label="关键画面预览" />
@@ -135,7 +135,7 @@ export default function Parsing() {
             </div>
             <p className="demo-footnote">
               {isExampleTutorial()
-                ? "示例关键画面用于说明拆解结构，并非实时解析结果。"
+                ? "示例教程参考素材用于说明拆解结构，并非实时解析结果。"
                 : "进度为流程展示，关键画面尚未提供。"}
             </p>
           </section>
